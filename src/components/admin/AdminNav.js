@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function AdminNav() {
   return (
-    <div>
+    <div className ="adminDiv">
         <table>
           <tr>
             <td><Link to= '/home'>Public Site</Link></td>

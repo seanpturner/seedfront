@@ -1,38 +1,46 @@
-.App {
-  text-align: center;
+.hidden {
+  display: none;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.adminPage {
+  font-size: small;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.adminDiv {
+  margin: auto;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
 }
 
-.App-link {
-  color: #61dafb;
+.adminTable, tr:nth-child(even) {
+   background-color: rgb(208, 211, 211);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.adminTable, tr:nth-child(odd) {
+  background-color: rgb(230, 233, 233);
 }
+
+.adminTable, tr:nth-child(1) {
+  background-color: transparent;
+}
+
+.adminLink, a:link {
+  color: rgb(60, 60, 145);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.adminLink, a:visited {
+  color: rgb(60, 60, 145);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.adminLink, a:hover {
+  color: rgb(60, 60, 145);
+  text-decoration: underline;
+  font-weight: bold;
+}
+
