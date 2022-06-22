@@ -1,16 +1,16 @@
-import React from 'react'
+// import React from 'react'
 
-function fetchStrings(data, requestMap, requestMethod) {
+// function fetchStrings(data, requestMap, requestMethod) {
 
-  requestMethod = requestMethod.toUpperCase();
-    const baseUrl = "http://localhost:8080/";
+//   requestMethod = requestMethod.toUpperCase();
+//     const baseUrl = "http://localhost:8080/";
     
 
 
     
-  return (
-    <div>fetchStrings</div>
-  )
-}
+//   return (
+//     <div>fetchStrings</div>
+//   )
+// }
 
-export default fetchStrings
+// export default fetchStrings

@@ -44,3 +44,11 @@
   font-weight: bold;
 }
 
+.alertRedText{
+  color: red;
+  font-weight: bold;
+}
+
+.userListDiv {
+  max-width: 95vw;
+}

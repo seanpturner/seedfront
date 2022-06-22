@@ -8,7 +8,7 @@ class Users extends Component {
     sortBy: "",
     sortDirection: "descending",
     sortedList: [],
-    dataSet: "all",
+    dataSet: "active",
     dataRequest: [
       {
         show: "all",
@@ -20,11 +20,14 @@ class Users extends Component {
       },
     ],
     selectedUser: "none",
-    lastCheck: false
+    lastCheck: false,
+    updatePassword: false,
+    password1: "",
+    password2: ""
   };
 
   componentDidMount = () => {
-    this.getUsers("all", "get");
+    this.getUsers("active", "get");
   };
 
   getUsers = (dSet, fetchMethod) => {
@@ -97,11 +100,29 @@ class Users extends Component {
     let usd = this.state.updateSelectedUser;
     if (key === "active" || key === "salesTax") {
       usd[key] = !usd[key]
-      // this.setState({ updateSelectedUser: !usd[key] });
     }else{
       usd[key] = event.target.value;
     }
     this.setState({ updateSelectedUser: usd });
+  }
+
+  handlePassword = (pw) => (event) => {
+    this.setState({[pw]: event.target.value});
+  }
+
+  savePassword = () => {
+
+    let fetchUrl = "http://localhost:8080/users/updatepasswordonly/"+ this.state.updateSelectedUser.id + "/" + this.state.password1;
+      let requestOptions = {
+        method: 'PUT',
+        body: ""
+      };
+      
+      fetch(fetchUrl, requestOptions)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .then(window.location.reload())
+        // .catch(error => console.log('error', error));
   }
 
   render() {
@@ -114,8 +135,9 @@ class Users extends Component {
     const userListDiv = this.state.selectedUser === "none" ? "userListDiv" : "hidden";
     const updateUserDiv = this.state.selectedUser === "none" ? "hidden" : "updateUserDiv";
     const toggleSet = this.state.dataSet === "all" ? "active" : "all";
-    const upSd = JSON.stringify(this.state.updateSelectedUser);
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
+    const updatePassword = this.state.updatePassword === true ? "updatePassword" : "hidden";
+    const passwordsMatch = this.state.password1 != "" && this.state.password2 != "" && this.state.password1 === this.state.password2 ? "passwordsMatch" : "hidden";
 
     return (
       <div className="adminPage">
@@ -224,7 +246,9 @@ class Users extends Component {
             onClick={() => {
               this.setState({ 
                 selectedUser: "none",
-                updateSelectedUser: undefined
+                updateSelectedUser: undefined,
+                password1: "",
+                password2: ""
                  });
             }}
           >
@@ -520,6 +544,15 @@ class Users extends Component {
           /></td>
           </tr>
           <tr>
+            <td>BirthDate</td>
+            <td><input
+            type="text"
+            name="birthDate"
+            defaultValue={selectedUser.birthDate}
+            onBlur={this.updateSelectedUser('birthDate')}
+          /></td>
+          </tr>
+          <tr>
             <td>Active</td>
             <td><input
             type="checkbox"
@@ -636,12 +669,45 @@ class Users extends Component {
             /></td>
           </tr>
         </table><br/>
-        <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update User</Link><br/>
-          <br/>{upSd}
+        <Link to="" onClick={()=>this.setState({
+          lastCheck: true,
+          updatePassword: false,
+          password1: "",
+          password2: ""
+          })}>Update User</Link>&nbsp; &nbsp;
+        <Link to="" onClick={()=>this.setState({
+          updatePassword: true,
+          lastCheck: false
+          })}>Update Password</Link> <br/>
           <div className={lastCheck}>
-            Are you sure you want to update this user?<br/>
-            <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link><br/>
-            <Link to="" onClick={()=>this.saveUpdatedUser()}>Yes</Link><br/>
+            <span className="alertRedText">Are you sure you want to update this user? </span>
+            <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.saveUpdatedUser()}>Yes</Link><br/>
+          </div>
+          <div className={updatePassword}>
+          <table>
+            <tr>
+              <td>New Password</td>
+              <td><input
+              type="text"
+              name="password1"
+              onBlur={this.handlePassword("password1")}
+            /></td>
+            <td>New Password</td>
+              <td><input
+              type="text"
+              name="password2"
+              onBlur={this.handlePassword("password2")}
+            /></td>
+            </tr>
+          </table>
+          <Link to="" onClick={()=>this.setState({
+            updatePassword: false,
+            password1: "",
+            password2: ""
+            })}>Close Password Modal</Link><br/>
+          <div className={passwordsMatch}>
+            <Link to="" onClick={()=>this.savePassword()}>Save Password</Link>
+          </div>
           </div>
         </div>
       </div>
