@@ -14,15 +14,15 @@
 
 }
 
-.adminTable, tr:nth-child(even) {
+.adminRow:nth-child(even) {
    background-color: rgb(208, 211, 211);
 }
 
-.adminTable, tr:nth-child(odd) {
+.adminRow:nth-child(odd) {
   background-color: rgb(230, 233, 233);
 }
 
-.adminTable, tr:nth-child(1) {
+.adminRow:nth-child(1) {
   background-color: transparent;
 }
 

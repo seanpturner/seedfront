@@ -137,7 +137,7 @@ class Users extends Component {
     const toggleSet = this.state.dataSet === "all" ? "active" : "all";
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
     const updatePassword = this.state.updatePassword === true ? "updatePassword" : "hidden";
-    const passwordsMatch = this.state.password1 != "" && this.state.password2 != "" && this.state.password1 === this.state.password2 ? "passwordsMatch" : "hidden";
+    const passwordsMatch = this.state.password1 !== "" && this.state.password2 !== "" && this.state.password1 === this.state.password2 ? "passwordsMatch" : "hidden";
 
     return (
       <div className="adminPage">
@@ -147,7 +147,7 @@ class Users extends Component {
 
         <div className={selectedUserDiv}>
           <table className="adminTable">
-            <tr>
+            <tr className="adminRow">
               <td>
                 <span>ID</span>
               </td>
@@ -206,7 +206,7 @@ class Users extends Component {
                 <span>Taxable</span>
               </td>
             </tr>
-            <tr>
+            <tr className="adminRow">
               <td>{selectedUser.id}</td>
               <td>{selectedUser.userName}</td>
               <td>{selectedUser.lName}</td>
@@ -261,7 +261,7 @@ class Users extends Component {
             {sortBy}. Show <Link to="" onClick={()=>{this.getUsers(toggleSet, "get")}}>{toggleSet}</Link> users.
           </p>
           <table>
-            <tr>
+            <tr className="adminRow">
               <td />
               <td>
                 <Link
@@ -456,7 +456,7 @@ class Users extends Component {
             </tr>
             {userList.map((users) => {
               return (
-                <tr>
+                <tr className="adminRow">
                   <td>
                     <Link
                       to=""
@@ -507,7 +507,7 @@ class Users extends Component {
         </div>
         <div className={updateUserDiv}>
         <table>
-          <tr>
+          <tr className="adminRow">
             <td>User Name</td>
             <td><input
             type="text"
@@ -516,7 +516,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('userName')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Last Name</td>
             <td><input
             type="text"
@@ -525,7 +525,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('lName')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>First Name</td>
             <td><input
             type="text"
@@ -534,7 +534,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('fName')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Email</td>
             <td><input
             type="text"
@@ -543,7 +543,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('email')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>BirthDate</td>
             <td><input
             type="text"
@@ -552,7 +552,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('birthDate')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Active</td>
             <td><input
             type="checkbox"
@@ -561,7 +561,7 @@ class Users extends Component {
             />
             </td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Account Type</td>
             <td><input
             type="text"
@@ -570,7 +570,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('accountType')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Address1</td>
             <td><input
             type="text"
@@ -579,7 +579,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('address1')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Address 2</td>
             <td><input
             type="text"
@@ -588,7 +588,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('address2')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>City</td>
             <td><input
             type="text"
@@ -597,7 +597,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('city')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>State</td>
             <td><input
             type="text"
@@ -606,7 +606,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('state')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>ZIP</td>
             <td><input
             type="text"
@@ -615,7 +615,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('zip')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Phone Number</td>
             <td><input
             type="text"
@@ -624,7 +624,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('phone')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Business Name</td>
             <td><input
             type="text"
@@ -633,7 +633,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('businessName')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Business Phone</td>
             <td><input
             type="text"
@@ -642,7 +642,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('businessPhone')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Ext.</td>
             <td><input
             type="text"
@@ -651,7 +651,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('businessPhoneExt')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Pricing</td>
             <td><input
             type="text"
@@ -660,7 +660,7 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('pricingStructure')}
           /></td>
           </tr>
-          <tr>
+          <tr className="adminRow">
             <td>Taxable</td>
             <td><input
             type="checkbox"
@@ -685,7 +685,7 @@ class Users extends Component {
           </div>
           <div className={updatePassword}>
           <table>
-            <tr>
+            <tr className="adminRow">
               <td>New Password</td>
               <td><input
               type="text"

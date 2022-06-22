@@ -142,7 +142,7 @@ class Lines extends Component {
         </div>
         <div className={selectedLineDiv}>
           <table className="adminTable">
-            <tr>
+            <tr className='adminRow'>
               <td>
                 <span>ID</span>
               </td>
@@ -150,7 +150,7 @@ class Lines extends Component {
                 <span>Line Name</span>
               </td>
             </tr>
-            <tr>
+            <tr className='adminRow'>
               <td>{selectedLine.id}</td>
               <td>{selectedLine.name}</td>
             </tr>
@@ -173,7 +173,7 @@ class Lines extends Component {
           {sortBy}
           </p>
           <table>
-            <tr>
+            <tr className='adminRow'>
               <td/>
               <td>
                 <Link to="" onClick={() => {
@@ -193,7 +193,7 @@ class Lines extends Component {
             </tr>
               {lineList.map((lines) => {
                 return (
-                  <tr>
+                  <tr className='adminRow'>
                     <td>
                     <Link
                       to=""
@@ -224,7 +224,7 @@ class Lines extends Component {
         </div>
         <div className={updateLineDiv}>
           <table>
-            <tr>
+            <tr className='adminRow'>
               <td>Line Name</td>
               <td>
                 <input type="text" name="name" defaultValue={selectedLine.name}
@@ -236,7 +236,7 @@ class Lines extends Component {
         </div>
         <div className={addLineDiv}>
         <table>
-          <tr>
+          <tr className='adminRow'>
             <td>Name</td>
             <td>
             <input
