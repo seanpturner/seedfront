@@ -136,6 +136,19 @@ class Plants extends Component {
             this.setState({ newPlant: np });
           }
         });
+
+        plants.forEach(element => {
+          if (element.id === parseInt(event.target.value)) {
+            let mlInputUpdate = document.getElementById("updateMaternalLine");
+            let staticValue = document.createElement("span");
+            staticValue.innerHTML = element.maternalLine;
+            staticValue.setAttribute("id", "updateMaternalLine");
+            mlInputUpdate.parentNode.replaceChild(staticValue, mlInputUpdate);
+            // let np = this.state.newPlant;
+            // np.maternalLine = element.maternalLine;
+            // this.setState({ newPlant: np });
+          }
+        });
       }else{
         this.lineSelectOptions("maternal");
       }
@@ -146,16 +159,31 @@ class Plants extends Component {
       if (event.target.value !=="") {
       plants.forEach(element => {
         if (element.id === parseInt(event.target.value)) {
-          let mlInput = document.getElementById("addPaternalLine");
+          let mlInputAdd = document.getElementById("addPaternalLine");
           let staticValue = document.createElement("span");
           staticValue.innerHTML = element.paternalLine;
           staticValue.setAttribute("id", "addPaternalLine");
-          mlInput.parentNode.replaceChild(staticValue, mlInput);
+          mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
           let np = this.state.newPlant;
           np.paternalLine = element.paternalLine;
           this.setState({ newPlant: np });
         }
       });
+
+      plants.forEach(element => {
+        if (element.id === parseInt(event.target.value)) {
+          let mlInputUpdate = document.getElementById("updatePaternalLine");
+          let staticValue = document.createElement("span");
+          staticValue.innerHTML = element.paternalLine;
+          staticValue.setAttribute("id", "updatePaternalLine");
+          mlInputUpdate.parentNode.replaceChild(staticValue, mlInputUpdate);
+          // let np = this.state.newPlant;
+          // np.paternalLine = element.paternalLine;
+          // this.setState({ newPlant: np });
+        }
+      });
+
+
     }else{
       this.lineSelectOptions("paternal");
     }
@@ -205,47 +233,93 @@ class Plants extends Component {
     });
 
     if (line === "maternal" || line === "all") {
-      let mLine = document.createElement("select");
-      mLine.setAttribute("id", "addMaternalLine");
-      mLine.addEventListener("change", this.buildNewPlant("maternalLine"))
+      let mLineAdd = document.createElement("select");
+      mLineAdd.setAttribute("id", "addMaternalLine");
+      mLineAdd.addEventListener("change", this.buildNewPlant("maternalLine"))
 
       options.forEach(element => {
-        if (mLine.length === 0) {
-          mLine.options.add(new Option("select", "", true));
+        if (mLineAdd.length === 0) {
+          mLineAdd.options.add(new Option("select", "", true));
         }
-        if (mLine.length < options.length + 1) {
-          mLine.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
+        if (mLineAdd.length < options.length + 1) {
+          mLineAdd.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
         }
         })
-        let oldInput = document.getElementById("addMaternalLine");
-        oldInput.parentNode.replaceChild(mLine, oldInput);
+        let oldInputAdd = document.getElementById("addMaternalLine");
+        oldInputAdd.parentNode.replaceChild(mLineAdd, oldInputAdd);
         if (line === "maternal") {
           let np = this.state.newPlant;
           np.maternalLine = "";
           this.setState({ newPlant: np });
         }
+
+
+        let mLineUpdate = document.createElement("select");
+      mLineUpdate.setAttribute("id", "updateMaternalLine");
+      mLineUpdate.addEventListener("change", this.buildNewPlant("maternalLine"))
+
+      options.forEach(element => {
+        if (mLineUpdate.length === 0) {
+          mLineUpdate.options.add(new Option("select", "", true));
+        }
+        if (mLineUpdate.length < options.length + 1) {
+          mLineUpdate.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
+        }
+        })
+        let oldInputUpdate = document.getElementById("updateMaternalLine");
+        oldInputUpdate.parentNode.replaceChild(mLineUpdate, oldInputUpdate);
+        // if (line === "maternal") {
+        //   let np = this.state.newPlant;
+        //   np.maternalLine = "";
+        //   this.setState({ newPlant: np });
+        // }
+
+
     }
 
     if (line === "paternal" || line === "all") {
-      let pLine = document.createElement("select");
-      pLine.setAttribute("id", "addPaternalLine");
-      pLine.addEventListener("change", this.buildNewPlant("paternalLine"))
+      let pLineAdd = document.createElement("select");
+      pLineAdd.setAttribute("id", "addPaternalLine");
+      pLineAdd.addEventListener("change", this.buildNewPlant("paternalLine"))
 
       options.forEach(element => {
-        if (pLine.length === 0) {
-          pLine.options.add(new Option("select", "", true));
+        if (pLineAdd.length === 0) {
+          pLineAdd.options.add(new Option("select", "", true));
         }
-        if (pLine.length < options.length + 1) {
-          pLine.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
+        if (pLineAdd.length < options.length + 1) {
+          pLineAdd.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
         }
       })
-      let oldInput = document.getElementById("addPaternalLine");
-        oldInput.parentNode.replaceChild(pLine, oldInput);
+      let oldInputAdd = document.getElementById("addPaternalLine");
+        oldInputAdd.parentNode.replaceChild(pLineAdd, oldInputAdd);
         if (line === "paternal") {
           let np = this.state.newPlant;
           np.paternalLine = "";
           this.setState({ newPlant: np });
         }
+// copy below
+      let pLineUpdate = document.createElement("select");
+      pLineUpdate.setAttribute("id", "updatePaternalLine");
+      pLineUpdate.addEventListener("change", this.buildNewPlant("paternalLine"))
+
+      options.forEach(element => {
+        if (pLineUpdate.length === 0) {
+          pLineUpdate.options.add(new Option("select", "", true));
+        }
+        if (pLineUpdate.length < options.length + 1) {
+          pLineUpdate.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
+        }
+      })
+      let oldInputUpdate = document.getElementById("updatePaternalLine");
+        oldInputUpdate.parentNode.replaceChild(pLineUpdate, oldInputUpdate);
+        // if (line === "paternal") {
+        //   let np = this.state.newPlant;
+        //   np.paternalLine = "";
+        //   this.setState({ newPlant: np });
+        // }
+
+
+
         
     }
 
@@ -272,6 +346,8 @@ class Plants extends Component {
 
     let addMother = document.getElementById("addMother");
     let addFather = document.getElementById("addFather");
+    let updateMother = document.getElementById("updateMother");
+    let updateFather = document.getElementById("updateFather");
 
     options.forEach(element => {
       if (addMother.length === 0) {
@@ -280,6 +356,14 @@ class Plants extends Component {
       if (addMother.length < options.length + 1) {
         addMother.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
       }
+
+      if (updateMother.length === 0) {
+        updateMother.options.add(new Option("select", "", true));
+      }
+      if (updateMother.length < options.length + 1) {
+        updateMother.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
+      }
+
       })
 
       options.forEach(element => {
@@ -289,6 +373,14 @@ class Plants extends Component {
         if (addFather.length < options.length + 1) {
           addFather.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
         }
+
+        if (updateFather.length === 0) {
+          updateFather.options.add(new Option("select", "", true));
+        }
+        if (updateFather.length < options.length + 1) {
+          updateFather.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
+        }
+
         })
   }
 
@@ -441,13 +533,27 @@ class Plants extends Component {
             </td>
             </tr>
             <tr className='adminRow topAlignTable'>
+            <td>Mother</td>
             <td>
-                {/* <select name="mother" id="updateMother" className='clearField' onChange={this.buildNewPlant("mother")}/> */}
+                <select name="mother" id="updateMother" className='clearField' onChange={this.buildNewPlant("mother")}/>
+              </td>
+            </tr>
+            <tr className='adminRow topAlignTable'>
+            <td>Father</td>
+            <td>
+                <select name="father" id="updateFather" className='clearField' onChange={this.buildNewPlant("father")}/>
               </td>
             </tr>
             <tr>
+            <td>Maternal Line</td>
             <td>
-                {/* <select name="maternalLine" id="updateMaternalLine" className='clearField' onChange={this.buildNewPlant("maternalLine")}/> */}
+                <select name="maternalLine" id="updateMaternalLine" className='clearField' onChange={this.buildNewPlant("maternalLine")}/>
+               </td>
+            </tr>
+            <tr>
+            <td>Paternal Line</td>
+            <td>
+                <select name="paternalLine" id="updatePaternalLine" className='clearField' onChange={this.buildNewPlant("paternalLine")}/>
                </td>
             </tr>
           </table>
