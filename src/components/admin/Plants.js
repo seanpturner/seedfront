@@ -126,11 +126,11 @@ class Plants extends Component {
       if (event.target.value !== "") {
         plants.forEach(element => {
           if (element.id === parseInt(event.target.value)) {
-            let mlInput = document.getElementById("addMaternalLine");
+            let mlInputAdd = document.getElementById("addMaternalLine");
             let staticValue = document.createElement("span");
             staticValue.innerHTML = element.maternalLine;
             staticValue.setAttribute("id", "addMaternalLine");
-            mlInput.parentNode.replaceChild(staticValue, mlInput);
+            mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
             let np = this.state.newPlant;
             np.maternalLine = element.maternalLine;
             this.setState({ newPlant: np });
@@ -292,6 +292,18 @@ class Plants extends Component {
         })
   }
 
+  removeFromUpdateArray = (member, element) => {
+    let np = this.state.newPlant;
+    let existingArray = np[member];
+    let enIndex = existingArray.indexOf(element);
+    if (enIndex !== -1) {
+      existingArray.splice(enIndex, 1);
+      np[member] = existingArray;
+      this.setState({ newPlant: np });
+    }
+
+  }
+
   render() { 
     const plantList = this.state.allPlants;
     const selectedPlant = this.state.selectedPlant;
@@ -302,7 +314,7 @@ class Plants extends Component {
     const newPlant = this.state.newPlant;
     const npString = JSON.stringify(newPlant);
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
-    const lineSelectOptions = JSON.stringify(this.state.lineSelectOptions);
+    // const lineSelectOptions = JSON.stringify(this.state.lineSelectOptions);
     const okToSubmit = this.state.newPlant.name && this.state.newPlant.maternalLine && this.state.newPlant.paternalLine && this.state.newPlant.sex ? "okToSubmit" : "hidden";
     return (
       <div className='adminPage'>
@@ -343,12 +355,15 @@ class Plants extends Component {
             </tr>
           </table>
           <Link to="" onClick={()=>
-                      this.setState({selectedPlant: "none"})
+                      this.setState({
+                        selectedPlant: "none",
+                        newPlant: {}
+                        })
                     }>Deselect Plant</Link>
         </div>
         <div className={plantListDiv}>
           Plant List Div
-          <br/>{lineSelectOptions}
+          {/* <br/>{lineSelectOptions} */}
           <table className='adminTable'>
             <tr className='adminRow'>
               <td></td>
@@ -367,7 +382,10 @@ class Plants extends Component {
               return (
                 <tr className='adminRow'>
                   <td>
-                    <Link to="" onClick={()=>this.setState({selectedPlant: plant})}>Open</Link>
+                    <Link to="" onClick={()=>this.setState({
+                      selectedPlant: plant,
+                      newPlant: plant
+                      })}>Open</Link>
                   </td>
                   <td>{plant.id}</td>
                   <td>{plant.name}</td>
@@ -397,7 +415,42 @@ class Plants extends Component {
           }}>Add a plant</Link>
         </div>
         <div className={updatePlantDiv}>
-          Update Plant Div
+          <table className='adminTable topAlignTable'>
+            <tr><td>Update Plant Div</td></tr>
+            <tr className='adminRow topAlignTable'>
+              <td>Plant Name</td>
+              <td><input type="text" name = "name" defaultValue={selectedPlant.name}/></td>
+              <td></td>
+            </tr>
+            <tr className='adminRow topAlignTable'>
+            <td>Notes</td>
+            <td><input id="updateNotes" type="text" name="notes" onBlur={this.buildPlantArray("notes", "updateNotes")}/>
+              <tr className='adminRow topAlignTable'>
+                <td id="notesUpdateArray">
+                {newPlant.notes?.map((note) => {
+                  return (
+                    <tr className='adminSubRow'>
+                      <td>
+                        <Link to="" onClick={()=>this.removeFromUpdateArray("notes", note)}> X </Link>
+                        {note}</td>
+                    </tr>
+                  )
+                })}
+                </td>
+              </tr>
+            </td>
+            </tr>
+            <tr className='adminRow topAlignTable'>
+            <td>
+                {/* <select name="mother" id="updateMother" className='clearField' onChange={this.buildNewPlant("mother")}/> */}
+              </td>
+            </tr>
+            <tr>
+            <td>
+                {/* <select name="maternalLine" id="updateMaternalLine" className='clearField' onChange={this.buildNewPlant("maternalLine")}/> */}
+               </td>
+            </tr>
+          </table>
         </div>
         <div className={addPlantDiv}>
           Add Plant Div
