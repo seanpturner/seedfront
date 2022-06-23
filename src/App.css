@@ -14,6 +14,14 @@
 
 }
 
+.adminRow {
+  vertical-align: top;
+}
+
+.topAlignTable {
+  vertical-align: top;
+}
+
 .adminRow:nth-child(even) {
    background-color: rgb(208, 211, 211);
 }
@@ -23,6 +31,14 @@
 }
 
 .adminRow:nth-child(1) {
+  background-color: transparent;
+}
+
+.adminSubRow:nth-child(even) {
+  color: darkgreen;
+}
+
+.adminSubRow:nth-child(odd) {
   background-color: transparent;
 }
 

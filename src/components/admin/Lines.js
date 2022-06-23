@@ -99,7 +99,8 @@ class Lines extends Component {
   resetAndClearForm = () => {
     this.setState({
       selectedLine: "none",
-      newLine: {}
+      newLine: {},
+      lastCheck: false
     });
     document.getElementById("addName").value = "";
   }
@@ -236,7 +237,7 @@ class Lines extends Component {
         </div>
         <div className={addLineDiv}>
         <table>
-          <tr className='adminRow'>
+          <tr>
             <td>Name</td>
             <td>
             <input
@@ -252,11 +253,11 @@ class Lines extends Component {
         <div className={lastCheck}>
           <span className='alertRedText'>
             Are you sure you want to add this line?
-          </span>
+          </span>&nbsp;
           <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.saveNewLine()}>Yes</Link>
         </div>
         <br/><br/>
-        <Link to="" onClick={()=>this.resetAndClearForm()}>Back to line</Link>
+        <Link to="" onClick={()=>this.resetAndClearForm()}>Back to line list</Link>
         </div>
     </div>);
   }
