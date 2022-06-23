@@ -18,6 +18,7 @@ class Plants extends Component {
     lineSelectOptions: [],
     addMaternalSelect: "",
     addPaternalSelect: "",
+    updateLineage: false
    } 
 
   componentDidMount = () => {
@@ -336,6 +337,17 @@ class Plants extends Component {
     return lineName;
   }
 
+  getPlantNameById = (plantId) => {
+    let plants = this.state.allPlants;
+    let plantName;
+    plants.forEach(element => {
+      if (element.id === plantId) {
+        plantName = element.name;
+      }
+    });
+    return plantName;
+  }
+
   plantSelectOptions = () => {
     let plants = this.state.sortAlphaPlants;
     let options = [];
@@ -406,6 +418,11 @@ class Plants extends Component {
     const newPlant = this.state.newPlant;
     const npString = JSON.stringify(newPlant);
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
+    const updateLineage = this.state.updateLineage ? "updateLineage" : "hidden";
+    const hideStatic = this.state.updateLineage ? "hidden" : "hideStatic";
+    const npFemale = newPlant.sex === "F" ? "selected" : "";
+    const npMale = newPlant.sex === "M" ? "selected" : "";
+    
     // const lineSelectOptions = JSON.stringify(this.state.lineSelectOptions);
     const okToSubmit = this.state.newPlant.name && this.state.newPlant.maternalLine && this.state.newPlant.paternalLine && this.state.newPlant.sex ? "okToSubmit" : "hidden";
     return (
@@ -533,30 +550,80 @@ class Plants extends Component {
             </td>
             </tr>
             <tr className='adminRow topAlignTable'>
+            <td>Images</td>
+            <td><input id="updateImageList" type="text" name="imageList" onBlur={this.buildPlantArray("imageList", "updateImageList")}/>
+              <tr className='adminRow topAlignTable'>
+                <td id="imageListUpdateArray">
+                {newPlant.imageList?.map((image) => {
+                  return (
+                    <tr className='adminSubRow'>
+                      <td>
+                        <Link to="" onClick={()=>this.removeFromUpdateArray("imageList", image)}> X </Link>
+                        {image}</td>
+                    </tr>
+                  )
+                })}
+                </td>
+              </tr>
+            </td>
+            </tr>
+            <tr className='adminRow topAlignTable'>
             <td>Mother</td>
-            <td>
+            <td className={hideStatic}>{newPlant.mother} {this.getPlantNameById(newPlant.mother)}</td>
+            <td className={updateLineage}>
                 <select name="mother" id="updateMother" className='clearField' onChange={this.buildNewPlant("mother")}/>
               </td>
             </tr>
             <tr className='adminRow topAlignTable'>
             <td>Father</td>
-            <td>
+            <td className={hideStatic}>{newPlant.father} {this.getPlantNameById(newPlant.father)}</td>
+            <td className={updateLineage}>
                 <select name="father" id="updateFather" className='clearField' onChange={this.buildNewPlant("father")}/>
               </td>
             </tr>
             <tr>
             <td>Maternal Line</td>
-            <td>
+            <td className={hideStatic}>{newPlant.maternalLine} {this.getLineNameById(newPlant.maternalLine)}</td>
+            <td className={updateLineage}>
                 <select name="maternalLine" id="updateMaternalLine" className='clearField' onChange={this.buildNewPlant("maternalLine")}/>
                </td>
             </tr>
             <tr>
             <td>Paternal Line</td>
-            <td>
+            <td className={hideStatic}>{newPlant.paternalLine} {this.getLineNameById(newPlant.paternalLine)}</td>
+            <td className={updateLineage}>
                 <select name="paternalLine" id="updatePaternalLine" className='clearField' onChange={this.buildNewPlant("paternalLine")}/>
                </td>
             </tr>
+            <tr>
+              <td>Sex</td>
+              <td className={hideStatic}>{newPlant.sex}</td>
+              <td  className={updateLineage}>
+                <select name="sex" id="addSex" className='clearField' onChange={this.buildNewPlant("sex")}>
+                  <option value = "" selected>Select</option>
+                  <option value = "F">Female</option>
+                  <option value = "M">Male</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Clone</td>
+              <td className={hideStatic}>{newPlant?.clone ? "true" : "false"}</td>
+              <td  className={updateLineage}>
+                <input className='clearField' id = "updateClone"
+                type = "checkbox"
+                onChange={()=>this.buildPlantBoolean("clone")}/>
+              </td>
+              </tr>
+
+
+
+
+
+
+
           </table>
+          <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update Lineage</Link><br/>
         </div>
         <div className={addPlantDiv}>
           Add Plant Div

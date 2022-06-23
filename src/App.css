@@ -68,3 +68,7 @@
 .userListDiv {
   max-width: 95vw;
 }
+
+.hide {
+  visibility: hidden;
+}
