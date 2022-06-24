@@ -105,16 +105,6 @@ class Plants extends Component {
         this.objectSort(result, "id", statePosition, sortOrder, true);
         this.sortList(result, "id");
       })
-      
-      
-      
-      // .then(result => {
-      //   if (statePosition === "allPlants") {
-      //     this.sortList(result, "name");
-      //   }
-      // })
-      // .then(result => this.setState({ [statePosition]: result }))
-      // .catch(error => console.log('error', error));
   }
 
   objectSort = (obj, sortKey, statePosition, sortOrder, updateAlphas) => {

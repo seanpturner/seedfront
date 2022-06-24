@@ -70,8 +70,6 @@ class Lines extends Component {
     this.setState({ newLine: nl });
   }
 
-
-
   saveLine = () => {
     let updateLine = this.state.updateSelectedLine;
     let fetchUrl = "http://localhost:8080/lines/" + updateLine.id;
