@@ -21,7 +21,7 @@ class Plants extends Component {
     sortBy: "",
     sortDirection: "descending",
     sortedList: [],
-    lastCheck: false
+    dataSet: "ID"
    } 
 
   componentDidMount = () => {
@@ -396,6 +396,7 @@ class Plants extends Component {
   }
 
   sortList = (list, by) => {
+    this.setState({ dataSet: by });
     let sortDirection = this.state.sortDirection;
     let sortBy = this.state.sortBy;
     if (by === sortBy) {
@@ -423,25 +424,31 @@ class Plants extends Component {
   };
 
   render() { 
-    const plantList = this.state.allPlants;
     const selectedPlant = this.state.selectedPlant;
     const selectedPlantDiv = this.state.selectedPlant === "none" || this.state.addPlant === true ? "hidden" : "selectedPlantDiv";
     const updatePlantDiv = this.state.selectedPlant === "none" || this.state.addPlant === true ? "hidden" : "selectedPlantDiv";
     const plantListDiv = this.state.selectedPlant !== "none" || this.state.addPlant === true ? "hidden" : "plantListDiv";
     const addPlantDiv = this.state.addPlant === true ? "addPlantDiv" : "hidden";
     const newPlant = this.state.newPlant;
-    const npString = JSON.stringify(newPlant);
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
     const updateLineage = this.state.updateLineage ? "updateLineage" : "hidden";
     const hideStatic = this.state.updateLineage ? "hidden" : "hideStatic";
-    const sortedList = this.state.sortedList = [] ? this.state.allPlants : this.state.sortedList;
+    const sortedList = this.state.sortedList ? this.state.allPlants : this.state.sortedList;
     const okToSubmit = this.state.newPlant.name && this.state.newPlant.maternalLine && this.state.newPlant.paternalLine && this.state.newPlant.sex ? "okToSubmit" : "hidden";
+    const dataSet = "Sorted by " + this.state.dataSet;
     return (
       <div className='adminPage'>
         <div className="adminNavDiv">
           <AdminNav />
         </div>
-        <div className={selectedPlantDiv}> {JSON.stringify(newPlant)}
+        <div className={selectedPlantDiv}>
+        <h1 className='adminSectionTitle'>Update A Plant</h1>
+        <Link to="" onClick={()=>
+                      this.setState({
+                        selectedPlant: "none",
+                        newPlant: {}
+                        })
+                    }>Deselect Plant</Link><br/>
           <table className='adminTable'>
           <tr className='adminRow'>
               <td>Plant Name</td>
@@ -474,15 +481,11 @@ class Plants extends Component {
                 })}</td>
             </tr>
           </table>
-          <Link to="" onClick={()=>
-                      this.setState({
-                        selectedPlant: "none",
-                        newPlant: {}
-                        })
-                    }>Deselect Plant</Link>
+          <br/><br/>
         </div>
-        <div className={plantListDiv}>
-          Plant List Div<br/>
+        <div className={plantListDiv}><br/>
+        <h1 className='adminSectionTitle'>Plants</h1>
+        <p className='adminSortText'>{dataSet}.</p>
           <table className='adminTable'>
             <tr className='adminRow'>
               <td></td>
@@ -534,11 +537,10 @@ class Plants extends Component {
         </div>
         <div className={updatePlantDiv}>
           <table className='adminTable topAlignTable'>
-            <tr><td>Update Plant Div</td></tr>
+            <tr><td></td></tr>
             <tr className='adminRow topAlignTable'>
               <td>Plant Name</td>
               <td><input type="text" name = "name" defaultValue={selectedPlant.name}/></td>
-              <td></td>
             </tr>
             <tr className='adminRow topAlignTable'>
             <td>Notes</td>
@@ -627,15 +629,15 @@ class Plants extends Component {
           </table>
           <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update Lineage</Link><br/>
           <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update Plant</Link>
-        </div>
-        <div className={lastCheck}>
+          <div className={lastCheck}>
             <span className='alertRedText'>
               Are you sure you want to update this plant? 
             </span>&nbsp;
           <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("PUT")}>Yes</Link>
         </div>
-        <div className={addPlantDiv}>
-          Add Plant Div
+        </div>
+        <div className={addPlantDiv}><br/>
+          <h1 className='adminSectionTitle'>Add A Plant</h1>
           <table>
             <tr>
               <td>Name</td>
@@ -734,7 +736,7 @@ class Plants extends Component {
           </div>
           <br/><br/>
         <Link to="" onClick={()=>this.clearFieldsAndPlant()}>Back to plant list</Link>
-        <br/>{npString}
+        <br/>
         </div>
       </div>
     );

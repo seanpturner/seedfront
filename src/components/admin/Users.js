@@ -127,8 +127,8 @@ class Users extends Component {
 
   render() {
     const userList = this.state.sortedList;
-    const sortBy = "sorted by " + this.state.sortBy.toUpperCase();
-    const dataSet = "Showing " + this.state.dataSet.toUpperCase() + " users ";
+    const sortBy = "sorted by " + this.state.sortBy;
+    const dataSet = "Showing " + this.state.dataSet + " users ";
     const selectedUser = this.state.selectedUser;
     const selectedUserDiv = this.state.selectedUser === "none" ? "hidden" : "selectedUserDiv";
     const userListDiv = this.state.selectedUser === "none" ? "userListDiv" : "hidden";
@@ -255,7 +255,7 @@ class Users extends Component {
           </Link>
         </div>
         <div className={userListDiv}>
-          <p>
+          <p className="adminSortText">
             {dataSet}
             {sortBy}. Show <Link to="" onClick={()=>{this.getUsers(toggleSet, "get")}}>{toggleSet}</Link> users.
           </p>
