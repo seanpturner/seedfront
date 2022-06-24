@@ -465,11 +465,14 @@ class Plants extends Component {
         </div>
         <div className={selectedPlantDiv}>
         <h1 className='adminSectionTitle'>Update A Plant</h1>
-        <p><Link to="" onClick={()=>
-                      this.setState({
+        <p><Link to="" onClick={()=>{this.setState({
                         selectedPlant: "none",
-                        newPlant: {}
-                        })
+                        newPlant: {},
+                        updateLineage: false
+                        });
+                        this.getFetch("lines", null, "allLines", "ascending");
+                      this.getFetch("plants", null, "allPlants", "ascending");}
+                      
                     }>Back to plant list</Link>
           </p>
           <table className='adminTable'>
@@ -667,7 +670,7 @@ class Plants extends Component {
               </td>
               </tr>
           </table>
-          <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update lineage</Link><br/>
+          <Link to="" onClick={()=>this.setState({updateLineage: !this.state.updateLineage})}>Update lineage</Link><br/>
           <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update this plant</Link>
           <div className={lastCheck}>
             <span className='alertRedText'>
