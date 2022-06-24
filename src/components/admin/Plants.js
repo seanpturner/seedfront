@@ -20,7 +20,8 @@ class Plants extends Component {
     updateLineage: false,
     sortBy: "",
     sortDirection: "descending",
-    sortedList: []
+    sortedList: [],
+    lastCheck: false
    } 
 
   componentDidMount = () => {
@@ -39,7 +40,6 @@ class Plants extends Component {
   postPutFetch = (method) => {
     let np = this.state.newPlant;
     method = method.toUpperCase();
-    np.id = null;
     if (method === "POST") {
       np.id = null;
     }
@@ -57,6 +57,9 @@ class Plants extends Component {
     }
     if (!np.clone) {
       np.clone = false;
+    }
+    if (method === "PUT") {
+      np.id = this.state.newPlant.id;
     }
     this.doPostPutFetch(method, np);
   }
@@ -432,14 +435,13 @@ class Plants extends Component {
     const updateLineage = this.state.updateLineage ? "updateLineage" : "hidden";
     const hideStatic = this.state.updateLineage ? "hidden" : "hideStatic";
     const sortedList = this.state.sortedList = [] ? this.state.allPlants : this.state.sortedList;
-    
     const okToSubmit = this.state.newPlant.name && this.state.newPlant.maternalLine && this.state.newPlant.paternalLine && this.state.newPlant.sex ? "okToSubmit" : "hidden";
     return (
       <div className='adminPage'>
         <div className="adminNavDiv">
           <AdminNav />
         </div>
-        <div className={selectedPlantDiv}>
+        <div className={selectedPlantDiv}> {JSON.stringify(newPlant)}
           <table className='adminTable'>
           <tr className='adminRow'>
               <td>Plant Name</td>
@@ -624,6 +626,13 @@ class Plants extends Component {
               </tr>
           </table>
           <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update Lineage</Link><br/>
+          <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update Plant</Link>
+        </div>
+        <div className={lastCheck}>
+            <span className='alertRedText'>
+              Are you sure you want to update this plant? 
+            </span>&nbsp;
+          <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("PUT")}>Yes</Link>
         </div>
         <div className={addPlantDiv}>
           Add Plant Div
