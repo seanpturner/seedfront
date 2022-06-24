@@ -143,8 +143,23 @@ class Users extends Component {
         <div className="adminNavDiv">
           <AdminNav />
         </div>
-
         <div className={selectedUserDiv}>
+        <h1 className="adminSectionTitle">Update A User</h1>
+        <p><Link
+            to=""
+            className="adminLink"
+            onClick={() => {
+              this.setState({ 
+                selectedUser: "none",
+                updateSelectedUser: undefined,
+                password1: "",
+                password2: ""
+                 });
+            }}
+          >
+            Back to user list
+          </Link></p>
+          <p>
           <table className="adminTable">
             <tr className="adminRow">
               <td>
@@ -238,23 +253,11 @@ class Users extends Component {
                   : selectedUser.salesTax.toString()}
               </td>
             </tr>
-          </table>
-          <Link
-            to=""
-            className="adminLink"
-            onClick={() => {
-              this.setState({ 
-                selectedUser: "none",
-                updateSelectedUser: undefined,
-                password1: "",
-                password2: ""
-                 });
-            }}
-          >
-            Deselect User
-          </Link>
+          </table></p>
+          
         </div>
         <div className={userListDiv}>
+        <h1 className="adminSectionTitle">Users</h1>
           <p className="adminSortText">
             {dataSet}
             {sortBy}. Show <Link to="" onClick={()=>{this.getUsers(toggleSet, "get")}}>{toggleSet}</Link> users.
@@ -506,6 +509,7 @@ class Users extends Component {
         </div>
         <div className={updateUserDiv}>
         <table>
+        <tr></tr>
           <tr className="adminRow">
             <td>User Name</td>
             <td><input
@@ -673,16 +677,17 @@ class Users extends Component {
           updatePassword: false,
           password1: "",
           password2: ""
-          })}>Update User</Link>&nbsp; &nbsp;
+          })}>Update this user</Link>&nbsp; &nbsp;
         <Link to="" onClick={()=>this.setState({
           updatePassword: true,
           lastCheck: false
-          })}>Update Password</Link> <br/>
+          })}>Update password</Link> <br/>
           <div className={lastCheck}>
             <span className="alertRedText">Are you sure you want to update this user? </span>
             <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.saveUpdatedUser()}>Yes</Link><br/>
           </div>
           <div className={updatePassword}>
+          <p>
           <table>
             <tr className="adminRow">
               <td>New Password</td>
@@ -698,7 +703,7 @@ class Users extends Component {
               onBlur={this.handlePassword("password2")}
             /></td>
             </tr>
-          </table>
+          </table></p>
           <Link to="" onClick={()=>this.setState({
             updatePassword: false,
             password1: "",

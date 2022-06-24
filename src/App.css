@@ -27,7 +27,7 @@
 }
 
 .adminRow:nth-child(odd) {
-  background-color: rgb(230, 233, 233);
+  background-color: rgb(229, 226, 226);
 }
 
 .adminRow:nth-child(1) {
@@ -82,4 +82,9 @@
 .adminSortText {
   font-weight: bold;
   color: gray;
+}
+
+.searchResultsDiv {
+  z-index: 2;
+  display: inline-block;
 }

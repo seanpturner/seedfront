@@ -130,7 +130,7 @@ class Lines extends Component {
   render() { 
     const selectedLineDiv = this.state.selectedLine === "none" || this.state.selectedLine === "add" ? "hidden" : "selectedLineDiv";
     const selectedLine = this.state.selectedLine;
-    const sortBy = "Showing lines sorted by " + this.state.sortBy.toUpperCase() + ".";
+    const sortBy = "Sorted by " + this.state.sortBy;
     const lineListDiv = this.state.selectedLine === "none" ? "lineListDiv" : "hidden";
     const updateLineDiv = this.state.selectedLine === "none"|| this.state.selectedLine === "add" ? "hidden" : "updateLineDiv";
     const lineList = this.state.sortedList;
@@ -142,6 +142,20 @@ class Lines extends Component {
           <AdminNav />
         </div>
         <div className={selectedLineDiv}>
+        <h1 className="adminSectionTitle">Update A Line</h1>
+        <p>
+          <Link
+            to=""
+            className="adminLink"
+            onClick={() => {
+              this.setState({ 
+                selectedLine: "none",
+                updateSelectedLine: undefined,
+                 });
+            }}
+          >
+            Back to line list
+          </Link></p>
           <table className="adminTable">
             <tr className='adminRow'>
               <td>
@@ -156,20 +170,9 @@ class Lines extends Component {
               <td>{selectedLine.name}</td>
             </tr>
           </table>
-          <Link
-            to=""
-            className="adminLink"
-            onClick={() => {
-              this.setState({ 
-                selectedLine: "none",
-                updateSelectedLine: undefined,
-                 });
-            }}
-          >
-            Deselect Line
-          </Link><br/><br/>
         </div>
         <div className={lineListDiv}>
+        <h1 className="adminSectionTitle">Lines</h1>
           <p>
           {sortBy}
           </p>
@@ -219,9 +222,10 @@ class Lines extends Component {
                 )
               })}
           </table>
+          <p>
           <Link to="" onClick={()=>{
             this.setState({selectedLine: "add"})
-          }}>Add a line</Link>
+          }}>Add a line</Link></p>
         </div>
         <div className={updateLineDiv}>
           <table>
@@ -231,11 +235,13 @@ class Lines extends Component {
                 <input type="text" name="name" defaultValue={selectedLine.name}
                 onBlur={this.updateSelectedLine("name")}/>
               </td>
-              <Link to="" onClick={()=>this.saveLine()}>Update Line</Link>
             </tr>
+            <p><Link to="" onClick={()=>this.saveLine()}>Update this line</Link></p>
           </table>
         </div>
         <div className={addLineDiv}>
+        <h1 className="adminSectionTitle">Add A Line</h1>
+        <p>
         <table>
           <tr>
             <td>Name</td>
@@ -248,7 +254,7 @@ class Lines extends Component {
           />
             </td>
           </tr>
-        </table>
+        </table></p>
         <Link to="" onClick={()=>this.setState({lastCheck: true})}>Add this line</Link>
         <div className={lastCheck}>
           <span className='alertRedText'>

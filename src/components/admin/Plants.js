@@ -21,7 +21,9 @@ class Plants extends Component {
     sortBy: "",
     sortDirection: "descending",
     sortedList: [],
-    dataSet: "ID"
+    dataSet: "ID",
+    searchString: "",
+    searchResults: []
    } 
 
   componentDidMount = () => {
@@ -423,6 +425,34 @@ class Plants extends Component {
     }
   };
 
+  searchFor = (key) => (event) => {
+    let noSpace = event.target.value.replace(/\s/g, '').toLowerCase();
+    let ap = this.state.allPlants;
+    let returnArray = [];
+    this.setState({ searchString: noSpace });
+    ap.forEach(element => {
+      let searchString = element.name.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
+      console.log(searchString);
+      if (noSpace === searchString) {
+        returnArray.push({"id": element.id, "name": element.name})
+      }
+    });
+    this.setState({ searchResults: returnArray });
+  }
+
+  setSearchPlant = (id) => {
+    let ap = this.state.allPlants;
+    ap.forEach(element => {
+      if (element.id === id) {
+        this.setState({
+          selectedPlant: element,
+          newPlant: element,
+          searchResults: []
+          });
+          document.getElementById("searchInput").value = "";
+      }
+    });
+ }
   render() { 
     const selectedPlant = this.state.selectedPlant;
     const selectedPlantDiv = this.state.selectedPlant === "none" || this.state.addPlant === true ? "hidden" : "selectedPlantDiv";
@@ -436,6 +466,8 @@ class Plants extends Component {
     const sortedList = this.state.sortedList ? this.state.allPlants : this.state.sortedList;
     const okToSubmit = this.state.newPlant.name && this.state.newPlant.maternalLine && this.state.newPlant.paternalLine && this.state.newPlant.sex ? "okToSubmit" : "hidden";
     const dataSet = "Sorted by " + this.state.dataSet;
+    const searchResultsDiv = this.state.searchString === "" ? "hidden" : "searchResultsDiv";
+    const searchResults = this.state.searchResults;
     return (
       <div className='adminPage'>
         <div className="adminNavDiv">
@@ -443,12 +475,13 @@ class Plants extends Component {
         </div>
         <div className={selectedPlantDiv}>
         <h1 className='adminSectionTitle'>Update A Plant</h1>
-        <Link to="" onClick={()=>
+        <p><Link to="" onClick={()=>
                       this.setState({
                         selectedPlant: "none",
                         newPlant: {}
                         })
-                    }>Deselect Plant</Link><br/>
+                    }>Back to plant list</Link>
+          </p>
           <table className='adminTable'>
           <tr className='adminRow'>
               <td>Plant Name</td>
@@ -483,9 +516,26 @@ class Plants extends Component {
           </table>
           <br/><br/>
         </div>
-        <div className={plantListDiv}><br/>
-        <h1 className='adminSectionTitle'>Plants</h1>
-        <p className='adminSortText'>{dataSet}.</p>
+          <div className={plantListDiv}><br/>
+          <h1 className='adminSectionTitle'>Plants</h1>
+          <p className='adminSortText'></p>
+            <p className='adminSortText'>{dataSet}</p>
+            <div className='searchDiv adminSortText'>Search by name &nbsp;
+              <input id="searchInput" type="text" onChange = {this.searchFor("name")} />
+            </div>
+          <div className={searchResultsDiv}>
+            <table>
+                  {searchResults.map((plant)=>{
+                    return (
+                      <tr>
+                        <td>
+                          <Link to="" onClick={()=>this.setSearchPlant(plant.id)}>{plant.name}</Link>
+                        </td>
+                      </tr>
+                    )
+                  })}
+            </table>
+        </div>
           <table className='adminTable'>
             <tr className='adminRow'>
               <td></td>
@@ -530,10 +580,10 @@ class Plants extends Component {
                 </tr>
               )
             })}
-          </table>
+          </table><p>
           <Link to="" onClick={()=>{
             this.setState({addPlant: true})
-          }}>Add a plant</Link>
+          }}>Add a plant</Link></p>
         </div>
         <div className={updatePlantDiv}>
           <table className='adminTable topAlignTable'>
@@ -627,8 +677,8 @@ class Plants extends Component {
               </td>
               </tr>
           </table>
-          <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update Lineage</Link><br/>
-          <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update Plant</Link>
+          <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update lineage</Link><br/>
+          <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update this plant</Link>
           <div className={lastCheck}>
             <span className='alertRedText'>
               Are you sure you want to update this plant? 
@@ -638,6 +688,7 @@ class Plants extends Component {
         </div>
         <div className={addPlantDiv}><br/>
           <h1 className='adminSectionTitle'>Add A Plant</h1>
+          <p><Link to="" onClick={()=>this.clearFieldsAndPlant()}>Back to plant list</Link></p>
           <table>
             <tr>
               <td>Name</td>
@@ -726,7 +777,7 @@ class Plants extends Component {
             </tr>
           </table>
           <div className={okToSubmit}>
-          <Link to="" onClick={()=>this.setState({lastCheck: true})}>Add this Plant</Link>
+          <p><Link to="" onClick={()=>this.setState({lastCheck: true})}>Add this Plant</Link></p>
           <div className={lastCheck}>
             <span className='alertRedText'>
               Are you sure you want to add this plant? 
@@ -734,9 +785,6 @@ class Plants extends Component {
           <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("POST")}>Yes</Link>
         </div>
           </div>
-          <br/><br/>
-        <Link to="" onClick={()=>this.clearFieldsAndPlant()}>Back to plant list</Link>
-        <br/>
         </div>
       </div>
     );
