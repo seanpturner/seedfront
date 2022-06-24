@@ -23,7 +23,9 @@ class Users extends Component {
     lastCheck: false,
     updatePassword: false,
     password1: "",
-    password2: ""
+    password2: "",
+    searchString: "",
+    searchResults: []
   };
 
   componentDidMount = () => {
@@ -125,6 +127,40 @@ class Users extends Component {
         // .catch(error => console.log('error', error));
   }
 
+  searchFor = (key) => (event) => {
+    let noSpace = event.target.value.replace(/\s/g, '').toLowerCase();
+    let ul = this.state.userList;
+    let returnArray = [];
+    this.setState({ searchString: noSpace });
+    ul.forEach(element => {
+      let searchString1 = element.userName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
+      let searchString2 = element.fName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
+      let searchString3 = element.lName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
+      console.log(searchString1);
+      if (noSpace === searchString1 || noSpace === searchString2 || noSpace === searchString3) {
+        let addUser = {"id": element.id, "userName": element.userName, "fName": element.fName, "lName": element.lName};
+        if (!returnArray.includes(addUser)) {
+          returnArray.push(addUser);
+        }
+      }
+    });
+    this.setState({ searchResults: returnArray });
+  }
+
+  setSearchEntity = (id) => {
+    let ul = this.state.userList;
+    ul.forEach(element => {
+      if (element.id === id) {
+        this.setState({
+          selectedUser: element,
+          // newPlant: element,
+          searchResults: []
+          });
+          document.getElementById("searchInput").value = "";
+      }
+    });
+ }
+
   render() {
     const userList = this.state.sortedList;
     const sortBy = "sorted by " + this.state.sortBy;
@@ -137,7 +173,8 @@ class Users extends Component {
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
     const updatePassword = this.state.updatePassword === true ? "updatePassword" : "hidden";
     const passwordsMatch = this.state.password1 !== "" && this.state.password2 !== "" && this.state.password1 === this.state.password2 ? "passwordsMatch" : "hidden";
-
+    const searchResultsDiv = this.state.searchString === "" ? "hidden" : "searchResultsDiv";
+    const searchResults = this.state.searchResults;
     return (
       <div className="adminPage">
         <div className="adminNavDiv">
@@ -256,12 +293,29 @@ class Users extends Component {
           </table></p>
           
         </div>
+
         <div className={userListDiv}>
         <h1 className="adminSectionTitle">Users</h1>
           <p className="adminSortText">
             {dataSet}
             {sortBy}. Show <Link to="" onClick={()=>{this.getUsers(toggleSet, "get")}}>{toggleSet}</Link> users.
           </p>
+                  <div className='searchDiv adminSortText'>Search by name &nbsp;
+              <input id="searchInput" type="text" onChange = {this.searchFor("userName")} />
+            </div>
+            <div className={searchResultsDiv}>
+            <table>
+                  {searchResults.map((sr)=>{
+                    return (
+                      <tr>
+                        <td>
+                          <Link to="" onClick={()=>this.setSearchEntity(sr.id)}>{sr.fName} {sr.lName} { "<" + sr.userName + ">"}</Link>
+                        </td>
+                      </tr>
+                    )
+                  })}
+            </table>
+        </div>
           <table>
             <tr className="adminRow">
               <td />
@@ -507,7 +561,9 @@ class Users extends Component {
             })}
           </table>
         </div>
+
         <div className={updateUserDiv}>
+        <p>
         <table>
         <tr></tr>
           <tr className="adminRow">
@@ -671,17 +727,18 @@ class Users extends Component {
             onChange={this.updateSelectedUser('salesTax')}
             /></td>
           </tr>
-        </table><br/>
+        </table></p>
+        <Link to="" onClick={()=>this.setState({
+          updatePassword: true,
+          lastCheck: false
+          })}>Update password</Link> <br/>
         <Link to="" onClick={()=>this.setState({
           lastCheck: true,
           updatePassword: false,
           password1: "",
           password2: ""
-          })}>Update this user</Link>&nbsp; &nbsp;
-        <Link to="" onClick={()=>this.setState({
-          updatePassword: true,
-          lastCheck: false
-          })}>Update password</Link> <br/>
+          })}>Update this user</Link>
+        
           <div className={lastCheck}>
             <span className="alertRedText">Are you sure you want to update this user? </span>
             <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.saveUpdatedUser()}>Yes</Link><br/>

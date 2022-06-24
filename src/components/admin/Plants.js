@@ -430,7 +430,7 @@ class Plants extends Component {
     this.setState({ searchResults: returnArray });
   }
 
-  setSearchPlant = (id) => {
+  setSearchEntity = (id) => {
     let ap = this.state.allPlants;
     ap.forEach(element => {
       if (element.id === id) {
@@ -519,7 +519,7 @@ class Plants extends Component {
                     return (
                       <tr>
                         <td>
-                          <Link to="" onClick={()=>this.setSearchPlant(plant.id)}>{plant.name}</Link>
+                          <Link to="" onClick={()=>this.setSearchEntity(plant.id)}>{plant.name}</Link>
                         </td>
                       </tr>
                     )

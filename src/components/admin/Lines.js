@@ -10,7 +10,9 @@ class Lines extends Component {
     sortedList: [],
     selectedLine: "none",
     newLine: {},
-    lastCheck: false
+    lastCheck: false,
+    searchString: "",
+    searchResults: []
    } 
 
   componentDidMount = () => {
@@ -125,6 +127,37 @@ class Lines extends Component {
       // .catch(error => console.log('error', error));
   }
 
+  searchFor = (key) => (event) => {
+    let noSpace = event.target.value.replace(/\s/g, '').toLowerCase();
+    let entityList = this.state.lineList;
+    let returnArray = [];
+    this.setState({ searchString: noSpace });
+    entityList.forEach(element => {
+      let searchString = element.name.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
+      console.log(searchString);
+      if (noSpace === searchString) {
+        let item = {"id": element.id, "name": element.name};
+        if (!returnArray.includes(item)) {
+          returnArray.push(item);
+        }
+      }
+    });
+    this.setState({ searchResults: returnArray });
+  }
+
+  setSearchEntity = (id) => {
+    let entityList = this.state.lineList;
+    entityList.forEach(element => {
+      if (element.id === id) {
+        this.setState({
+          selectedLine: element,
+          searchResults: []
+          });
+          document.getElementById("searchInput").value = "";
+      }
+    });
+ }
+
   render() { 
     const selectedLineDiv = this.state.selectedLine === "none" || this.state.selectedLine === "add" ? "hidden" : "selectedLineDiv";
     const selectedLine = this.state.selectedLine;
@@ -134,6 +167,8 @@ class Lines extends Component {
     const lineList = this.state.sortedList;
     const addLineDiv = this.state.selectedLine === "add" ? "addLineDiv" : "hidden";
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
+    const searchResultsDiv = this.state.searchString === "" ? "hidden" : "searchResultsDiv";
+    const searchResults = this.state.searchResults;
     
     return (<div className="adminPage">
         <div className="adminNavDiv">
@@ -170,10 +205,28 @@ class Lines extends Component {
           </table>
         </div>
         <div className={lineListDiv}>
+        
         <h1 className="adminSectionTitle">Lines</h1>
-          <p>
+        <p className='adminSortText'>
           {sortBy}
           </p>
+        <div className='searchDiv adminSortText'>Search by name &nbsp;
+              <input id="searchInput" type="text" onChange = {this.searchFor("name")} />
+            </div>
+            <div className={searchResultsDiv}>
+            <table>
+                  {searchResults.map((sr)=>{
+                    return (
+                      <tr>
+                        <td>
+                          <Link to="" onClick={()=>this.setSearchEntity(sr.id)}>{sr.name}</Link>
+                        </td>
+                      </tr>
+                    )
+                  })}
+            </table>
+        </div>
+
           <table>
             <tr className='adminRow'>
               <td/>
