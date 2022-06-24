@@ -130,8 +130,7 @@ class Users extends Component {
     const sortBy = "sorted by " + this.state.sortBy.toUpperCase();
     const dataSet = "Showing " + this.state.dataSet.toUpperCase() + " users ";
     const selectedUser = this.state.selectedUser;
-    const selectedUserDiv =
-      this.state.selectedUser === "none" ? "hidden" : "selectedUserDiv";
+    const selectedUserDiv = this.state.selectedUser === "none" ? "hidden" : "selectedUserDiv";
     const userListDiv = this.state.selectedUser === "none" ? "userListDiv" : "hidden";
     const updateUserDiv = this.state.selectedUser === "none" ? "hidden" : "updateUserDiv";
     const toggleSet = this.state.dataSet === "all" ? "active" : "all";

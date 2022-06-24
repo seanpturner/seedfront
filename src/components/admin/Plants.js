@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import AdminNav from './AdminNav';
 import { Link } from "react-router-dom";
-// import Admin from './Admin';
 
 class Plants extends Component {
   state = { 
@@ -18,7 +17,10 @@ class Plants extends Component {
     lineSelectOptions: [],
     addMaternalSelect: "",
     addPaternalSelect: "",
-    updateLineage: false
+    updateLineage: false,
+    sortBy: "",
+    sortDirection: "descending",
+    sortedList: []
    } 
 
   componentDidMount = () => {
@@ -94,7 +96,18 @@ class Plants extends Component {
     
     fetch(fetchUrl, requestOptions)
       .then(response => response.json())
-      .then(result => this.objectSort(result, "id", statePosition, sortOrder, true));
+      .then(result => {
+        this.objectSort(result, "id", statePosition, sortOrder, true);
+        this.sortList(result, "id");
+      })
+      
+      
+      
+      // .then(result => {
+      //   if (statePosition === "allPlants") {
+      //     this.sortList(result, "name");
+      //   }
+      // })
       // .then(result => this.setState({ [statePosition]: result }))
       // .catch(error => console.log('error', error));
   }
@@ -145,9 +158,6 @@ class Plants extends Component {
             staticValue.innerHTML = element.maternalLine;
             staticValue.setAttribute("id", "updateMaternalLine");
             mlInputUpdate.parentNode.replaceChild(staticValue, mlInputUpdate);
-            // let np = this.state.newPlant;
-            // np.maternalLine = element.maternalLine;
-            // this.setState({ newPlant: np });
           }
         });
       }else{
@@ -178,9 +188,6 @@ class Plants extends Component {
           staticValue.innerHTML = element.paternalLine;
           staticValue.setAttribute("id", "updatePaternalLine");
           mlInputUpdate.parentNode.replaceChild(staticValue, mlInputUpdate);
-          // let np = this.state.newPlant;
-          // np.paternalLine = element.paternalLine;
-          // this.setState({ newPlant: np });
         }
       });
 
@@ -254,7 +261,6 @@ class Plants extends Component {
           this.setState({ newPlant: np });
         }
 
-
         let mLineUpdate = document.createElement("select");
       mLineUpdate.setAttribute("id", "updateMaternalLine");
       mLineUpdate.addEventListener("change", this.buildNewPlant("maternalLine"))
@@ -269,13 +275,6 @@ class Plants extends Component {
         })
         let oldInputUpdate = document.getElementById("updateMaternalLine");
         oldInputUpdate.parentNode.replaceChild(mLineUpdate, oldInputUpdate);
-        // if (line === "maternal") {
-        //   let np = this.state.newPlant;
-        //   np.maternalLine = "";
-        //   this.setState({ newPlant: np });
-        // }
-
-
     }
 
     if (line === "paternal" || line === "all") {
@@ -298,8 +297,8 @@ class Plants extends Component {
           np.paternalLine = "";
           this.setState({ newPlant: np });
         }
-// copy below
-      let pLineUpdate = document.createElement("select");
+
+        let pLineUpdate = document.createElement("select");
       pLineUpdate.setAttribute("id", "updatePaternalLine");
       pLineUpdate.addEventListener("change", this.buildNewPlant("paternalLine"))
 
@@ -313,17 +312,7 @@ class Plants extends Component {
       })
       let oldInputUpdate = document.getElementById("updatePaternalLine");
         oldInputUpdate.parentNode.replaceChild(pLineUpdate, oldInputUpdate);
-        // if (line === "paternal") {
-        //   let np = this.state.newPlant;
-        //   np.paternalLine = "";
-        //   this.setState({ newPlant: np });
-        // }
-
-
-
-        
     }
-
   }
 
   getLineNameById = (lineId) => {
@@ -368,14 +357,12 @@ class Plants extends Component {
       if (addMother.length < options.length + 1) {
         addMother.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
       }
-
       if (updateMother.length === 0) {
         updateMother.options.add(new Option("select", "", true));
       }
       if (updateMother.length < options.length + 1) {
         updateMother.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
       }
-
       })
 
       options.forEach(element => {
@@ -385,14 +372,12 @@ class Plants extends Component {
         if (addFather.length < options.length + 1) {
           addFather.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
         }
-
         if (updateFather.length === 0) {
           updateFather.options.add(new Option("select", "", true));
         }
         if (updateFather.length < options.length + 1) {
           updateFather.options.add(new Option(element.text + " (" + element.value + ")", element.value, element.selected));
         }
-
         })
   }
 
@@ -405,8 +390,34 @@ class Plants extends Component {
       np[member] = existingArray;
       this.setState({ newPlant: np });
     }
-
   }
+
+  sortList = (list, by) => {
+    let sortDirection = this.state.sortDirection;
+    let sortBy = this.state.sortBy;
+    if (by === sortBy) {
+      if (sortDirection === "ascending") {
+        sortDirection = "descending";
+      } else {
+        sortDirection = "ascending";
+      }
+      this.setState({ sortDirection: sortDirection });
+    }
+    if (sortDirection === "ascending") {
+      list.sort((a, b) => (a[by] > b[by] ? 1 : -1));
+      this.setState({
+        sortedList: list,
+        sortBy: by,
+      });
+    }
+    if (sortDirection === "descending") {
+      list.sort((a, b) => (a[by] < b[by] ? 1 : -1));
+      this.setState({
+        sortedList: list,
+        sortBy: by,
+      });
+    }
+  };
 
   render() { 
     const plantList = this.state.allPlants;
@@ -420,10 +431,8 @@ class Plants extends Component {
     const lastCheck = this.state.lastCheck === true ? "lastCheck" : "hidden";
     const updateLineage = this.state.updateLineage ? "updateLineage" : "hidden";
     const hideStatic = this.state.updateLineage ? "hidden" : "hideStatic";
-    const npFemale = newPlant.sex === "F" ? "selected" : "";
-    const npMale = newPlant.sex === "M" ? "selected" : "";
+    const sortedList = this.state.sortedList = [] ? this.state.allPlants : this.state.sortedList;
     
-    // const lineSelectOptions = JSON.stringify(this.state.lineSelectOptions);
     const okToSubmit = this.state.newPlant.name && this.state.newPlant.maternalLine && this.state.newPlant.paternalLine && this.state.newPlant.sex ? "okToSubmit" : "hidden";
     return (
       <div className='adminPage'>
@@ -471,23 +480,22 @@ class Plants extends Component {
                     }>Deselect Plant</Link>
         </div>
         <div className={plantListDiv}>
-          Plant List Div
-          {/* <br/>{lineSelectOptions} */}
+          Plant List Div<br/>
           <table className='adminTable'>
             <tr className='adminRow'>
               <td></td>
-              <td>ID</td>
-              <td>Plant Name</td>
-              <td>Notes</td>
-              <td>Mother</td>
-              <td>Father</td>
-              <td>Maternal Line</td>
-              <td>Paternal Line</td>
-              <td>Sex</td>
-              <td>Clone</td>
-              <td>imageList</td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "id")}}>ID</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "name")}}>Plant Name</Link></td>
+              <td><Link to="">Notes</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "mother")}}>Mother</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "father")}}>Father</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "maternalLine")}}>Maternal Line</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "paternalLine")}}>Paternal Line</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "sex")}}>Sex</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "clone")}}>Clone</Link></td>
+              <td><Link to="">Image List</Link></td>
             </tr>
-            {plantList.map((plant) =>{
+            {sortedList.map((plant) =>{
               return (
                 <tr className='adminRow'>
                   <td>
@@ -505,8 +513,8 @@ class Plants extends Component {
                   })}</td>
                   <td>{plant.mother}</td>
                   <td>{plant.father}</td>
-                  <td>{this.getLineNameById(plant.maternalLine)}</td>
-                  <td>{this.getLineNameById(plant.paternalLine)}</td>
+                  <td>{plant.maternalLine} {this.getLineNameById(plant.maternalLine)}</td>
+                  <td>{plant.paternalLine} {this.getLineNameById(plant.paternalLine)}</td>
                   <td>{plant.sex}</td>
                   <td>{plant.clone === true ? "Yes" : "No"}</td>
                   <td>{plant.imageList?.map((img) => {
@@ -514,7 +522,6 @@ class Plants extends Component {
                       <tr className='adminSubRow'>{img}</tr>
                     )
                   })}</td>
-                  {/* <td>{plant.imageList}</td> */}
                 </tr>
               )
             })}
@@ -615,13 +622,6 @@ class Plants extends Component {
                 onChange={()=>this.buildPlantBoolean("clone")}/>
               </td>
               </tr>
-
-
-
-
-
-
-
           </table>
           <Link to="" onClick={()=>this.setState({updateLineage: true})}>Update Lineage</Link><br/>
         </div>
@@ -723,8 +723,6 @@ class Plants extends Component {
           <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("POST")}>Yes</Link>
         </div>
           </div>
-          
-
           <br/><br/>
         <Link to="" onClick={()=>this.clearFieldsAndPlant()}>Back to plant list</Link>
         <br/>{npString}
