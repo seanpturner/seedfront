@@ -72,3 +72,14 @@
 .hide {
   visibility: hidden;
 }
+
+.adminSectionTitle {
+  font-weight: bold;
+  font-size: 2vh;
+  color: green;
+}
+
+.adminSortText {
+  font-weight: bold;
+  color: gray;
+}
