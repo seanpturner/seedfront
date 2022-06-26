@@ -131,23 +131,23 @@ class Seeds extends Component {
 
   buildNewSeed = (key) => (event) => {
     let ns = this.state.newSeed;
-    let seeds = this.state.allSeeds;
+    let plants = this.state.allPlants;
     if (key === "mother") {
       if (event.target.value !== "") {
-        seeds.forEach(element => {
+        plants.forEach(element => {
           if (element.id === parseInt(event.target.value)) {
             let mlInputAdd = document.getElementById("addMaternalLine");
             let staticValue = document.createElement("span");
             staticValue.innerHTML = element.maternalLine;
             staticValue.setAttribute("id", "addMaternalLine");
             mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
-            // let ns = this.state.newSeed;
+            let ns = this.state.newSeed;
             ns.maternalLine = element.maternalLine;
             this.setState({ newSeed: ns });
           }
         });
 
-        seeds.forEach(element => {
+        plants.forEach(element => {
           if (element.id === parseInt(event.target.value)) {
             let mlInputUpdate = document.getElementById("updateMaternalLine");
             let staticValue = document.createElement("span");
@@ -164,20 +164,20 @@ class Seeds extends Component {
 
     if (key === "father") {
       if (event.target.value !=="") {
-      seeds.forEach(element => {
+      plants.forEach(element => {
         if (element.id === parseInt(event.target.value)) {
-          let mlInputAdd = document.getElementById("addPaternalLine");
+          let plInputAdd = document.getElementById("addPaternalLine");
           let staticValue = document.createElement("span");
           staticValue.innerHTML = element.paternalLine;
           staticValue.setAttribute("id", "addPaternalLine");
-          mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
-          // let ns = this.state.newSeed;
+          plInputAdd.parentNode.replaceChild(staticValue, plInputAdd);
+          let ns = this.state.newSeed;
           ns.paternalLine = element.paternalLine;
           this.setState({ newSeed: ns });
         }
       });
 
-      seeds.forEach(element => {
+      plants.forEach(element => {
         if (element.id === parseInt(event.target.value)) {
           let mlInputUpdate = document.getElementById("updatePaternalLine");
           let staticValue = document.createElement("span");
