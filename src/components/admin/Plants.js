@@ -140,7 +140,7 @@ class Plants extends Component {
             staticValue.innerHTML = element.maternalLine;
             staticValue.setAttribute("id", "addMaternalLine");
             mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
-            let np = this.state.newPlant;
+            // let np = this.state.newPlant;
             np.maternalLine = element.maternalLine;
             this.setState({ newPlant: np });
           }
@@ -170,7 +170,7 @@ class Plants extends Component {
           staticValue.innerHTML = element.paternalLine;
           staticValue.setAttribute("id", "addPaternalLine");
           mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
-          let np = this.state.newPlant;
+          // let np = this.state.newPlant;
           np.paternalLine = element.paternalLine;
           this.setState({ newPlant: np });
         }
@@ -186,7 +186,7 @@ class Plants extends Component {
         }
       });
 
-
+      
     }else{
       this.lineSelectOptions("paternal");
     }
