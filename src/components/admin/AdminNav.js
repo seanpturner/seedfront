@@ -15,6 +15,7 @@ function AdminNav() {
             <td><Link to= '/logins'>Logins</Link></td>
             <td><Link to= '/messages'>Messages</Link></td>
             <td><Link to= '/plants'>Plants</Link></td>
+            <td><Link to= '/pricing'>Pricing</Link></td>
             <td><Link to= '/purchases'>Purchases</Link></td>
             <td><Link to= '/purchasestatuses'>Purchase Statuses</Link></td>
             <td><Link to= '/seeds'>Seeds</Link></td>

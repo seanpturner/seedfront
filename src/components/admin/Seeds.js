@@ -526,7 +526,6 @@ showAsCurrency = (amount) => {
         </div>
           <div className={seedListDiv}><br/>
             <h1 className='adminSectionTitle'>Seeds</h1>
-            <p className='adminSortText'></p>
             <p className='adminSortText'>{dataSet}</p>
             <div className='searchDiv adminSortText'>Search by name &nbsp;
               <input id="searchInput" type="text" onChange = {this.searchFor("name")} />
@@ -588,7 +587,8 @@ showAsCurrency = (amount) => {
                 </tr>
               )
             })}
-          </table><p>
+          </table>
+          <p>
           <Link to="" onClick={()=>{
             this.setState({addSeed: true})
           }}>Add a seed</Link></p>

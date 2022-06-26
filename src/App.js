@@ -18,6 +18,7 @@ import Purchases from './components/admin/Purchases';
 import PurchaseStatuses from './components/admin/PurchaseStatuses';
 import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
+import Pricing from './components/admin/Pricing';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route  path='/logins' element={<Logins/>} />
         <Route  path='/messages' element={<Messages/>} />
         <Route  path='/plants' element={<Plants/>} />
+        <Route  path='/pricing' element={<Pricing/>} />
         <Route  path='/purchases' element={<Purchases/>} />
         <Route  path='/purchasestatuses' element={<PurchaseStatuses/>} />
         <Route  path='/seeds' element={<Seeds/>} />
