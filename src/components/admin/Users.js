@@ -25,7 +25,9 @@ class Users extends Component {
     password1: "",
     password2: "",
     searchString: "",
-    searchResults: []
+    searchResults: [],
+    updatePricing: false,
+    pricingList: []
   };
 
   componentDidMount = () => {
@@ -73,8 +75,24 @@ class Users extends Component {
         }
       });
     });
-    this.setState({ userList: userListWithPricingLabel });
+    this.setState({ 
+      userList: userListWithPricingLabel,
+      pricingList: pl
+    });
     this.sortList(userListWithPricingLabel, "id");
+    this.createPricingDropdowns(pl);
+  }
+
+  createPricingDropdowns = (pricingList) => {
+    pricingList.sort((a, b) => (a.label > b.label ? 1 : -1));
+    let upSelect = document.getElementById("updatePricingSelect");
+    upSelect.innerHTML = "";
+    upSelect.options.add(new Option("Select", "", true))
+    pricingList.forEach(pricing => {
+      upSelect.options.add(new Option(pricing.label + " (" + pricing.id + ")", pricing.id, false))
+    });
+    upSelect.parentNode.replaceChild(upSelect, upSelect);
+
   }
   
   saveUpdatedUser = () => {
@@ -89,7 +107,11 @@ class Users extends Component {
 
     fetch("http://localhost:8080/users/updateUser/" + this.state.updateSelectedUser.id, requestOptions)
   .then(response => response.text())
-  .then(response => window.location.reload())
+  .then(response => {
+    this.setState({ selectedUser: "none" });
+    this.getUsers(this.state.dataSet, "get");
+  })
+  // .then(response => window.location.reload())
   }
 
   sortList = (users, by) => {
@@ -125,6 +147,17 @@ class Users extends Component {
       usd[key] = !usd[key]
     }else{
       usd[key] = event.target.value;
+    }
+    if (key === "pricingStructure") {
+      let pricingList = this.state.pricingList;
+      pricingList.forEach(pricing => {
+        if (pricing.id === parseInt(event.target.value)) {
+          usd.pricingLabel = pricing.label;
+        }
+      });
+    }
+    if (usd.pricingStructure === "") {
+      usd.pricingStructure = 1;
     }
     this.setState({ updateSelectedUser: usd });
   }
@@ -196,6 +229,7 @@ class Users extends Component {
     const passwordsMatch = this.state.password1 !== "" && this.state.password2 !== "" && this.state.password1 === this.state.password2 ? "passwordsMatch" : "hidden";
     const searchResultsDiv = this.state.searchString === "" ? "hidden" : "searchResultsDiv";
     const searchResults = this.state.searchResults;
+    const updatePricing = this.state.updatePricing ? "updatePricing" : "hidden";
     return (
       <div className="adminPage">
         <div className="adminNavDiv">
@@ -304,7 +338,7 @@ class Users extends Component {
               <td>{selectedUser.businessName}</td>
               <td>{selectedUser.businessPhone}</td>
               <td>{selectedUser.businessPhoneExt}</td>
-              <td>{selectedUser.pricingStructure}</td>
+              <td>{selectedUser.pricingLabel}</td>
               <td>
                 {selectedUser.id === undefined
                   ? ""
@@ -732,7 +766,8 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('businessPhoneExt')}
           /></td>
           </tr>
-          <tr className="adminRow">
+
+          {/* <tr className="adminRow">
             <td>Pricing</td>
             <td><input
             type="text"
@@ -740,7 +775,14 @@ class Users extends Component {
             defaultValue={selectedUser.pricingStructure}
             onBlur={this.updateSelectedUser('pricingStructure')}
           /></td>
+          </tr> */}
+
+          <tr>
+            <td>Pricing</td>
+            <td><span id="updatePricing">{selectedUser.pricingLabel} <Link to="" onClick={()=>this.setState({ updatePricing: true})}>Update Pricing</Link></span></td>
+            <td className={updatePricing}><select id="updatePricingSelect" onChange={this.updateSelectedUser('pricingStructure')}></select></td>
           </tr>
+
           <tr className="adminRow">
             <td>Taxable</td>
             <td><input
