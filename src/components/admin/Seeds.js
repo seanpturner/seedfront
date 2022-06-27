@@ -468,7 +468,6 @@ showAsCurrency = (amount) => {
     const dataSet = "Sorted by " + this.state.dataSet;
     const searchResultsDiv = this.state.searchString === "" ? "hidden" : "searchResultsDiv";
     const searchResults = this.state.searchResults;
-    const updateSeedChecked = this.state.newSeed?.autoFlower === true ? "checked" : "";
     return (
       <div className='adminPage'>
         <div className="adminNavDiv">
@@ -598,7 +597,7 @@ showAsCurrency = (amount) => {
             <tr><td></td></tr>
             <tr className='adminRow topAlignTable'>
               <td>Seed Name</td>
-              <td><input type="text" name = "name" defaultValue={selectedSeed.name}/></td>
+              <td><input type="text" name = "name" onChange={this.buildNewSeed("name")} defaultValue={selectedSeed.name}/></td>
             </tr>
             <tr className='adminRow topAlignTable'>
             <td>Notes</td>
@@ -683,10 +682,10 @@ showAsCurrency = (amount) => {
 
           </table>
           <Link to="" onClick={()=>this.setState({updateLineage: !this.state.updateLineage})}>Update lineage</Link><br/>
-          <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update this plant</Link>
+          <Link to="" onClick={()=>this.setState({lastCheck: true})}>Update this seed</Link>
           <div className={lastCheck}>
             <span className='alertRedText'>
-              Are you sure you want to update this plant? 
+              Are you sure you want to update this seed? 
             </span>&nbsp;
           <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("PUT")}>Yes</Link>
         </div>
