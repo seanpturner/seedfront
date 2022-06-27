@@ -50,11 +50,32 @@ class Users extends Component {
     fetch(rq, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        this.setState({ userList: result });
-        this.sortList(result, "id");
+        // this.setState({ userList: result });
+        // this.sortList(result, "id");
+        this.getPricing(result);
       });
     // .catch(error => console.log('error', error));
   };
+
+  getPricing = (userList) => {
+    fetch("http://localhost:8080/pricing", {method: 'GET'}) 
+      .then((response) => response.json())
+      .then((response) => this.addPricingLabels(userList, response))
+  }
+
+  addPricingLabels = (ul, pl) => {
+    let userListWithPricingLabel = [];
+    ul.forEach(user => {
+      pl.forEach(pricing => {
+        if (user.pricingStructure === pricing.id) {
+          user.pricingLabel = pricing.label;
+          userListWithPricingLabel.push(user);
+        }
+      });
+    });
+    this.setState({ userList: userListWithPricingLabel });
+    this.sortList(userListWithPricingLabel, "id");
+  }
   
   saveUpdatedUser = () => {
     let myHeaders = new Headers();
@@ -548,7 +569,8 @@ class Users extends Component {
                   <td>{users.businessName}</td>
                   <td>{users.businessPhone}</td>
                   <td>{users.businessPhoneExt}</td>
-                  <td>{users.pricingStructure}</td>
+                  {/* <td>{users.pricingStructure}</td> */}
+                  <td>{users.pricingLabel}</td>
                   <td>
                     {users.salesTax === null
                       ? ""
