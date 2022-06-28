@@ -14,8 +14,7 @@ import Lines from './components/admin/Lines';
 import Logins from './components/admin/Logins';
 import Messages from './components/admin/Messages';
 import Plants from './components/admin/Plants';
-import Purchases from './components/admin/Purchases';
-import PurchaseStatuses from './components/admin/PurchaseStatuses';
+import Orders from './components/admin/Orders';
 import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
@@ -36,8 +35,7 @@ function App() {
         <Route  path='/messages' element={<Messages/>} />
         <Route  path='/plants' element={<Plants/>} />
         <Route  path='/pricing' element={<Pricing/>} />
-        <Route  path='/purchases' element={<Purchases/>} />
-        <Route  path='/purchasestatuses' element={<PurchaseStatuses/>} />
+        <Route  path='/orders' element={<Orders/>} />
         <Route  path='/seeds' element={<Seeds/>} />
         <Route  path='/users' element={<Users/>} />
       </Routes>
