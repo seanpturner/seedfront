@@ -22,6 +22,11 @@
   vertical-align: top;
 }
 
+.topAlignTableRow {
+  vertical-align: top;
+  height: 25px;
+}
+
 .adminRow:nth-child(even) {
    background-color: rgb(208, 211, 211);
 }
@@ -88,3 +93,58 @@
   z-index: 2;
   display: inline-block;
 }
+
+.rightCell {
+  text-align: right;
+}
+
+@page {
+  size: auto;
+  margin: 0;
+ }
+
+ .printTable {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1in solid transparent;
+  width: 100%;
+ }
+
+ .printItemsTable {
+  border-collapse: collapse;
+  table-layout: auto;
+  border: 1in solid transparent;
+  margin-right: 1in;
+  margin-left: auto;
+  width: 80%;
+  border-bottom: solid black 1px;
+  border-top: solid transparent 1px;
+  border-left: solid transparent 1px;
+  border-right: solid transparent 1px;
+ }
+
+ .shipperRow {
+  border: 1px solid black;
+ }
+
+ .shipperDeliveryNotes {
+    max-width: 80%;
+    width: 80%;
+    margin-right: 0px;
+    margin-left: auto;
+ }
+
+.printItemsRow {
+  border: solid 1px black;
+ }
+
+ .noBottomBorder {
+  border-bottom: transparent 1px solid;
+ }
+
+ .shipperLogo {
+  z-index: 2;
+  position: absolute;
+  top: .75in;
+  left: .5in;
+ }

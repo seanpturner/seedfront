@@ -18,6 +18,7 @@ import Orders from './components/admin/Orders';
 import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
+import Shipper from './components/admin/Shipper';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route  path='/orders' element={<Orders/>} />
         <Route  path='/seeds' element={<Seeds/>} />
         <Route  path='/users' element={<Users/>} />
+        <Route  path='/shipper' element={<Shipper/>} />
       </Routes>
     </Router>
 
