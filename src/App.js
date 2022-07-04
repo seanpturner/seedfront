@@ -14,7 +14,7 @@ import Lines from './components/admin/Lines';
 import Logins from './components/admin/Logins';
 import Messages from './components/admin/Messages';
 import Plants from './components/admin/Plants';
-import Orders from './components/admin/Orders';
+import OpenOrders from './components/admin/OpenOrders';
 import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
@@ -36,7 +36,7 @@ function App() {
         <Route  path='/messages' element={<Messages/>} />
         <Route  path='/plants' element={<Plants/>} />
         <Route  path='/pricing' element={<Pricing/>} />
-        <Route  path='/orders' element={<Orders/>} />
+        <Route  path='/openorders' element={<OpenOrders/>} />
         <Route  path='/seeds' element={<Seeds/>} />
         <Route  path='/users' element={<Users/>} />
         <Route  path='/shipper' element={<Shipper/>} />

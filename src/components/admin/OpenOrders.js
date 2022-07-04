@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AdminNav from './AdminNav';
 import { Link } from "react-router-dom";
 
-class Orders extends Component {
+class OpenOrders extends Component {
   state = { 
     baseUrl: 'http://localhost:8080/',
     openOrders: [],
@@ -13,6 +13,12 @@ class Orders extends Component {
     allSeeds: [],
     masterJson: [],
     selectedOrder: "none",
+    verifyCancel: false,
+    updateOrderStatus: false,
+    originalSelectedOrder: null,
+    updatePaymentDate: false,
+    updatePickedDate: false,
+    updateShippedDate: false,
 
    } 
 
@@ -94,10 +100,25 @@ class Orders extends Component {
         }
       });
       order.purchaseDate = this.parseDate(order.purchaseDate);
-      if (order.shippedDate) {order.shippedDate = this.parseDate(order.shippedDate)};
-      if (order.paymentDate) {order.paymentDate = this.parseDate(order.PaymentDate)};
-      if (order.orderPickedDate) {order.orderPickedDate = this.parseDate(order.orderPickedDate)};
-      if (order.orderCancelledDate) {order.orderCancelledDate = this.parseDate(order.orderCancelledDate)};
+      // order.selectPurchaseDate = this.parseDate(order.purchaseDate);
+      order.selectShippedDate = this.getSelectableDate(null,null,0,0,0);
+      order.selectPaymentDate = this.getSelectableDate(null, null, 0,0,0);
+      order.selectOrderPickedDate = this.getSelectableDate(null, null, 0,0,0);
+      if (order.shippedDate) {
+        order.shippedDate = this.parseDate(order.shippedDate);
+        order.selectShippedDate = this.parseDate(order.shippedDate);
+      };
+      if (order.paymentDate) {
+        order.paymentDate = this.parseDate(order.paymentDate);
+        order.selectPaymentDate = this.parseDate(order.paymentDate);
+      };
+      if (order.orderPickedDate) {
+        order.orderPickedDate = this.parseDate(order.orderPickedDate);
+        order.selectOrderPickedDate = this.parseDate(order.orderPickedDate);
+      };
+      if (order.orderCancelledDate) {
+        order.orderCancelledDate = this.parseDate(order.orderCancelledDate);
+      };
       order.orderNotes.forEach(note =>{
         if (note){
           note.date = this.parseDate(note.date);
@@ -223,10 +244,137 @@ class Orders extends Component {
     return formatter.format(amount);
   }
 
-  setShipper = () => {
-    console.log ('here');
-    let so = JSON.stringify(this.state.selectedOrder);
-   localStorage.setItem('shipperInfo', so);
+  setShipper = (so) => {
+    if (so) {
+      so = JSON.stringify(so);
+    }
+    let reload = false;
+    if (!so) {
+      so = JSON.stringify(this.state.selectedOrder);
+      reload = true;
+    }
+    localStorage.setItem('shipperInfo', so);
+    if (reload === true) {
+      window.open('/shipper', '_blank', 'width=960px, height=1320px');
+      window.close();
+    }
+    if (reload === false) {
+      window.open('/shipper', '_blank', 'width=960px, height=1320px');
+    }
+  }
+
+  // autoStatus = (newStatus) => {
+  //   if (this.state.autoStatusOK = true) {
+  //     let so = this.state.selectedOrder;
+
+  //   }
+  // }
+
+  // suggestNextStatus = (currentStatus) => {
+  //   let nextStatus;
+  //   let returnInfo = null;
+  //   switch (currentStatus) {
+  //     case 100:
+  //       nextStatus = 101;
+  //       break;
+  //     case 101:
+  //       nextStatus = 102;
+  //       break;
+  //     case 102:
+  //       nextStatus = 103;
+  //       break;
+  //     case 103:
+  //       nextStatus = 200;
+  //       break;
+  //     default:
+  //       nextStatus = null;
+  //       break;
+  //   }
+
+  //   let statusOptions = this.state.allPurchaseStatuses;
+  //   statusOptions.forEach(purchaseStatus => {
+  //     if (purchaseStatus.statusCode === nextStatus) {
+  //       returnInfo = {
+  //         newOrderStatus: nextStatus,
+  //         newStatusLabel: purchaseStatus.label
+  //       };
+  //     }
+  //   });
+  //   return returnInfo;
+  // }
+
+  getSelectableDate = (selectStateMember, dateValue, y, m, d) => {
+    let so = this.state.selectedOrder;
+    let maxDay = 31;
+    if (!dateValue) {
+      let today = new Date();
+      let dash1 = '-';
+      let dash2 = '-';
+        let day = today.getDate();
+        let month = today.getMonth() +1;
+        let year = today.getFullYear();
+        if (month < 10) {
+          dash1 = '-0';
+        }
+        if (day < 10) {
+          dash2 = '-0';
+        }
+        dateValue =  year + dash1 + month + dash2 + day;
+    }
+    let updatedDateValue;
+    let dash1 = '-';
+    let dash2 = '-';
+    let updYear = parseInt(dateValue.substring(0,4));
+    let updMonth = parseInt(dateValue.substring(5,7));
+    let updDay = parseInt(dateValue.substring(8));
+
+    updYear = updYear + y;
+    updMonth = updMonth + m;
+    if (updMonth > 12) {
+      updMonth = 12;
+    }
+    if (updMonth < 1) {
+      updMonth = 1;
+    }
+    if (updMonth === 4 || updMonth === 6 || updMonth === 9 || updMonth === 11) {
+      maxDay = 30;
+    }
+    if (updMonth === 2) {
+      maxDay = 28;
+      if (updYear%4 === 0) {
+        maxDay = 29;
+      }
+    }
+    updDay = updDay + d;
+    if (updDay > maxDay) {
+      updDay = maxDay;
+    }
+    if (updDay < 1) {
+      updDay = 1;
+    }
+    if (updMonth < 10) {
+      dash1 = '-0';
+    }
+    if (updDay < 10) {
+      dash2 = '-0';
+    }
+    updatedDateValue = updYear + dash1 + updMonth + dash2 + updDay;
+    // if (stateMember){
+    //   this.setState({ [stateMember]: updatedDateValue });
+    // }
+    // this.setState({ [selectStateMember]: updatedDateValue });
+    if (so === 'none') {
+      return updatedDateValue;
+    }else{
+      so[selectStateMember] = updatedDateValue;
+    this.setState({ selectedOrder: so });
+    }
+  }
+
+  updateOrderDate = (dateType, date) => {
+    let so = this.state.selectedOrder;
+    so[dateType] = date;
+    this.setState({ selectedOrder: so });
   }
 
   render() { 
@@ -234,15 +382,33 @@ class Orders extends Component {
     const openOrdersDiv = this.state.selectedOrder === "none" ? "openOrdersDiv" : "hidden";
     const updateOrderDiv = openOrdersDiv === "hidden" ? "updateOrderDiv" : "hidden";
     const selectedOrder = this.state.selectedOrder;
+    const verifyCancel = this.state.verifyCancel ? 'topAlignTable alertRedText' : 'hidden';
+    const updateOrderStatus = this.state.updateOrderStatus ? 'topAlignTableRow' : 'hidden';
+    const selectPurchaseDate = selectedOrder !== 'none' ? selectedOrder.selectPurchaseDate : '';
+    const selectPaymentDate = selectedOrder !== 'none' ? selectedOrder.selectPaymentDate : '';
+    const selectOrderPickedDate = selectedOrder !== 'none' ? selectedOrder.selectOrderPickedDate : '';
+    const selectShippedDate = selectedOrder !== 'none' ? selectedOrder.selectShippedDate : '';
+    const updatePaymentDate = this.state.updatePaymentDate === true ? 'updatePaymentDate' : 'hidden';
+    const showUpdateLinkForPayment = this.state.updatePaymentDate === false ? 'updatePaymentDate' : 'hidden';
+
+    const updatePickedDate = this.state.updatePickedDate === true ? 'updatePickedDate' : 'hidden';
+    const showUpdateLinkForPicked = this.state.updatePickedDate === false ? 'updatePickedDate' : 'hidden';
+
+    const updateShippedDate = this.state.updateShippedDate === true ? 'updateShippedDate' : 'hidden';
+    const showUpdateLinkForShipped = this.state.updateShippedDate === false ? 'updateShippedDate' : 'hidden';
+
+    
     return (
       <div className='adminPage'>
         <div className="adminNavDiv">
           <AdminNav />
-          {/* {JSON.stringify(masterJson)} */}
-          {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)}
+          {JSON.stringify(masterJson)}<br/>
+          {/* {selectablePurchaseDate} */}
+          {/* {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)} */}
         </div>
         <div className={openOrdersDiv}>
-          <h1 className='adminSectionTitle'>Open Orders</h1>
+          <h1 className='adminSectionTitle'>Open Orders</h1><br/>
+          <Link to=''>Go to all orders</Link>
           <p>
             <table className='adminTable'>
               <tr>
@@ -257,7 +423,9 @@ class Orders extends Component {
               {masterJson.map((order)=>{
                 return (
                   <tr>
-                    <td><Link to='' onClick={()=>this.setState({selectedOrder: order})}>Open</Link></td>
+                    <td><Link to='' onClick={()=>this.setState({selectedOrder: order, originalSelectedOrder: order})}>Open</Link>&nbsp;|&nbsp;
+                      <Link to='' onClick={()=>this.setShipper(order)}>Shiping Info </Link>
+                    </td>
                     <td>{order.id}</td>
                     <td>{order.purchaseDate}</td>
                     <td>{order.statusLabel}</td>
@@ -281,9 +449,13 @@ class Orders extends Component {
         <div className={updateOrderDiv}>
           <h1 className='adminSectionTitle'>Update An Order</h1>
           <p>
-            <Link to="" onClick={()=>this.setState({selectedOrder: "none"})}>Back to open orders</Link><br/>
-            <Link target='_blank' to='/shipper' onClick={()=>this.setShipper()}>Set Shipper</Link>
-
+            <Link to="" onClick={()=>this.setState({
+              selectedOrder: "none",
+              updateOrderStatus: false,
+              originalSelectedOrder: null
+              })}>Back to open orders</Link><br/>
+            {/* <Link target='_blank' to='/shipper' onClick={()=>this.setShipper()}>Print Shipper</Link> */}
+            {/* <Link target='_blank' to='' onClick={()=>this.setShipper()}>Print Shipping info</Link> */}
           </p>
           <p>
             <table className='topAlignTable'>
@@ -293,32 +465,111 @@ class Orders extends Component {
                     <td className='topAlignTable'>{'Order #: ' + selectedOrder.id}</td>
                   </tr>
                   <tr className='topAlignTableRow'>
-                    <td className='topAlignTable'><Link to=''>Cancel</Link></td>
+                    <td className='topAlignTable'><Link to='' onClick={()=>this.setState({verifyCancel: true})}>Cancel</Link></td>
                   </tr>
                   <tr className='topAlignTableRow'>
-                  <td className='topAlignTable alertRedText'>Are you sure?<br/><Link to=''>Yes </Link><Link to=''>No</Link></td>
+                  <td className={verifyCancel}>Are you sure you want to cancel this order?<br/><Link to=''>Yes </Link><Link to='' onClick={()=>this.setState({verifyCancel: false})}>No</Link></td>
                   </tr>
                 </td>
                 <td className='topAlignTable'>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'>Order Date</td>
+                    <td/>
                     <td className='topAlignTable'>{selectedOrder.purchaseDate}</td>
-                    <td className='topAlignTable'><input type='text'/></td>
+                    <td className='topAlignTable alertRedText'>{selectPurchaseDate}
+                      {/* <Link to='' onClick={()=>this.getSelectableDate('selectPurchaseDate',selectedOrder.selectPurchaseDate,-1,0,0)}>{'<'}</Link>
+                      <span>Year</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPurchaseDate',selectedOrder.selectPurchaseDate,1,0,0)}>{'>'}</Link> */}
+                    </td>
+                    <td/>
+                    {/* <td className='topAlignTable'><input type='text'/></td> */}
                   </tr>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'>Payment Date</td>
+                    
+                    <td className='topAlignTable'><span className={showUpdateLinkForPayment}><Link to='' onClick={()=>this.setState({updatePaymentDate: true})}>Change Date</Link></span>
+                      <span className={updatePaymentDate}><span className='alertRedText'>{selectPaymentDate}</span><br/>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.selectPaymentDate,-1,0,0)}>{'<'}</Link>
+                      <span>Y</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.selectPaymentDate,1,0,0)}>{'>'}</Link>&nbsp;
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.selectPaymentDate,0,-1,0)}>{'<'}</Link>
+                      <span>M</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.selectPaymentDate,0,1,0)}>{'>'}</Link>&nbsp;
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.selectPaymentDate,0,0,-1)}>{'<'}</Link>
+                      <span>D</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.selectPaymentDate,0,0,1)}>{'>'}</Link><br/>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectPaymentDate',selectedOrder.paymentDate,0,0,0)}>Reset</Link>&nbsp;
+                      <Link to='' onClick={()=>{
+                        this.updateOrderDate('paymentDate', selectedOrder.selectPaymentDate);
+                        this.setState({updatePaymentDate: false});
+                        this.getSelectableDate('selectPaymentDate',selectedOrder.paymentDate,0,0,0);
+                      }}>Accept</Link>&nbsp;
+                      <Link to='' onClick={()=>{
+                        this.setState({updatePaymentDate: false});
+                        this.getSelectableDate('selectPaymentDate',selectedOrder.paymentDate,0,0,0);
+                      }}>Close</Link>
+                      </span>
+                    </td>
                     <td className='topAlignTable'>{selectedOrder.paymentDate}</td>
-                    <td className='topAlignTable'><input type='text'/></td>
+                    {/* <td className='topAlignTable'><input type='text'/></td> */}
                   </tr>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'>Picked Date</td>
+                    
+                    <td className='topAlignTable'><span className={showUpdateLinkForPicked}><Link to='' onClick={()=>this.setState({updatePickedDate: true})}>Change Date</Link></span>
+                      <span className={updatePickedDate}><span className='alertRedText'>{selectOrderPickedDate}</span><br/>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.selectOrderPickedDate,-1,0,0)}>{'<'}</Link>
+                      <span>Y</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.selectOrderPickedDate,1,0,0)}>{'>'}</Link>&nbsp;
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.selectOrderPickedDate,0,-1,0)}>{'<'}</Link>
+                      <span>M</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.selectOrderPickedDate,0,1,0)}>{'>'}</Link>&nbsp;
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.selectOrderPickedDate,0,0,-1)}>{'<'}</Link>
+                      <span>D</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.selectOrderPickedDate,0,0,1)}>{'>'}</Link><br/>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectOrderPickedDate',selectedOrder.orderPickedDate,0,0,0)}>Reset</Link>&nbsp;
+                      <Link to='' onClick={()=>{
+                        this.updateOrderDate('orderPickedDate', selectedOrder.selectOrderPickedDate);
+                        this.setState({updatePickedDate: false});
+                        this.getSelectableDate('selectOrderPickedDate',selectedOrder.orderPickedDate,0,0,0);
+                      }}>Accept</Link>&nbsp;
+                      <Link to='' onClick={()=>{
+                        this.setState({updatePickedDate: false});
+                        this.getSelectableDate('selectOrderPickedDate',selectedOrder.orderPickedDate,0,0,0);
+                      }}>Close</Link>
+                      </span>
+                    </td>
                     <td className='topAlignTable'>{selectedOrder.orderPickedDate}</td>
-                    <td className='topAlignTable'><input type='text'/></td>
+                    {/* <td className='topAlignTable'><input type='text'/></td> */}
                   </tr>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'>Shipped Date</td>
+                    
+                    <td className='topAlignTable'><span className={showUpdateLinkForShipped}><Link to='' onClick={()=>this.setState({updateShippedDate: true})}>Change Date</Link></span>
+                      <span className={updateShippedDate}><span className='alertRedText'>{selectShippedDate}</span><br/>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.selectShippedDate,-1,0,0)}>{'<'}</Link>
+                      <span>Y</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.selectShippedDate,1,0,0)}>{'>'}</Link>&nbsp;
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.selectShippedDate,0,-1,0)}>{'<'}</Link>
+                      <span>M</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.selectShippedDate,0,1,0)}>{'>'}</Link>&nbsp;
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.selectShippedDate,0,0,-1)}>{'<'}</Link>
+                      <span>D</span>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.selectShippedDate,0,0,1)}>{'>'}</Link><br/>
+                      <Link to='' onClick={()=>this.getSelectableDate('selectShippedDate',selectedOrder.shippedDate,0,0,0)}>Reset</Link>&nbsp;
+                      <Link to='' onClick={()=>{
+                        this.updateOrderDate('shippedDate', selectedOrder.selectShippedDate);
+                        this.setState({updateShippedDate: false});
+                        this.getSelectableDate('selectShippedDate',selectedOrder.shippedDate,0,0,0);
+                      }}>Accept</Link>&nbsp;
+                      <Link to='' onClick={()=>{
+                        this.setState({updateShippedDate: false});
+                        this.getSelectableDate('selectShippedDate',selectedOrder.shippedDate,0,0,0);
+                      }}>Close</Link>
+                      </span>
+                    </td>
                     <td className='topAlignTable'>{selectedOrder.shippedDate}</td>
-                    <td className='topAlignTable'><input type='text'/></td>
+                    {/* <td className='topAlignTable'><input type='text'/></td> */}
                   </tr>
                 </td>
                 <td  className='topAlignTable'>
@@ -329,11 +580,12 @@ class Orders extends Component {
                     <td className='topAlignTable'>{selectedOrder.statusLabel}</td>
                   </tr>
                   <tr className='topAlignTableRow'>
-                    <td className='topAlignTable'><Link to=''>Move to ___</Link></td>
+                    <td className='topAlignTable'><Link to='' onClick={()=>this.setState({updateOrderStatus: true})}>Change Status</Link></td>
                   </tr>
                   <tr className='topAlignTableRow'>
-                    <td className='topAlignTable'>
+                    <td className={updateOrderStatus}>
                       <select name='statuses' id='updateOrderStatus'>
+                        <option value ='' >Select</option>
                         <option value='100'>Ordered</option>
                         <option value='101'>Paid</option>
                         <option value='102'>Picked</option>
@@ -504,4 +756,4 @@ class Orders extends Component {
   }
 }
  
-export default Orders;
+export default OpenOrders;
