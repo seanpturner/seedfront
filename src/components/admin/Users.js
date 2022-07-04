@@ -87,7 +87,7 @@ class Users extends Component {
     pricingList.sort((a, b) => (a.label > b.label ? 1 : -1));
     let upSelect = document.getElementById("updatePricingSelect");
     upSelect.innerHTML = "";
-    upSelect.options.add(new Option("Select", "", true))
+    upSelect.options.add(new Option("Select", "", true));
     pricingList.forEach(pricing => {
       upSelect.options.add(new Option(pricing.label + " (" + pricing.id + ")", pricing.id, false))
     });

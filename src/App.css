@@ -8,6 +8,8 @@
 
 .adminPage {
   font-size: small;
+  position: absolute;
+  left: .5vw;
 }
 
 .adminDiv {
@@ -152,3 +154,27 @@
   top: .75in;
   left: .5in;
  }
+
+ .rightBorder {
+  border-right: solid 1px lightgrey;
+  padding-right: .5vw;
+ }
+
+.separateLinkRight {
+  padding-right: 5px;
+}
+
+.separateLinkLeft {
+  padding-left: 5px;
+  border-left: solid 1px lightgrey;
+}
+
+.grayText {
+  color: rgb(95, 93, 93);
+  font-weight: 500;
+}
+
+.boldGray {
+  color: darkSlateGray;
+  font-weight: 650;
+}

@@ -56,7 +56,7 @@ class Shipper extends Component {
     render() { 
         const selectedOrder = this.state.selectedOrder;
         return (
-            <div className='adminPage'>
+            <div className='shipperPage'>
                 <table className='printTable rightCell'>
                     <tr>
                         <td>
