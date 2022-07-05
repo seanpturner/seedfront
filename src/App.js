@@ -15,6 +15,7 @@ import Logins from './components/admin/Logins';
 import Messages from './components/admin/Messages';
 import Plants from './components/admin/Plants';
 import OpenOrders from './components/admin/OpenOrders';
+import AllOrders from './components/admin/AllOrders';
 import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
@@ -37,6 +38,7 @@ function App() {
         <Route  path='/plants' element={<Plants/>} />
         <Route  path='/pricing' element={<Pricing/>} />
         <Route  path='/openorders' element={<OpenOrders/>} />
+        <Route  path='/allorders' element={<AllOrders/>} />
         <Route  path='/seeds' element={<Seeds/>} />
         <Route  path='/users' element={<Users/>} />
         <Route  path='/shipper' element={<Shipper/>} />

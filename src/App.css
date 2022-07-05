@@ -10,6 +10,7 @@
   font-size: small;
   position: absolute;
   left: .5vw;
+  width: 99vw;
 }
 
 .adminDiv {
@@ -166,7 +167,7 @@
 
 .separateLinkLeft {
   padding-left: 5px;
-  border-left: solid 1px lightgrey;
+  border-left: solid 1px rgb(60, 60, 145);;
 }
 
 .grayText {
@@ -181,4 +182,8 @@
 
 .noteColumn {
   max-width: 15vw;
+}
+
+.firstColumn {
+  background-color: white;
 }

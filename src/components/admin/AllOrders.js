@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AdminNav from './AdminNav';
 import { Link } from "react-router-dom";
 
-class OpenOrders extends Component {
+class AllOrders extends Component {
   state = { 
     baseUrl: 'http://localhost:8080/',
     allOrders: [],
@@ -29,7 +29,7 @@ class OpenOrders extends Component {
    } 
 
   componentDidMount = () => {
-    this.getFetch('purchases', 'openpurchases', 'allOrders', 'id', 'ascending', 'activeUsers');
+    this.getFetch('purchases', null, 'allOrders', 'id', 'ascending', 'activeUsers');
   }
   
   createMasterJson = () => {
@@ -667,8 +667,8 @@ class OpenOrders extends Component {
         <div className={allOrdersDiv}>
         
         
-          <h1 className='adminSectionTitle'>Open Orders</h1><br/>
-          <Link to='/allorders'>Go to all orders</Link><br/>
+          <h1 className='adminSectionTitle'>All Orders</h1><br/>
+          <Link to='/openorders'>Go to open orders</Link><br/>
           <Link to=''>Create an order</Link><br/>
           <span className='adminSortText'>Search by name &nbsp;</span><input id="searchInput" type="text" onChange = {this.searchFor("userName")} /><br/>
           <div className={searchResultsDiv}>
@@ -749,7 +749,7 @@ class OpenOrders extends Component {
               selectedOrder: "none",
               updateOrderStatus: false,
               originalSelectedOrder: null
-              })}>Back to open orders</Link><br/>
+              })}>Back to all orders</Link><br/>
           </p>
           <p>
             <table className='topAlignTable'>
@@ -999,7 +999,7 @@ class OpenOrders extends Component {
               </tr>
               {selectedOrder.lineItems?.map((lineItem)=>{
                 return (
-                  <tr className='topAlignTableRow adminRow'>
+                  <tr className='topAlignTableRow'>
                     <td className='topAlignTable separateLinkRight'><Link to='' onClick={()=>this.removeArrayItem('lineItems', lineItem)}>Remove</Link></td>
                     <td className='topAlignTable'>{lineItem.quantity}</td>
                     <td className='topAlignTable'>{lineItem.seedName}</td>
@@ -1021,7 +1021,7 @@ class OpenOrders extends Component {
               </tr>
               {selectedOrder.extras?.map((extra)=>{
                 return (
-                  <tr className='topAlignTableRow adminRow'>
+                  <tr className='topAlignTableRow'>
                     <td className='topAlignTable separateLinkRight'><Link to='' onClick={()=>this.removeArrayItem('extras', extra)}>Remove</Link></td>
                     <td className='topAlignTable'>{extra.quantity}</td>
                     <td className='topAlignTable'>{extra.seedName}</td>
@@ -1079,4 +1079,4 @@ class OpenOrders extends Component {
   }
 }
  
-export default OpenOrders;
+export default AllOrders;

@@ -546,10 +546,11 @@ showAsCurrency = (amount) => {
             <tr className='adminRow'>
               <td></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "id")}}>ID</Link></td>
-              <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "name")}}>Plant Name</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "name")}}>Seed Name</Link></td>
               <td><Link to="">Notes</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "mother")}}>Mother</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "father")}}>Father</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "quantityAvailable")}}>Father</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "maternalLine")}}>Maternal Line</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "paternalLine")}}>Paternal Line</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "feminized")}}>Feminized</Link></td>
@@ -576,6 +577,7 @@ showAsCurrency = (amount) => {
                   })}</td>
                   <td>{seed.mother}</td>
                   <td>{seed.father}</td>
+                  <td>{seed.quantityAvailable}</td>
                   <td>{seed.maternalLine} {this.getLineNameById(seed.maternalLine)}</td>
                   <td>{seed.paternalLine} {this.getLineNameById(seed.paternalLine)}</td>
                   <td>{seed.feminized?.toString()}</td>
@@ -631,6 +633,10 @@ showAsCurrency = (amount) => {
             <td className={updateLineage}>
                 <select name="father" id="updateFather" className='clearField' onChange={this.buildNewSeed("father")}/>
               </td>
+            </tr>
+            <tr className='adminRow topAlignTable'>
+              <td>Quantity Available</td>
+              <td><input type="number" name = "quantityAvailable" onChange={this.buildNewSeed("quantityAvailable")}/></td>
             </tr>
             <tr>
             <td>Maternal Line</td>
