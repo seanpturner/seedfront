@@ -105,6 +105,9 @@ class OpenOrders extends Component {
           order.allowDiscount = price.allowDiscount;
         }
       });
+      if (order.purchaseDate.length > 10 ) {
+        order.originalPurchaseDate = order.purchaseDate;
+      }
       order.purchaseDate = this.parseDate(order.purchaseDate);
       order.selectShippedDate = this.getSelectableDate(null,null,0,0,0);
       order.selectPaymentDate = this.getSelectableDate(null, null, 0,0,0);
@@ -456,7 +459,7 @@ class OpenOrders extends Component {
           }
         });
     }}
-    if (stateObject != 'addExtra' && item.price && item.quantity) {
+    if (stateObject !== 'addExtra' && item.price && item.quantity) {
       item.extended = item.price * item.quantity;
       document.getElementById('extended').innerText = this.showAsCurrency(item.extended);
     }
@@ -532,7 +535,28 @@ class OpenOrders extends Component {
     updateOrder.lineItems = uoLineItems;
     updateOrder.extras = uoExtras;
     updateOrder.orderNotes = uoOrderNotes;
-    console.log(updateOrder);
+    updateOrder.purchaseDate = updateOrder.originalPurchaseDate;
+    this.saveUpdatedOrder(updateOrder);
+  }
+
+  saveUpdatedOrder = (updateOrder) => {
+    let fetchUrl = 'http://localhost:8080/purchases/' + updateOrder.id
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    var requestOptions = {
+      method: 'PUT',
+      headers: myHeaders,
+      body: JSON.stringify(updateOrder)
+    };
+
+    fetch(fetchUrl, requestOptions)
+  .then(response => response.text())
+  // .then(response => {
+  //   this.setState({ selectedUser: "none" });
+  //   this.getUsers(this.state.dataSet, "get");
+  // })
+  .then(response => window.location.reload())
   }
 
   render() { 
@@ -559,7 +583,7 @@ class OpenOrders extends Component {
       <div className='adminPage'>
         <div className="adminNavDiv">
           <AdminNav />
-          {/* {JSON.stringify(masterJson)}<br/> */}
+          {JSON.stringify(masterJson)}<br/>
           {/* {selectablePurchaseDate} */}
           {/* {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)} */}
           {/* {JSON.stringify(this.state.addLineItems)} */}
