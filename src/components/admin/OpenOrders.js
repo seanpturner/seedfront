@@ -25,6 +25,7 @@ class OpenOrders extends Component {
     sortDirection: 'descending',
     searchString: '',
     searchResults: [],
+    confirmSubmit: false,
     
    } 
 
@@ -654,6 +655,7 @@ class OpenOrders extends Component {
     const addExtraOK = this.state.addExtra.quantity > 0 && this.state.addExtra.itemId && this.state.addExtra.note ? 'addExtraOK' : 'hidden';
     const searchResultsDiv = this.state.searchString === "" ? "hidden" : "searchResultsDiv";
     const searchResults = this.state.searchResults;
+    const confirmSubmit = this.state.confirmSubmit === true ? 'confirmSubmit' : 'hidden';
 
     return (
       <div className='adminPage'>
@@ -1071,7 +1073,11 @@ class OpenOrders extends Component {
             <table className='topAlignTable'>
             </table>
             <Link to='' onClick={()=>this.resetForm()}>Reset this form</Link><br/>
-            <Link to='' onClick={()=>this.submitForm()}>Submit</Link>
+            <Link to='' onClick={()=>this.setState({confirmSubmit: true})}>Submit</Link>
+            <div className={confirmSubmit}>
+              <span className='alertRedText'>Are you sure you want to save these changes?</span><br/>
+              <Link to='' onClick={()=>this.submitForm()}>Yes</Link>&nbsp;<Link to='' onClick={()=>this.setState({confirmSubmit: false})}>No</Link>
+            </div>
           </p>
         </div>
       </div>
