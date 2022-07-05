@@ -392,53 +392,81 @@ class OpenOrders extends Component {
     let so = this.state.selectedOrder;
     let oso = JSON.parse(this.state.originalSelectedOrder);
     so = oso;
-    this.setState({ selectedOrder: so });
+    this.setState({ 
+      selectedOrder: so,
+      addLineItems: {},
+      addExtra: {}
+     });
+    document.getElementById('extraQuantity').value='';
+    document.getElementById('extraSeedOptions').value='';
+    document.getElementById('extraNote').value='';
+    document.getElementById('quantity').value='';
+    document.getElementById('seedOptions').value= '';
+    document.getElementById('addPrice').value='';
+    document.getElementById('updateShippedVia').value='';
+    document.getElementById('updateTrackingNumber').value='';
+    document.getElementById('addOrderNote').value ='';
+    document.getElementById('extended').innerHTML='';
   }
 
   updateSeedSelectOptions = () => {
     let seedOptions = document.getElementById('seedOptions');
+    let extraSeedOptions = document.getElementById('extraSeedOptions')
     let seeds = this.state.allSeeds;
     seedOptions.innerHTML = '';
+    extraSeedOptions.innerHTML = '';
     seedOptions.options.add(new Option("Select", "", true));
+    extraSeedOptions.options.add(new Option("Select", "", true));
     seeds.forEach(seed => {
       if (seed.quantityAvailable && seed.quantityAvailable > 0 ){
         seedOptions.options.add(new Option(seed.name + ' qty: ' + seed.quantityAvailable, seed.id, false));
+        extraSeedOptions.options.add(new Option(seed.name + ' qty: ' + seed.quantityAvailable, seed.id, false));
       }
     });
     seedOptions.parentNode.replaceChild(seedOptions, seedOptions);
+    extraSeedOptions.parentNode.replaceChild(extraSeedOptions, extraSeedOptions);
   }
 
   addNewItem = (stateObject, key) => (event) => {
     let item = this.state[stateObject];
     item[key] = event.target.value;
+    item.userId = this.state.currentUser;
+    let users = this.state.activeUsers;
+    users.forEach(user => {
+      if (user.id === this.state.currentUser) {
+        item.user = '[' + user.fName + ']';
+      }
+    });
     if (key === 'itemId') {
       let seeds = this.state.allSeeds;
-      seeds.forEach(seed => {
+       seeds.forEach(seed => {
         if (seed.id === parseInt(event.target.value)) {
-          let defaultPrice = document.getElementById('addPrice');
-          let seedPrice = this.showAsCurrency(seed.price);
-          seedPrice = seedPrice.substring(1);
-          defaultPrice.value = seedPrice;
-          defaultPrice.parentNode.replaceChild(defaultPrice, defaultPrice);
-          item.price = parseFloat(seed.price);
+          item.seedName = seed.name;
         }
-      });
-    }
-    if (item.price && item.quantity) {
+       });
+      if (stateObject != 'addExtra'){
+        seeds.forEach(seed => {
+          if (seed.id === parseInt(event.target.value)) {
+            let defaultPrice = document.getElementById('addPrice');
+            let seedPrice = this.showAsCurrency(seed.price);
+            seedPrice = seedPrice.substring(1);
+            defaultPrice.value = seedPrice;
+            defaultPrice.parentNode.replaceChild(defaultPrice, defaultPrice);
+            item.price = parseFloat(seed.price);
+          }
+        });
+    }}
+    if (stateObject != 'addExtra' && item.price && item.quantity) {
       item.extended = item.price * item.quantity;
       document.getElementById('extended').innerText = this.showAsCurrency(item.extended);
     }
-    item[key] = parseFloat(event.target.value);
+    if (key !== 'note') {
+      item[key] = parseFloat(event.target.value);
+    }    
     this.setState({ [stateObject]: item });
   }
 
   addLineItem = () => {
-
-    // 'quantity' type='number' min='1' step='1' onBlur={this.addNewItem('addLineItems', 'quantity')}></input></td>
-    // <td><select id='seedOptions' onChange={this.addNewItem('addLineItems', 'itemId')}></select></td>
-    // <td><input id='addPrice' type='number' min='0' step='.01' onBlur={this.addNewItem('addLineItems', 'price')}></input></td>
-    // <td><span id='extended'
-
     let so = this.state.selectedOrder;
     let newItem = this.state.addLineItems;
     let lineItems = so.lineItems;
@@ -449,7 +477,62 @@ class OpenOrders extends Component {
     document.getElementById('seedOptions').value = '';
     document.getElementById('addPrice').value = '';
     document.getElementById('extended').innerHTML = '';
-    
+  }
+
+  addExtra = () => {
+    let so = this.state.selectedOrder;
+    let newExtra = this.state.addExtra;
+    let extras = so.extras;
+    extras.push(newExtra);
+    this.setState({ selectedOrder: so});
+    this.setState({ addExtras: {} });
+    document.getElementById('extraQuantity').value='';
+    document.getElementById('extraSeedOptions').value='';
+    document.getElementById('extraNote').value='';
+  }
+
+  submitForm = () => {
+    let so = this.state.selectedOrder;
+    let updateOrder = JSON.parse(JSON.stringify(so));
+    updateOrder.lineItems = [];
+    updateOrder.extras = [];
+    updateOrder.orderNotes = [];
+    let soLineItems = so.lineItems;
+    let soExtras = so.extras;
+    let soOrderNotes = so.orderNotes;
+    let uoLineItems = [];
+    let uoExtras = [];
+    let uoOrderNotes = [];
+    soLineItems.forEach(lineItem => {
+      let strippedLineItem = {};
+      strippedLineItem.itemid = lineItem.itemId;
+      strippedLineItem.quantity = lineItem.quantity;
+      strippedLineItem.price = lineItem.price;
+      uoLineItems.push(strippedLineItem);
+    });
+    if (soExtras) {
+      soExtras.forEach(extra => {
+        let strippedExtra = {};
+        strippedExtra.itemId = extra.itemId;
+        strippedExtra.quantity = extra.quantity;
+        strippedExtra.note = extra.note;
+        strippedExtra.userId = extra.userId;
+        uoExtras.push(strippedExtra);
+      });
+    }
+    if (soOrderNotes) {
+      soOrderNotes.forEach(orderNote => {
+        let strippedOrderNote = {};
+        strippedOrderNote.date = orderNote.date;
+        strippedOrderNote.note= orderNote.note;
+        strippedOrderNote.userId = orderNote.userId;
+        uoOrderNotes.push(strippedOrderNote);
+      });
+    }
+    updateOrder.lineItems = uoLineItems;
+    updateOrder.extras = uoExtras;
+    updateOrder.orderNotes = uoOrderNotes;
+    console.log(updateOrder);
   }
 
   render() { 
@@ -470,7 +553,7 @@ class OpenOrders extends Component {
     const updateShippedDate = this.state.updateShippedDate === true ? 'updateShippedDate' : 'hidden';
     const showUpdateLinkForShipped = this.state.updateShippedDate === false ? 'updateShippedDate' : 'hidden';
     const addLineItemOK = this.state.addLineItems.quantity > 0 && this.state.addLineItems.extended ? 'addLineItemOK' : 'hidden';
-    // const addLineItems = this.state.
+    const addExtraOK = this.state.addExtra.quantity > 0 && this.state.addExtra.itemId && this.state.addExtra.note ? 'addExtraOK' : 'hidden';
     
     return (
       <div className='adminPage'>
@@ -479,7 +562,7 @@ class OpenOrders extends Component {
           {/* {JSON.stringify(masterJson)}<br/> */}
           {/* {selectablePurchaseDate} */}
           {/* {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)} */}
-          {JSON.stringify(this.state.addLineItems)}
+          {/* {JSON.stringify(this.state.addLineItems)} */}
         </div>
         <div className={openOrdersDiv}>
           <h1 className='adminSectionTitle'>Open Orders</h1><br/>
@@ -673,10 +756,22 @@ class OpenOrders extends Component {
                     <td className='topAlignTable'>{selectedOrder.purchaserName}</td>
                   </tr>
                 </td>
+                <td className='topAlignTable rightBorder'>
+                  <tr className='topAlignTableRow'>
+                    <td className='topAlignTable grayText'>Delivery Notes</td>
+                  </tr>
+                  <tr className='topAlignTableRow'>
+                    <td className='topAlignTable'><input type='text' id='addDeliveryNote' onKeyUp={this.updateOrder('deliveryNotes','addDeliveryNote')}/></td>
+                  </tr>
+                  <tr className='topAlignTable'>
+                    <td className='topAlignTable noteColumn'>{selectedOrder.deliveryNotes}</td>
+                  </tr>
+                </td>
                 <td>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable grayText'>Order Notes</td>
                   </tr>
+                  
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'><input type='text' id='addOrderNote' onKeyUp={this.addOrderNote('addOrderNote')}/></td>
                   </tr>
@@ -684,7 +779,7 @@ class OpenOrders extends Component {
                   {selectedOrder.orderNotes?.map((note)=>{
                     return (
                       <tr className='topAlignTableRow'>
-                        <td className='topAlignTable'>{note?.date} {note?.note} {note?.user}</td>
+                        <td className='topAlignTable noteColumn'>{note?.date} {note?.note} {note?.user}</td>
                       </tr>
                     )
                   })}
@@ -737,7 +832,7 @@ class OpenOrders extends Component {
                       <td className='topAlignTable'>{selectedOrder.trackingNumber}</td>
                     </tr>
                     <tr className='topAlignTableRow'>
-                      <td className='topAlignTable'><input type='text' id='updateTrackingNumber' onBlur={this.updateOrder('trackingNumber', 'updateTrackingNumber')}/></td>
+                      <td className='topAlignTable'><input type='text' id='updateTrackingNumber' onKeyUp={this.updateOrder('trackingNumber', 'updateTrackingNumber')}/></td>
                     </tr>
                   </td>
                 </tr>
@@ -756,7 +851,7 @@ class OpenOrders extends Component {
                 <td><input id='quantity' type='number' min='1' step='1' onBlur={this.addNewItem('addLineItems', 'quantity')}></input></td>
                 <td><select id='seedOptions' onChange={this.addNewItem('addLineItems', 'itemId')}></select></td>
                 <td><input id='addPrice' type='number' min='0' step='.01' onBlur={this.addNewItem('addLineItems', 'price')}></input></td>
-                <td><span id='extended'/></td>
+                <td className='rightCell'><span id='extended'/></td>
                 <td className={addLineItemOK}><Link to='' onClick={()=>this.addLineItem()}>Add this item</Link></td>
               </tr>
               {selectedOrder.lineItems?.map((lineItem)=>{
@@ -772,6 +867,15 @@ class OpenOrders extends Component {
               })}
               <br/>
               <span className='boldGray'>Extras</span>
+              <tr className='topAlignTable'>
+                <td/>
+                <td><input id='extraQuantity' type='number' min='1' step='1' onBlur={this.addNewItem('addExtra', 'quantity')}></input></td>
+                <td><select id='extraSeedOptions' onChange={this.addNewItem('addExtra', 'itemId')}></select></td>
+                <td className='rightCell'><span>$0.00</span></td>
+                <td className='rightCell'><span>$0.00</span></td>
+                <td><input id='extraNote' type='text' onBlur={this.addNewItem('addExtra', 'note')}></input></td>
+                <td className={addExtraOK}><Link to='' onClick={()=>this.addExtra()}>Add this extra</Link></td>
+              </tr>
               {selectedOrder.extras?.map((extra)=>{
                 return (
                   <tr className='topAlignTableRow adminRow'>
@@ -789,7 +893,7 @@ class OpenOrders extends Component {
                 <td/>
                 <td className='topAlignTable'/>
                 <td className='topAlignTable'>Discount Code</td>
-                <td className='topAlignTable rightCell'>{selectedOrder.discountCode === null ? '-' : '"' + selectedOrder.discountCode + '"'}</td>
+                <td className='topAlignTable rightCell'>{selectedOrder.discountCode === null ? '-' : selectedOrder.discountCode}</td>
                 <td className='topAlignTable rightCell'>{this.showAsCurrency(selectedOrder.discountAmount)}</td>
               </tr>
               <tr className='topAlignTableRow'>
@@ -823,7 +927,8 @@ class OpenOrders extends Component {
             </table>
             <table className='topAlignTable'>
             </table>
-            <Link to='' onClick={()=>this.resetForm()}>Reset this form</Link>
+            <Link to='' onClick={()=>this.resetForm()}>Reset this form</Link><br/>
+            <Link to='' onClick={()=>this.submitForm()}>Submit</Link>
           </p>
         </div>
       </div>

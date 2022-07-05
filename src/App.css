@@ -178,3 +178,7 @@
   color: darkSlateGray;
   font-weight: 650;
 }
+
+.noteColumn {
+  max-width: 10vw;
+}
