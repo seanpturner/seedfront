@@ -224,7 +224,7 @@ class Seeds extends Component {
     });
     this.setState({ 
       addSeed: false,
-      newSeed: {}
+      newSeed: {},
     });
   }
 
@@ -479,7 +479,8 @@ showAsCurrency = (amount) => {
             <Link to="" onClick={()=>{this.setState({
                         selectedSeed: "none",
                         newSeed: {},
-                        updateLineage: false
+                        updateLineage: false,
+                        lastCheck: false
                         });
                         this.getFetch("lines", null, "allLines", "ascending");
                       this.getFetch("plants", null, "allPlants", "ascending");}

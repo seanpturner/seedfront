@@ -27,7 +27,8 @@ class Users extends Component {
     searchString: "",
     searchResults: [],
     updatePricing: false,
-    pricingList: []
+    pricingList: [],
+    // updateUser: false
   };
 
   componentDidMount = () => {
@@ -181,7 +182,7 @@ class Users extends Component {
         // .catch(error => console.log('error', error));
   }
 
-  searchFor = (key) => (event) => {
+  searchFor = () => (event) => {
     let noSpace = event.target.value.replace(/\s/g, '').toLowerCase();
     let ul = this.state.userList;
     let returnArray = [];
@@ -215,6 +216,70 @@ class Users extends Component {
     });
  }
 
+ getSelectableDate = (dateValue, y, m, d) => {
+  let us = this.state.selectedUser;
+  let maxDay = 31;
+  if (!dateValue) {
+    let today = new Date();
+    let dash1 = '-';
+    let dash2 = '-';
+      let day = today.getDate();
+      let month = today.getMonth() +1;
+      let year = today.getFullYear();
+      if (month < 10) {
+        dash1 = '-0';
+      }
+      if (day < 10) {
+        dash2 = '-0';
+      }
+      dateValue =  year + dash1 + month + dash2 + day;
+  }
+  let updatedDateValue;
+  let dash1 = '-';
+  let dash2 = '-';
+  let updYear = parseInt(dateValue.substring(0,4));
+  let updMonth = parseInt(dateValue.substring(5,7));
+  let updDay = parseInt(dateValue.substring(8));
+
+  updYear = updYear + y;
+  updMonth = updMonth + m;
+  if (updMonth > 12) {
+    updMonth = 12;
+  }
+  if (updMonth < 1) {
+    updMonth = 1;
+  }
+  if (updMonth === 4 || updMonth === 6 || updMonth === 9 || updMonth === 11) {
+    maxDay = 30;
+  }
+  if (updMonth === 2) {
+    maxDay = 28;
+    if (updYear%4 === 0) {
+      maxDay = 29;
+    }
+  }
+  updDay = updDay + d;
+  if (updDay > maxDay) {
+    updDay = maxDay;
+  }
+  if (updDay < 1) {
+    updDay = 1;
+  }
+  if (updMonth < 10) {
+    dash1 = '-0';
+  }
+  if (updDay < 10) {
+    dash2 = '-0';
+  }
+  updatedDateValue = updYear + dash1 + updMonth + dash2 + updDay;
+  if (us === 'none') {
+    return updatedDateValue;
+  }else{
+    us.birthDate = updatedDateValue;
+  this.setState({ selectedUser: us });
+  }
+}
+
   render() {
     const userList = this.state.sortedList;
     const sortBy = "sorted by " + this.state.sortBy;
@@ -233,7 +298,7 @@ class Users extends Component {
     return (
       <div className="adminPage">
         <div className="adminNavDiv">
-          <AdminNav />
+          <AdminNav />            
         </div>
         <div className={selectedUserDiv}>
         <h1 className="adminSectionTitle">Update A User</h1>
@@ -245,7 +310,9 @@ class Users extends Component {
                 selectedUser: "none",
                 updateSelectedUser: undefined,
                 password1: "",
-                password2: ""
+                password2: "",
+                lastCheck: false,
+                updatePassword: false
                  });
             }}
           >
@@ -355,7 +422,7 @@ class Users extends Component {
             {dataSet}
             {sortBy}. Show <Link to="" onClick={()=>{this.getUsers(toggleSet, "get")}}>{toggleSet}</Link> users.
           </p>
-                  <div className='searchDiv adminSortText'>Search by name &nbsp;
+            <div className='searchDiv adminSortText'>Search by name &nbsp;
               <input id="searchInput" type="text" onChange = {this.searchFor("userName")} />
             </div>
             <div className={searchResultsDiv}>
@@ -660,12 +727,25 @@ class Users extends Component {
           </tr>
           <tr className="adminRow">
             <td>BirthDate</td>
-            <td><input
+            <td>
+            {selectedUser.birthDate}<br/>
+            <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,-1,0,0)}>{'<'}</Link>
+            <span>Y</span>
+            <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,1,0,0)}>{'>'}</Link>&nbsp;
+            <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,0,-1,0)}>{'<'}</Link>
+            <span>M</span>
+            <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,0,1,0)}>{'>'}</Link>&nbsp;
+            <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,0,0,-1)}>{'<'}</Link>
+            <span>D</span>
+            <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,0,0,1)}>{'>'}</Link><br/>
+
+            {/* <input
             type="text"
             name="birthDate"
             defaultValue={selectedUser.birthDate}
             onBlur={this.updateSelectedUser('birthDate')}
-          /></td>
+          /> */}
+          </td>
           </tr>
           <tr className="adminRow">
             <td>Active</td>
@@ -805,7 +885,9 @@ class Users extends Component {
         
           <div className={lastCheck}>
             <span className="alertRedText">Are you sure you want to update this user? </span>
-            <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.saveUpdatedUser()}>Yes</Link><br/>
+            <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>{this.saveUpdatedUser();
+              this.setState({'lastCheck' : false});
+            }}>Yes</Link><br/>
           </div>
           <div className={updatePassword}>
           <p>

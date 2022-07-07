@@ -20,6 +20,7 @@ import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
 import Shipper from './components/admin/Shipper';
+import CreateOrder from './components/admin/CreateOrder';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route  path='/seeds' element={<Seeds/>} />
         <Route  path='/users' element={<Users/>} />
         <Route  path='/shipper' element={<Shipper/>} />
+        <Route  path='/createOrder' element={<CreateOrder/>} />
       </Routes>
     </Router>
 

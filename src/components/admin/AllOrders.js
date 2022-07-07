@@ -49,7 +49,7 @@ class AllOrders extends Component {
           order.fName = user.fName;
           order.pricingStructure = user.pricingStructure;
           order.phone = user.phone;
-          order.user = user.fName + ' ' + user.lName;
+          order.orderUser = user.fName + ' ' + user.lName;
         }
       });
       statuses.forEach(status => {
@@ -541,7 +541,7 @@ class AllOrders extends Component {
     let uoOrderNotes = [];
     soLineItems.forEach(lineItem => {
       let strippedLineItem = {};
-      strippedLineItem.itemid = lineItem.itemId;
+      strippedLineItem.itemId = lineItem.itemId;
       strippedLineItem.quantity = lineItem.quantity;
       strippedLineItem.price = lineItem.price;
       uoLineItems.push(strippedLineItem);
@@ -671,7 +671,7 @@ class AllOrders extends Component {
         
           <h1 className='adminSectionTitle'>All Orders</h1><br/>
           <Link to='/openorders'>Go to open orders</Link><br/>
-          <Link to=''>Create an order</Link><br/>
+          <Link to='/createorder'>Create an order</Link><br/>
           <span className='adminSortText'>Search by name &nbsp;</span><input id="searchInput" type="text" onChange = {this.searchFor("userName")} /><br/>
           <div className={searchResultsDiv}>
             <table>
@@ -693,7 +693,7 @@ class AllOrders extends Component {
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'id', 'masterJson', )}>ID</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'purchaseDate', 'masterJson', )}>Date</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'orderStatus', 'masterJson', )}>Status</Link></td>
-                <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'user', 'masterJson', )}>User</Link></td>
+                <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'user', 'masterJson', )}>Customer</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'userName', 'masterJson', )}>UserName</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'total', 'masterJson', )}>Total</Link></td>
                 <td><Link to=''>Order Notes</Link></td>
@@ -722,7 +722,7 @@ class AllOrders extends Component {
                       <tr className='topAlignTableRow'><td>{order.statusLabel}</td></tr>
                     </td>
                     <td className='topAlignTable'>
-                    <tr className='topAlignTableRow'><td>{order.user}</td></tr>
+                    <tr className='topAlignTableRow'><td>{order.orderUser}</td></tr>
                     </td>
                     <td className='topAlignTable'>
                     <tr className='topAlignTableRow'><td>{order.userName}</td></tr>
@@ -750,7 +750,8 @@ class AllOrders extends Component {
             <Link to="" onClick={()=>this.setState({
               selectedOrder: "none",
               updateOrderStatus: false,
-              originalSelectedOrder: null
+              originalSelectedOrder: null,
+              confirmSubmit: false
               })}>Back to all orders</Link><br/>
           </p>
           <p>
@@ -930,7 +931,8 @@ class AllOrders extends Component {
                 <tr className='topAlignTableRow'>
                   <td className='topAlignTable'>
                     <tr className='topAlignTableRow'>
-                      <td className='topAlignTable'>{selectedOrder.fName + ' ' + selectedOrder.lName}</td>
+                      {/* <td className='topAlignTable'>{selectedOrder.fName + ' ' + selectedOrder.lName}</td> */}
+                      <td className='topAlignTable'>{selectedOrder.orderUser}</td>
                     </tr>
                     <tr className='topAlignTableRow'>
                       <td className='topAlignTable'>{selectedOrder.deliveryAddress1}</td>
@@ -960,7 +962,7 @@ class AllOrders extends Component {
                     <tr className='topAlignTableRow'>
                       <td className='topAlignTable'>
                       <input type='text' id='updateShippedVia' onKeyUp={this.updateOrder('shippedVia', 'updateShippedVia')}/>
-                      {/* <input list='ShippedVia' id='updateShippedVia'/>
+                      {/* <input list='ShippedVia' id='updateShippedVia' onBlur={this.updateOrder('shippedVia', 'updateShippedVia')}/>
                       <datalist id='ShippedVia'>
                         <option value='FedEx'/>
                         <option value='UPS'/>
@@ -1075,7 +1077,7 @@ class AllOrders extends Component {
             <Link to='' onClick={()=>this.resetForm()}>Reset this form</Link><br/>
             <Link to='' onClick={()=>this.setState({confirmSubmit: true})}>Submit</Link>
             <div className={confirmSubmit}>
-              <span className='alertRedText'>Are you sure you want to save these changes?</span><br/>
+              <span className='alertRedText'>Are you sure you want to save these changes?</span>&nbsp;
               <Link to='' onClick={()=>this.submitForm()}>Yes</Link>&nbsp;<Link to='' onClick={()=>this.setState({confirmSubmit: false})}>No</Link>
             </div>
           </p>

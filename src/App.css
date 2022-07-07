@@ -187,3 +187,11 @@
 .firstColumn {
   background-color: white;
 }
+
+.quantityInput {
+  width: 50px;
+}
+
+.priceInput {
+  width: 90px;
+}

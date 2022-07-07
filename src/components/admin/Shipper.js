@@ -70,7 +70,8 @@ class Shipper extends Component {
                     </tr>
                     <tr>
                         <td>
-                            {selectedOrder.fName + ' ' + selectedOrder.lName}<br/>
+                            {/* {selectedOrder.fName + ' ' + selectedOrder.lName}<br/> */}
+                            {selectedOrder.orderUser}<br/>
                             {selectedOrder.deliveryAddress1}<br/>
                             {selectedOrder.deliveryAddress2}{selectedOrder.deliveryAddress2 === null ? '' : <br/>}
                             {selectedOrder.city + ', ' + selectedOrder.state}<br/>
