@@ -22,7 +22,9 @@ class CreateOrder extends Component {
         buildExtra: {},
         preDiscountSubTotal: 0,
         discountAmount: 0,
-        discountCode: ''
+        discountCode: '',
+        priceDiscountAmount: 0,
+        priceDiscountTotal: null
 
      } 
 
@@ -300,6 +302,11 @@ class CreateOrder extends Component {
             newOrder: no,
             preDiscountSubTotal: pdst
         });
+        setTimeout(() => {
+            this.checkDiscountCode();
+            this.getPricingStructureDiscount();
+        }, 100);
+        
     }
 
     getDateTime = (includeTime) => {
@@ -339,6 +346,9 @@ class CreateOrder extends Component {
             style: 'currency',
             currency: 'USD',
         });
+        if (isNaN(amount)) {
+            amount = 0;
+        }
         return formatter.format(amount);
     }
 
@@ -357,11 +367,19 @@ class CreateOrder extends Component {
         }
         if (key === 'price') {
             if (event.target.value < .01) {
-            bli.price = null;
-            document.getElementById('liPrice').value = '';
+                bli.price = null;
+                document.getElementById('liPrice').value = '';
+            }
         }
+        if (key === 'itemId') {
+            bli.price = this.crossReference(this.state.allSeeds, 'id', parseInt(event.target.value), 'price');
+            document.getElementById('liPrice').value = bli.price;
+            // this.setState({ buildLineItem: bli });
         }
-        this.setState({ buildLineItem: bli });
+        // setTimeout(() => {
+            this.setState({ buildLineItem: bli });
+        // }, 100);
+        
     }
 
     addCurrentLineItem = () => {
@@ -390,6 +408,10 @@ class CreateOrder extends Component {
                 document.getElementById(field).value = '';
             });
         }
+        setTimeout(() => {
+            this.checkDiscountCode();
+            this.getPricingStructureDiscount();
+        }, 100);
     }
 
     buildCurrentExtra = (key) => (event) => {
@@ -440,47 +462,79 @@ class CreateOrder extends Component {
         }
     }
 
-    checkDiscountCode = () => (event) => {
+    checkDiscountCode = () => {
         let allPricingStructures = this.state.allPricingStructures;
         let selectedUser = this.state.selectedUser;
-        let discountCode = event.target.value
+        let discountCode = this.state.discountCode;
         let discount;
         let allDiscounts = this.state.allDiscounts;
         let today = this.getDateTime(false);
         let pdst = this.state.preDiscountSubTotal;
         let discountAmount;
-        if (this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'allowDiscount')) {
-            allDiscounts.forEach(d => {
-                if (d.discountCode === discountCode) {
-                    discount = d;
-                }
-            });
-            if (discount.customerSpecific === false || (discount.customerSpecific === true && discount.customerId === selectedUser.id)) {
-                if (pdst >= discount.minimumOrderAmount) {
-                    if (discount.quantity >= 1) {
-                        let compareToday = parseInt(today.substring(0,4) + today.substring(5,7) + today.substring(8));
-                        
-                        let compareStart = parseInt(discount.startDate.substring(0,4) + discount.startDate.substring(5,7) + discount.startDate.substring(8));
-                        let compareEnd = parseInt(discount.endDate.substring(0,4) + discount.endDate.substring(5,7) + discount.endDate.substring(8));
-                        if (compareToday >= compareStart && compareToday <= compareEnd) {
-                            if (discount.discountRate) {
-                                discountAmount = pdst * (discount.discountRate/100);
-                            }
-                            if (discount.discountAmount) {
-                                discountAmount = discount.discountAmount;
+        if (discountCode) {
+            if (this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'allowDiscount')) {
+                allDiscounts.forEach(d => {
+                    if (d.discountCode === discountCode) {
+                        discount = d;
+                    }
+                });
+                if (discount.customerSpecific === false || (discount.customerSpecific === true && discount.customerId === selectedUser.id)) {
+                    if (pdst >= discount.minimumOrderAmount) {
+                        if (discount.quantity >= 1) {
+                            let compareToday = parseInt(today.substring(0,4) + today.substring(5,7) + today.substring(8));
+                            
+                            let compareStart = parseInt(discount.startDate.substring(0,4) + discount.startDate.substring(5,7) + discount.startDate.substring(8));
+                            let compareEnd = parseInt(discount.endDate.substring(0,4) + discount.endDate.substring(5,7) + discount.endDate.substring(8));
+                            if (compareToday >= compareStart && compareToday <= compareEnd) {
+                                if (discount.discountRate) {
+                                    discountAmount = pdst * (discount.discountRate/100);
+                                }
+                                if (discount.discountAmount) {
+                                    discountAmount = discount.discountAmount;
+                                }
                             }
                         }
                     }
                 }
+                    
             }
-                
+            this.setState({ discountAmount: discountAmount });
+        }else{
+            this.setState({discountAmount: 0});
         }
-        this.setState({ discountAmount: discountAmount });
+        
         // return discountAmount;
     }
 
     setDiscountCode = () => (event) => {
         this.setState({ discountCode: event.target.value });
+        setTimeout(() => {
+            this.checkDiscountCode();
+            this.getPricingStructureDiscount();
+        }, 100);
+    }
+
+    getPricingStructureDiscount = () => {
+        setTimeout(() => {
+            let pricingDiscount = this.crossReference(this.state.allPricingStructures, 'id', this.state.selectedUser.pricingStructure, 'discount');
+            let minimumOrder = this.crossReference(this.state.allPricingStructures, 'id', this.state.selectedUser.pricingStructure, 'minimumOrder');
+            let couponDiscountedTotal = this.state.preDiscountSubTotal - this.state.discountAmount;
+            let pricingDiscountAmount = (couponDiscountedTotal * pricingDiscount/100);
+            let discountedTotal = couponDiscountedTotal - pricingDiscountAmount;
+            if (couponDiscountedTotal >= minimumOrder) {
+                this.setState({
+                    priceDiscountAmount: pricingDiscountAmount,
+                    priceDiscountTotal: discountedTotal  
+                });
+            }else{
+                this.setState({
+                    priceDiscountAmount: 0,
+                    priceDiscountTotal: couponDiscountedTotal  
+                });
+            }
+        }, 100);
+        
+
     }
 
     render() { 
@@ -504,6 +558,8 @@ class CreateOrder extends Component {
         const showDiscountInput = discountAllowed ? 'showDiscountInput' : 'hidden';
         const preDiscountSubTotal = this.state.preDiscountSubTotal;
         const discountAmount = this.state.discountAmount;
+        const priceDiscountAmount = this.state.priceDiscountAmount;
+        const priceDiscountTotal = this.state.priceDiscountTotal ? this.state.priceDiscountTotal : discountAmount;
 
         return (
             <div className='adminPage'>
@@ -702,7 +758,7 @@ class CreateOrder extends Component {
                                     {/* <td></td> */}
                                     <td><select id='liSeedSelectList' onChange={this.buildCurrentLineItem('itemId')}/></td>
                                     <td><input className='quantityInput' id='liQuantity' type='number' step='1' min='1' onBlur={this.buildCurrentLineItem('quantity')}/></td>
-                                    <td><input className='priceInput' id='liPrice' type='number' min='.01' step='.01' onBlur={this.buildCurrentLineItem('price')}/></td>
+                                    <td><input className='priceInput' id='liPrice' type='number' min='.01' step='.01' defaultValue={buildLineItem.price ? buildLineItem.price : ''} onBlur={this.buildCurrentLineItem('price')}/></td>
                                     <td><input  className='priceInput' value={(!buildLineItem.quantity || !buildLineItem.price || buildLineItem.quantity === undefined || buildLineItem.price === undefined) ? '' : this.showAsCurrency(buildLineItem.quantity * buildLineItem.price)}/></td>
                                 <td><Link className={okToAddLineItem} to='' onClick={()=>this.addCurrentLineItem()}>Add</Link></td>
                                 </tr>
@@ -757,15 +813,26 @@ class CreateOrder extends Component {
                             <table className='nudgeRight1'>
                                 <tr>
                                     <tr className={showDiscountInput}>
-                                        <td>Discount code</td>
+                                        <td>Coupon code</td>
                                         <td/>
-                                        <td>Amount</td>
+                                        <td>Discount</td>
                                     </tr>
                                     <tr className={showDiscountInput}>
-                                        <td className='quantityInput'><input type='text' onBlur={this.checkDiscountCode()}/></td>
+                                        <td className='quantityInput'><input type='text' onBlur={this.setDiscountCode()}/></td>
                                         <td><input className='quantityInput invisible'/></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(discountAmount)}/></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(preDiscountSubTotal - discountAmount)}/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pricing</td>
+                                        <td/>
+                                        <td>Discount</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type='text' defaultValue={this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'label')}/></td>
+                                        <td/>
+                                        <td><input className='priceInput' type='text' value={this.showAsCurrency(priceDiscountAmount)}/></td>
+                                        <td><input className='priceInput' type='text' value={isNaN(preDiscountSubTotal - discountAmount - priceDiscountAmount) ? this.showAsCurrency(0) : this.showAsCurrency(preDiscountSubTotal - discountAmount - priceDiscountAmount)}/></td>
                                     </tr>
                                 </tr>
                             </table>

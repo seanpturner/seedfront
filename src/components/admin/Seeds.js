@@ -639,6 +639,10 @@ showAsCurrency = (amount) => {
               <td>Quantity Available</td>
               <td><input type="number" name = "quantityAvailable" onChange={this.buildNewSeed("quantityAvailable")}/></td>
             </tr>
+            <tr className='adminRow topAlignTable'>
+              <td>Price</td>
+              <td><input type="number" name = "price" onChange={this.buildNewSeed("price")}/></td>
+            </tr>
             <tr>
             <td>Maternal Line</td>
             <td className={hideStatic}>{newSeed.maternalLine} {this.getLineNameById(newSeed.maternalLine)}</td>
