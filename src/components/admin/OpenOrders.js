@@ -634,6 +634,29 @@ class OpenOrders extends Component {
     });
  }
 
+ populateDropdowns = () => {
+  let dropdowns = ['updateOrderStatus'];
+  let seedList = this.state.allSeeds;
+  let statusList = this.state.allPurchaseStatuses;
+  let selectBox;
+  dropdowns.forEach(dropdown => {
+      selectBox = document.getElementById(dropdown);
+      selectBox.setAttribute('id', dropdown);
+      selectBox.innerHTML = "";
+      selectBox.options.add(new Option("Select", "", true));
+      if (dropdown.includes('SeedSelectList')) {
+          seedList.forEach(seed => {
+              selectBox.options.add(new Option(seed.name + ' (' + seed.quantityAvailable + ')', seed.id, false));
+          });
+      }
+      if (dropdown === 'updateOrderStatus') {
+          statusList.forEach(status => {
+              selectBox.options.add(new Option(status.label, status.statusCode));
+          });
+      }
+  });
+}
+
   render() { 
     const masterJson = this.state.masterJson;
     const allOrdersDiv = this.state.selectedOrder === "none" ? "allOrdersDiv" : "hidden";
@@ -705,6 +728,7 @@ class OpenOrders extends Component {
                       <td className='topAlignTable'><Link className='separateLinkRight' to='' onClick={()=>{
                         this.setState({selectedOrder: order, originalSelectedOrder: JSON.stringify(order)});
                         this.updateSeedSelectOptions();
+                        this.populateDropdowns();
                       }
                       }>Open</Link>
                         <Link className='separateLinkLeft' to='' onClick={()=>this.setShipper(order)}>Shipping info </Link>
@@ -873,15 +897,15 @@ class OpenOrders extends Component {
                   <tr className='topAlignTableRow'>
                     <td className={updateOrderStatus}>
                       <select name='statuses' id='updateOrderStatus' onClick={this.updateOrder('orderStatus', 'updateOrderStatus')}>
-                        <option value ='' >Select</option>
+                        {/* <option value ='' >Select</option>
                         <option value='100'>Ordered</option>
                         <option value='101'>Paid</option>
                         <option value='102'>Picked</option>
                         <option value='103'>Shipped</option>
-                        <option value='104'>Partial payment</option>
+                        <option value='190'>Partial payment</option>
                         <option value='200'>Complete</option>
                         <option value='201'>Complete - no tracking</option>
-                        <option value='300'>Cancelled</option>
+                        <option value='300'>Cancelled</option> */}
                       </select>
                     </td>
                   </tr>

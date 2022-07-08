@@ -181,7 +181,8 @@
 }
 
 .noteColumn {
-  max-width: 15vw;
+  max-width: 10vw;
+  min-width: 10vw;
 }
 
 .firstColumn {
@@ -194,4 +195,36 @@
 
 .priceInput {
   width: 90px;
+}
+
+.newOrder {
+  display: flex;
+}
+
+.newOrder1 {
+  position: relative;
+  /* background-color: green; */
+}
+
+.newOrder2 {
+  position: relative;
+  left: 1vw;
+  /* background-color: red; */
+}
+
+.nudgeRight4 {
+  padding-left: 4px;
+}
+
+.nudgeRight3 {
+  padding-left: 3px;
+}
+
+.nudgeRight2 {
+  padding-left: 2px;
+}
+
+.shortNoteColumn {
+  max-width: 9.5vw;
+  min-width: 9.5vw;
 }

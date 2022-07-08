@@ -19,7 +19,10 @@ class CreateOrder extends Component {
         dataSet: '',
         newOrder: {},
         buildLineItem: {},
-        buildExtra: {}
+        buildExtra: {},
+        preDiscountSubTotal: 0,
+        discountAmount: 0,
+        discountCode: ''
 
      } 
 
@@ -201,28 +204,61 @@ class CreateOrder extends Component {
     }
 
     populateDropdowns = () => {
-        let dropdowns = ['liSeedSelectList', 'extraSeedSelectList'];
+        let dropdowns = ['liSeedSelectList', 'extraSeedSelectList', 'orderStatus'];
         let seedList = this.state.allSeeds;
+        let statusList = this.state.allPurchaseStatuses;
         let selectBox;
         dropdowns.forEach(dropdown => {
             selectBox = document.getElementById(dropdown);
             selectBox.setAttribute('id', dropdown);
             selectBox.innerHTML = "";
-            selectBox.options.add(new Option("Select", "", true));
-            seedList.forEach(seed => {
-                selectBox.options.add(new Option(seed.name + ' (' + seed.quantityAvailable + ')', seed.id, false));
-            });
-
+            selectBox.options.add(new Option("", "", true));
+            if (dropdown.includes('SeedSelectList')) {
+                seedList.forEach(seed => {
+                    selectBox.options.add(new Option(seed.name + ' (' + seed.quantityAvailable + ')', seed.id, false));
+                });
+            }
+            if (dropdown === 'orderStatus') {
+                statusList.forEach(status => {
+                    selectBox.options.add(new Option(status.label, status.statusCode));
+                });
+            }
         });
     }
 
     updateOrder = (key) => (event) => {
-        if (event.target.value.replace(/\s/g, '') !== "") {
-            let no = this.state.newOrder;
+        let no = this.state.newOrder;
+        if (key === 'orderStatus' ) {
+            no[key] = event.target.value;
+            if (event.target.value < 300 && event.target.value !== 190) {
+                if (event.target.value > 100) {
+                    no.paymentDate = this.getDateTime(false);
+                }else{
+                    no.paymentDate = null;
+                }
+                if (event.target.value > 101) {
+                    no.orderPickedDate = this.getDateTime(false);
+                }else{
+                    no.orderPickedDate = null;
+                }
+                if (event.target.value > 102) {
+                    no.shippedDate = this.getDateTime(false);
+                }else{
+                    no.shippedDate = null;
+                }
+            }
+            if (event.target.value === '190') {
+                no.paymentDate = null;
+                no.orderPickedDate = null;
+                no.shippedDate = null;
+            }
+            this.setState({ newOrder: no });
+            document.getElementById(key).value = '';
+        }else if (event.target.value.replace(/\s/g, '') !== "") {
             no[key] = event.target.value;
             this.setState({ newOrder: no });
+            document.getElementById(key).value = '';
         }
-        document.getElementById(key).value = '';
     }
 
     addOrderArray = (key) => (event) => {
@@ -247,12 +283,23 @@ class CreateOrder extends Component {
 
     clearItem = (key, value) => {
         let no = this.state.newOrder;
+        let pdst = 0;
         if (key === 'lineItems' || key === 'extras' || key === 'orderNotes') {
             let itemArray = no[key];
             let filteredArray = itemArray.filter(data => data !== value);
             no[key] = filteredArray;
+            let li = no.lineItems;
+            li.forEach(lineItem => {
+                let lineTotal = lineItem.quantity * lineItem.price;
+                pdst += lineTotal;
+            });
+        }else{
+            no[key] = '';
         }
-        this.setState({ newOrder: no });
+        this.setState({
+            newOrder: no,
+            preDiscountSubTotal: pdst
+        });
     }
 
     getDateTime = (includeTime) => {
@@ -321,6 +368,7 @@ class CreateOrder extends Component {
         let currentItem = this.state.buildLineItem;
         let fieldsToClear = ['liSeedSelectList', 'liQuantity', 'liPrice'];
         let no = this.state.newOrder;
+        let pdst = 0;
         let li = [];
         if (no.lineItems) {
             li = no.lineItems;
@@ -329,9 +377,14 @@ class CreateOrder extends Component {
             currentItem.quantity = Math.floor(currentItem.quantity);
             li.push(currentItem);
             no.lineItems = li;
+            li.forEach(lineItem => {
+                let lineTotal = lineItem.quantity * lineItem.price;
+                pdst += lineTotal;
+            });
             this.setState({
                 newOrder: no,
-                buildLineItem: {}
+                buildLineItem: {},
+                preDiscountSubTotal: pdst
             });
             fieldsToClear.forEach(field => {
                 document.getElementById(field).value = '';
@@ -387,6 +440,49 @@ class CreateOrder extends Component {
         }
     }
 
+    checkDiscountCode = () => (event) => {
+        let allPricingStructures = this.state.allPricingStructures;
+        let selectedUser = this.state.selectedUser;
+        let discountCode = event.target.value
+        let discount;
+        let allDiscounts = this.state.allDiscounts;
+        let today = this.getDateTime(false);
+        let pdst = this.state.preDiscountSubTotal;
+        let discountAmount;
+        if (this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'allowDiscount')) {
+            allDiscounts.forEach(d => {
+                if (d.discountCode === discountCode) {
+                    discount = d;
+                }
+            });
+            if (discount.customerSpecific === false || (discount.customerSpecific === true && discount.customerId === selectedUser.id)) {
+                if (pdst >= discount.minimumOrderAmount) {
+                    if (discount.quantity >= 1) {
+                        let compareToday = parseInt(today.substring(0,4) + today.substring(5,7) + today.substring(8));
+                        
+                        let compareStart = parseInt(discount.startDate.substring(0,4) + discount.startDate.substring(5,7) + discount.startDate.substring(8));
+                        let compareEnd = parseInt(discount.endDate.substring(0,4) + discount.endDate.substring(5,7) + discount.endDate.substring(8));
+                        if (compareToday >= compareStart && compareToday <= compareEnd) {
+                            if (discount.discountRate) {
+                                discountAmount = pdst * (discount.discountRate/100);
+                            }
+                            if (discount.discountAmount) {
+                                discountAmount = discount.discountAmount;
+                            }
+                        }
+                    }
+                }
+            }
+                
+        }
+        this.setState({ discountAmount: discountAmount });
+        // return discountAmount;
+    }
+
+    setDiscountCode = () => (event) => {
+        this.setState({ discountCode: event.target.value });
+    }
+
     render() { 
         const activeUsers = this.state.activeUsers;
         const allPurchaseStatuses = this.state.allPurchaseStatuses;
@@ -404,12 +500,17 @@ class CreateOrder extends Component {
         const okToAddLineItem = buildLineItem.itemId && buildLineItem.quantity && buildLineItem.quantity > 0 && buildLineItem.price && buildLineItem.price > 0 ? 'okToAddLineItem' : 'hidden';
         const buildExtra = this.state.buildExtra;
         const okToAddExtraItem = buildExtra.itemId && buildExtra.quantity && buildExtra.quantity > 0 && buildExtra.note ? 'okToAddExtraItem' : 'hidden';
+        const discountAllowed = allPricingStructures && selectedUser ? this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'allowDiscount') : false;
+        const showDiscountInput = discountAllowed ? 'showDiscountInput' : 'hidden';
+        const preDiscountSubTotal = this.state.preDiscountSubTotal;
+        const discountAmount = this.state.discountAmount;
+
         return (
             <div className='adminPage'>
                 <div className="adminNavDiv">
                     <AdminNav />
                     <span className={showLoading}><h3>Loading... {secondsRemaining}</h3></span>
-                    {/* <br/>{'newOrder: ' + JSON.stringify(newOrder)}<br/> */}
+                    <br/>{'newOrder: ' + JSON.stringify(newOrder)}<br/>
                     {/* <br/>{'buildLineItem: ' + JSON.stringify(buildLineItem)}<br/> */}
                     {/* <br/>{'activeUsers: ' + JSON.stringify(activeUsers)}<br/> */}
                     {/* <br/>{'selectedUser: ' + JSON.stringify(selectedUser)}<br/> */}
@@ -417,7 +518,9 @@ class CreateOrder extends Component {
                     {/* <br/>{'allDiscounts: ' + JSON.stringify(allDiscounts)}<br/> */}
                     {/* <br/>{'allPricingStructures: ' + JSON.stringify(allPricingStructures)}<br/> */}
                     {/* <br/>{'allPurchaseStatuses: ' + JSON.stringify(allPurchaseStatuses)}<br/> */}
-                    <br/>{'buildExtra: ' + JSON.stringify(buildExtra)}<br/>
+                    {/* <br/>{'buildExtra: ' + JSON.stringify(buildExtra)}<br/> */}
+                    {/* <br/>{discountAllowed?.toString()}<br/> */}
+                    {/* <br/>{preDiscountSubTotal}<br/> */}
                 </div>
                 <div className='addOrderdiv'>
                     <h1 className="adminSectionTitle">Add An Order</h1>
@@ -437,186 +540,237 @@ class CreateOrder extends Component {
                         })}
                     </table>
                 </div>
-                <div className='newOrder'>
-                    <table>
-                        <tr>
-                            <td>Customer</td>
-                            <td><input id='orderUser' type='text' onBlur={this.updateOrder('orderUser')}/></td>
-                            <td>{newOrder.orderUser}</td>
-                        </tr>
-                        <tr>
-                            <td>Address</td>
-                            <td><input id='deliveryAddress1' type='text' onBlur={this.updateOrder('deliveryAddress1')}/></td>
-                            <td>{newOrder.deliveryAddress1}</td>
-                        </tr>
-                        <tr>
-                            <td/>
-                            <td><input id='deliveryAddress2' type='text' onBlur={this.updateOrder('deliveryAddress2')}/></td>
-                            <td>
-                                <Link className={hideClearDeliveryAddress2} to='' onClick={()=>this.clearItem('deliveryAddress2')}>Remove&nbsp;</Link>
-                                {newOrder.deliveryAddress2}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>City</td>
-                            <td><input id='city' type='text' onBlur={this.updateOrder('city')}/></td>
-                            <td>{newOrder.city}</td>
-                        </tr>
-                        <tr>
-                            <td>State</td>
-                            {/* <td><input id='state' type='text' onBlur={this.updateOrder('state')}/></td> */}
-                            <td>
-                                <input list='stateList' id='state' onBlur={this.updateOrder('state')}/>
-                                <datalist id='stateList'>
-                                <option value = 'NM'/>
-                                <option value = 'AK'/>
-                                <option value = 'AL'/>
-                                <option value = 'AR'/>
-                                <option value = 'AZ'/>
-                                <option value = 'CA'/>
-                                <option value = 'CO'/>
-                                <option value = 'CT'/>
-                                <option value = 'DE'/>
-                                <option value = 'FL'/>
-                                <option value = 'GA'/>
-                                <option value = 'HI'/>
-                                <option value = 'IA'/>
-                                <option value = 'ID'/>
-                                <option value = 'IL'/>
-                                <option value = 'IN'/>
-                                <option value = 'KS'/>
-                                <option value = 'KY'/>
-                                <option value = 'LA'/>
-                                <option value = 'MA'/>
-                                <option value = 'MD'/>
-                                <option value = 'ME'/>
-                                <option value = 'MI'/>
-                                <option value = 'MN'/>
-                                <option value = 'MO'/>
-                                <option value = 'MS'/>
-                                <option value = 'MT'/>
-                                <option value = 'NC'/>
-                                <option value = 'ND'/>
-                                <option value = 'NE'/>
-                                <option value = 'NH'/>
-                                <option value = 'NJ'/>
-                                <option value = 'NM'/>
-                                <option value = 'NV'/>
-                                <option value = 'NY'/>
-                                <option value = 'OH'/>
-                                <option value = 'OK'/>
-                                <option value = 'OR'/>
-                                <option value = 'PA'/>
-                                <option value = 'RI'/>
-                                <option value = 'SC'/>
-                                <option value = 'SD'/>
-                                <option value = 'TN'/>
-                                <option value = 'TX'/>
-                                <option value = 'UT'/>
-                                <option value = 'VA'/>
-                                <option value = 'VT'/>
-                                <option value = 'WA'/>
-                                <option value = 'WI'/>
-                                <option value = 'WV'/>
-                                <option value = 'WY'/>
-                                </datalist>
-                            </td>
-                            
-                            <td>{newOrder.state}</td>
-                        </tr>
-                        <tr>
-                            <td>Zip</td>
-                            <td><input id='zip' type='text' onBlur={this.updateOrder('zip')}/></td>
-                            <td>{newOrder.zip}</td>
-                        </tr>
-                        <tr>
-                            <td>Delivery notes</td>
-                            <td><input id='deliveryNotes' type='text' onBlur={this.updateOrder('deliveryNotes')}/></td>
-                            <td className='noteColumn'>
-                            <Link className={hideClearDeliveryNotes} to='' onClick={()=>this.clearItem('deliveryNotes')}>Remove&nbsp;</Link>
-                                {newOrder.deliveryNotes}
-                            </td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td className='topAlignTable'>Order Notes</td>
-                            <td className='topAlignTable'><input id='orderNotes' type='text' onBlur={this.addOrderArray('orderNotes')}/></td>
-                            <td className='topAlignTable'>{newOrder.orderNotes?.map((orderNote)=>{
-                                return (
-                                    <tr className='topAlignTableRow'>
-                                        <td className='topAlignTable noteColumn'>
-                                        <Link to='' onClick={()=>this.clearItem('orderNotes', orderNote)}>Clear</Link>&nbsp;
-                                            {orderNote.date} {orderNote.note} 
-                                            {' [' + this.crossReference(activeUsers,'id', orderNote.userId, 'fName') + ']'}
-                                        </td>
-                                    </tr>
-                                )
-                            })}</td>
-                        </tr>
-                    </table>
-                    <h4>Items</h4>
-                    <table>
-                        <tr>
-                            <td></td>
-                            <td>Item</td>
-                            <td>Quantity</td>
-                            <td>Price</td>
-                            <td>Extended</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><select id='liSeedSelectList' onChange={this.buildCurrentLineItem('itemId')}/></td>
-                            <td><input className='quantityInput' id='liQuantity' type='number' step='1' min='1' onBlur={this.buildCurrentLineItem('quantity')}/></td>
-                            <td><input className='priceInput' id='liPrice' type='number' min='.01' step='.01' onBlur={this.buildCurrentLineItem('price')}/></td>
-                            <td><input  className='priceInput' value={(!buildLineItem.quantity || !buildLineItem.price || buildLineItem.quantity === undefined || buildLineItem.price === undefined) ? '' : this.showAsCurrency(buildLineItem.quantity * buildLineItem.price)}/></td>
-                        <td><Link className={okToAddLineItem} to='' onClick={()=>this.addCurrentLineItem()}>Add</Link></td>
-                        </tr>
-                        {newOrder.lineItems?.map((lineItem)=>{
-                            return(
+                    <div className='newOrder'>
+                        <div className='newOrder1'>
+                            <table>
                                 <tr>
-                                    <td><Link to='' onClick={()=>this.clearItem('lineItems', lineItem)}>Remove</Link>&nbsp;</td>
-                                    <td>{this.crossReference(this.state.allSeeds, 'id', lineItem.itemId, 'name')}</td>
-                                    <td>{lineItem.quantity}</td>
-                                    <td className='rightCell'>{this.showAsCurrency(lineItem.price)}</td>
-                                    <td className='rightCell'>{this.showAsCurrency(lineItem.quantity * lineItem.price)}</td>
+                                    <td>Customer</td>
+                                    <td><input id='orderUser' type='text' onBlur={this.updateOrder('orderUser')}/></td>
+                                    <td className='noteColumn nudgeRight4'>{newOrder.orderUser}</td>
                                 </tr>
-                            )
-                        })}
-                    </table>
-                    <br/>
-                    <h4>Extras</h4>
-                    <table>
-                        <tr>
-                            <td></td>
-                            <td>Item</td>
-                            <td>Quantity</td>
-                            <td>Price</td>
-                            <td>Extended</td>
-                            <td>Note</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><select id='extraSeedSelectList' onChange={this.buildCurrentExtra('itemId')}/></td>
-                            <td><input className='quantityInput' id='exQuantity' type='number' step='1'  min='1' onBlur={this.buildCurrentExtra('quantity')}/></td>
-                            <td><input className='priceInput' value=''/></td>
-                            <td><input className='priceInput' value=''/></td>
-                            <td><input id='exNote' type='text' onChange={this.buildCurrentExtra('note')}/></td>
-                        <td><Link className={okToAddExtraItem} to='' onClick={()=>this.addCurrentExtra()}>Add</Link></td>
-                        </tr>
-                        {newOrder.extras?.map((extra)=>{
-                            return(
                                 <tr>
-                                    <td><Link to='' onClick={()=>this.clearItem('extras', extra)}>Remove</Link>&nbsp;</td>
-                                    <td>{this.crossReference(this.state.allSeeds, 'id', extra.itemId, 'name')}</td>
-                                    <td>{extra.quantity}</td>
-                                    <td className='rightCell'>{this.showAsCurrency(0)}</td>
-                                    <td className='rightCell'>{this.showAsCurrency(0)}</td>
-                                    <td>{extra.note + ' [' + this.crossReference(this.state.activeUsers, 'id', extra.userId, 'fName') + ']'}</td>
+                                    <td>Purchaser (B2B)</td>
+                                    <td><input id='purchaserName' type='text' onBlur={this.updateOrder('purchaserName')}/></td>
+                                    <td className='noteColumn nudgeRight4'>{newOrder.purchaserName}</td>
                                 </tr>
-                            )
-                        })}
-                    </table>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><input id='deliveryAddress1' type='text' onBlur={this.updateOrder('deliveryAddress1')}/></td>
+                                    <td className='noteColumn nudgeRight4'>{newOrder.deliveryAddress1}</td>
+                                </tr>
+                                <tr>
+                                    <td/>
+                                    <td><input id='deliveryAddress2' type='text' onBlur={this.updateOrder('deliveryAddress2')}/></td>
+                                    <td className='noteColumn nudgeRight4'>
+                                        <Link className={hideClearDeliveryAddress2} to='' onClick={()=>this.clearItem('deliveryAddress2')}>Clear&nbsp;</Link>
+                                        {newOrder.deliveryAddress2}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>City</td>
+                                    <td><input id='city' type='text' onBlur={this.updateOrder('city')}/></td>
+                                    <td className='noteColumn nudgeRight4'>{newOrder.city}</td>
+                                </tr>
+                                <tr>
+                                    <td>State</td>
+                                    {/* <td><input id='state' type='text' onBlur={this.updateOrder('state')}/></td> */}
+                                    <td>
+                                        <input list='stateList' id='state' onBlur={this.updateOrder('state')}/>
+                                        <datalist id='stateList'>
+                                        <option value = 'NM'/>
+                                        <option value = 'AK'/>
+                                        <option value = 'AL'/>
+                                        <option value = 'AR'/>
+                                        <option value = 'AZ'/>
+                                        <option value = 'CA'/>
+                                        <option value = 'CO'/>
+                                        <option value = 'CT'/>
+                                        <option value = 'DE'/>
+                                        <option value = 'FL'/>
+                                        <option value = 'GA'/>
+                                        <option value = 'HI'/>
+                                        <option value = 'IA'/>
+                                        <option value = 'ID'/>
+                                        <option value = 'IL'/>
+                                        <option value = 'IN'/>
+                                        <option value = 'KS'/>
+                                        <option value = 'KY'/>
+                                        <option value = 'LA'/>
+                                        <option value = 'MA'/>
+                                        <option value = 'MD'/>
+                                        <option value = 'ME'/>
+                                        <option value = 'MI'/>
+                                        <option value = 'MN'/>
+                                        <option value = 'MO'/>
+                                        <option value = 'MS'/>
+                                        <option value = 'MT'/>
+                                        <option value = 'NC'/>
+                                        <option value = 'ND'/>
+                                        <option value = 'NE'/>
+                                        <option value = 'NH'/>
+                                        <option value = 'NJ'/>
+                                        <option value = 'NM'/>
+                                        <option value = 'NV'/>
+                                        <option value = 'NY'/>
+                                        <option value = 'OH'/>
+                                        <option value = 'OK'/>
+                                        <option value = 'OR'/>
+                                        <option value = 'PA'/>
+                                        <option value = 'RI'/>
+                                        <option value = 'SC'/>
+                                        <option value = 'SD'/>
+                                        <option value = 'TN'/>
+                                        <option value = 'TX'/>
+                                        <option value = 'UT'/>
+                                        <option value = 'VA'/>
+                                        <option value = 'VT'/>
+                                        <option value = 'WA'/>
+                                        <option value = 'WI'/>
+                                        <option value = 'WV'/>
+                                        <option value = 'WY'/>
+                                        </datalist>
+                                    </td>
+                                    
+                                    <td className='noteColumn nudgeRight4'>{newOrder.state}</td>
+                                </tr>
+                                <tr>
+                                    <td>Zip</td>
+                                    <td><input id='zip' type='text' onBlur={this.updateOrder('zip')}/></td>
+                                    <td className='noteColumn nudgeRight4'>{newOrder.zip}</td>
+                                </tr>
+                                <tr>
+                                    <td>Delivery notes</td>
+                                    <td><input id='deliveryNotes' type='text' onBlur={this.updateOrder('deliveryNotes')}/></td>
+                                    <td className='noteColumn nudgeRight4'>
+                                    <Link className={hideClearDeliveryNotes} to='' onClick={()=>this.clearItem('deliveryNotes')}>Clear&nbsp;</Link>
+                                        {newOrder.deliveryNotes}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Order status</td>
+                                    <td><select id='orderStatus' onClick={this.updateOrder('orderStatus')}/></td>
+                                    <td className='topAlignTable nudgeRight4'>{newOrder.orderStatus ? this.crossReference(allPurchaseStatuses, 'statusCode', newOrder.orderStatus, 'label') : ''}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shipped Via</td>
+                                    <td>
+                                        <input id='shippedVia' list='shippedList' onBlur={this.updateOrder('shippedVia')}/>
+                                        <datalist id='shippedList'>
+                                            <option value='FedEx'/>
+                                            <option value='Picked Up'/>
+                                            <option value='Personal Delivery'/>
+                                            <option value='UPS'/>
+                                            <option value='USPS'/>
+                                        </datalist>
+                                    </td>
+                                    <td>{newOrder.shippedVia}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tracking Number</td>
+                                    <td><input id='trackingNumber' type='text' onBlur={this.updateOrder('trackingNumber')}/></td>
+                                    <td>{newOrder.trackingNumber}</td>
+                                </tr>
+                                <tr className='topAlignTableRow'>
+                                    <td className='topAlignTable'>Order notes</td>
+                                    <td className='topAlignTable'><input id='orderNotes' type='text' onBlur={this.addOrderArray('orderNotes')}/></td>
+                                    <td className='topAlignTable'>{newOrder.orderNotes?.map((orderNote)=>{
+                                        return (
+                                            <tr className='topAlignTableRow'>
+                                                <td className='topAlignTable shortNoteColumn'>
+                                                <Link to='' onClick={()=>this.clearItem('orderNotes', orderNote)}>Clear</Link>&nbsp;
+                                                    {orderNote.date} {orderNote.note} 
+                                                    {' [' + this.crossReference(activeUsers,'id', orderNote.userId, 'fName') + ']'}
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div className='newOrder2'>
 
-                </div>
+                            
+                            {/* <h4>Items</h4> */}
+                            <table className='nudgeRight2'>
+                                <tr>
+                                    <td>Item</td>
+                                    <td>Quantity</td>
+                                    <td>Price</td>
+                                    <td>Extended</td>
+                                </tr>
+                                <tr>
+                                    {/* <td></td> */}
+                                    <td><select id='liSeedSelectList' onChange={this.buildCurrentLineItem('itemId')}/></td>
+                                    <td><input className='quantityInput' id='liQuantity' type='number' step='1' min='1' onBlur={this.buildCurrentLineItem('quantity')}/></td>
+                                    <td><input className='priceInput' id='liPrice' type='number' min='.01' step='.01' onBlur={this.buildCurrentLineItem('price')}/></td>
+                                    <td><input  className='priceInput' value={(!buildLineItem.quantity || !buildLineItem.price || buildLineItem.quantity === undefined || buildLineItem.price === undefined) ? '' : this.showAsCurrency(buildLineItem.quantity * buildLineItem.price)}/></td>
+                                <td><Link className={okToAddLineItem} to='' onClick={()=>this.addCurrentLineItem()}>Add</Link></td>
+                                </tr>
+                                {newOrder.lineItems?.map((lineItem)=>{
+                                    return(
+                                        <tr>
+                                            <td>{this.crossReference(this.state.allSeeds, 'id', lineItem.itemId, 'name')}</td>
+                                            <td>{lineItem.quantity}</td>
+                                            <td>{this.showAsCurrency(lineItem.price)}</td>
+                                            <td>{this.showAsCurrency(lineItem.quantity * lineItem.price)}</td>
+                                            <td><Link to='' onClick={()=>this.clearItem('lineItems', lineItem)}>Remove</Link>&nbsp;</td>
+                                        </tr>
+                                    )
+                                })}
+                            </table>
+                            <br/>
+                            {/* <h4>Extras</h4> */}
+                            <table className='nudgeRight2'>
+                                <tr>
+                                    <td>Item</td>
+                                    <td>Quantity</td>
+                                    <td>Price</td>
+                                    <td>Extended</td>
+                                    <td>Note</td>
+                                </tr>
+                                <tr>
+                                    <td><select id='extraSeedSelectList' onChange={this.buildCurrentExtra('itemId')}/></td>
+                                    <td><input className='quantityInput' id='exQuantity' type='number' step='1'  min='1' onBlur={this.buildCurrentExtra('quantity')}/></td>
+                                    <td><input className='priceInput' value=''/></td>
+                                    <td><input className='priceInput' value=''/></td>
+                                    <td><input id='exNote' type='text' onChange={this.buildCurrentExtra('note')}/></td>
+                                <td><Link className={okToAddExtraItem} to='' onClick={()=>this.addCurrentExtra()}>Add</Link></td>
+                                </tr>
+                                {newOrder.extras?.map((extra)=>{
+                                    return(
+                                        <tr>
+                                            
+                                            <td>{this.crossReference(this.state.allSeeds, 'id', extra.itemId, 'name')}</td>
+                                            <td>{extra.quantity}</td>
+                                            <td>{this.showAsCurrency(0)}</td>
+                                            <td>{this.showAsCurrency(0)}</td>
+                                            <td>{extra.note + ' [' + this.crossReference(this.state.activeUsers, 'id', extra.userId, 'fName') + ']'}</td>
+                                            <td><Link to='' onClick={()=>this.clearItem('extras', extra)}>Remove</Link>&nbsp;</td>
+                                        </tr>
+                                    )
+                                })}
+                                {/* <tr className={showDiscountInput}>
+                                    <td>Discount code</td>
+                                    <td className='quantityInput' onBlur={null}></td>
+                                </tr> */}
+                            </table>
+                            <table className='nudgeRight1'>
+                                <tr>
+                                    <tr className={showDiscountInput}>
+                                        <td>Discount code</td>
+                                        <td/>
+                                        <td>Amount</td>
+                                    </tr>
+                                    <tr className={showDiscountInput}>
+                                        <td className='quantityInput'><input type='text' onBlur={this.checkDiscountCode()}/></td>
+                                        <td><input className='quantityInput invisible'/></td>
+                                        <td><input className='priceInput' value={this.showAsCurrency(discountAmount)}/></td>
+                                        <td><input className='priceInput' value={this.showAsCurrency(preDiscountSubTotal - discountAmount)}/></td>
+                                    </tr>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
