@@ -24,7 +24,10 @@ class CreateOrder extends Component {
         discountAmount: 0,
         discountCode: '',
         priceDiscountAmount: 0,
-        priceDiscountTotal: null
+        priceDiscountTotal: null,
+        taxRate: .07,
+        taxAmount: 0,
+        totalAfterTax: 0
 
      } 
 
@@ -197,10 +200,21 @@ class CreateOrder extends Component {
                 this.setState({
                 selectedUser: user,
                 searchResults: [],
-                newOrder: no
+                newOrder: no,
+                discountCode: null,
+                discountAmount: 0
                 });
                 document.getElementById('searchInput').value = '';
+                document.getElementById('inputCouponCode').value = '';
                 this.nextThing('populateDropdowns');
+                // this.setState({
+                //     discountCode: null,
+                //     discountAmount: 0
+                // });
+                setTimeout(() => {
+                    // this.checkDiscountCode();
+                    this.getPricingStructureDiscount();
+                }, 100);
             }
         });
     }
@@ -306,6 +320,7 @@ class CreateOrder extends Component {
             this.checkDiscountCode();
             this.getPricingStructureDiscount();
         }, 100);
+        this.checkTax();
         
     }
 
@@ -350,6 +365,24 @@ class CreateOrder extends Component {
             amount = 0;
         }
         return formatter.format(amount);
+    }
+
+    checkTax = () => {
+        setTimeout(() => {
+            let selectedUser = this.state.selectedUser;
+            if (selectedUser.salesTax) {
+                let priceDiscountTotal = this.state.priceDiscountTotal;
+                let taxRate = this.state.taxRate;
+                if (priceDiscountTotal === null) {
+                    priceDiscountTotal = this.state.preDiscountSubTotal;
+                }
+                this.setState({
+                    taxAmount: (priceDiscountTotal * taxRate),
+                    totalAfterTax: priceDiscountTotal + (priceDiscountTotal * taxRate)
+                });
+        }
+        }, 50);
+        
     }
 
     buildCurrentLineItem = (key) => (event) => {
@@ -411,6 +444,7 @@ class CreateOrder extends Component {
         setTimeout(() => {
             this.checkDiscountCode();
             this.getPricingStructureDiscount();
+            this.checkTax();
         }, 100);
     }
 
@@ -502,8 +536,7 @@ class CreateOrder extends Component {
         }else{
             this.setState({discountAmount: 0});
         }
-        
-        // return discountAmount;
+        this.checkTax();
     }
 
     setDiscountCode = () => (event) => {
@@ -532,9 +565,8 @@ class CreateOrder extends Component {
                     priceDiscountTotal: couponDiscountedTotal  
                 });
             }
+            this.checkTax();
         }, 100);
-        
-
     }
 
     render() { 
@@ -560,6 +592,10 @@ class CreateOrder extends Component {
         const discountAmount = this.state.discountAmount;
         const priceDiscountAmount = this.state.priceDiscountAmount;
         const priceDiscountTotal = this.state.priceDiscountTotal ? this.state.priceDiscountTotal : discountAmount;
+        const taxable = selectedUser.salesTax ?  'taxable' : 'hidden';
+        // const taxRate = this.state.taxRate;
+        const taxAmount = this.state.taxAmount;
+        const totalAfterTax = this.state.totalAfterTax;
 
         return (
             <div className='adminPage'>
@@ -778,7 +814,7 @@ class CreateOrder extends Component {
                             {/* <h4>Extras</h4> */}
                             <table className='nudgeRight2'>
                                 <tr>
-                                    <td>Item</td>
+                                    <td>Extra</td>
                                     <td>Quantity</td>
                                     <td>Price</td>
                                     <td>Extended</td>
@@ -809,30 +845,55 @@ class CreateOrder extends Component {
                                     <td>Discount code</td>
                                     <td className='quantityInput' onBlur={null}></td>
                                 </tr> */}
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td><br/>Sub-total</td>
+                                </tr>
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td><input type='text' className='priceInput' value={this.showAsCurrency(preDiscountSubTotal)}/></td>
+                                </tr>
                             </table>
                             <table className='nudgeRight1'>
                                 <tr>
                                     <tr className={showDiscountInput}>
                                         <td>Coupon code</td>
-                                        <td/>
+                                        <td><input type='text' className='quantityInput invisible'/></td>
                                         <td>Discount</td>
                                     </tr>
                                     <tr className={showDiscountInput}>
-                                        <td className='quantityInput'><input type='text' onBlur={this.setDiscountCode()}/></td>
+                                        <td className='quantityInput'><input id='inputCouponCode' type='text' onBlur={this.setDiscountCode()}/></td>
                                         <td><input className='quantityInput invisible'/></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(discountAmount)}/></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(preDiscountSubTotal - discountAmount)}/></td>
                                     </tr>
                                     <tr>
                                         <td>Pricing</td>
-                                        <td/>
+                                        <td><input type='text' className='quantityInput invisible'/></td>
                                         <td>Discount</td>
                                     </tr>
                                     <tr>
                                         <td><input type='text' defaultValue={this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'label')}/></td>
                                         <td/>
                                         <td><input className='priceInput' type='text' value={this.showAsCurrency(priceDiscountAmount)}/></td>
-                                        <td><input className='priceInput' type='text' value={isNaN(preDiscountSubTotal - discountAmount - priceDiscountAmount) ? this.showAsCurrency(0) : this.showAsCurrency(preDiscountSubTotal - discountAmount - priceDiscountAmount)}/></td>
+                                        {/* <td><input className='priceInput' type='text' value={isNaN(preDiscountSubTotal - discountAmount - priceDiscountAmount) ? this.showAsCurrency(0) : this.showAsCurrency(preDiscountSubTotal - discountAmount - priceDiscountAmount)}/></td><br/> */}
+                                        <td><input id='thisOne' className='priceInput' type='text' value={isNaN(priceDiscountTotal) ? this.showAsCurrency(0) : this.showAsCurrency(priceDiscountTotal)}/></td>
+
+                                    </tr>
+                                    <tr className={taxable}>
+                                        <td/>
+                                        <td/>
+                                        <td>Tax</td>
+                                    </tr>
+                                    <tr className={taxable}>
+                                        <td/>
+                                        <td/>
+                                        <td><input className='priceInput' value={selectedUser.salesTax === false || isNaN(priceDiscountTotal) ? this.showAsCurrency(0) :  this.showAsCurrency(taxAmount)}/></td>
+                                        <td><input className='priceInput' value={this.showAsCurrency(totalAfterTax)}/></td>
                                     </tr>
                                 </tr>
                             </table>
