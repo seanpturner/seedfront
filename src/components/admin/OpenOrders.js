@@ -132,7 +132,7 @@ class OpenOrders extends Component {
       if (order.orderCancelledDate) {
         order.orderCancelledDate = this.parseDate(order.orderCancelledDate);
       };
-      order.orderNotes.forEach(note =>{
+      order.orderNotes?.forEach(note =>{
         if (note){
           note.date = this.parseDate(note.date);
         }

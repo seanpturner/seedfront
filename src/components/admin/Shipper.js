@@ -137,6 +137,13 @@ class Shipper extends Component {
                     </tr>
                     }
 
+                    {/* <tr className='topAlignTableRow'>
+                        <td className='topAlignTable'/>
+                        <td className='topAlignTable'/>
+                        <td className='topAlignTable rightCell'/>
+                        <td className='topAlignTable rightCell'>Pre-tax:&nbsp;{this.showAsCurrency(selectedOrder.preTax)}</td>
+                    </tr> */}
+
                     <tr className='topAlignTableRow'>
                         <td className='topAlignTable'/>
                         <td className='topAlignTable'/>

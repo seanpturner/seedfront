@@ -27,7 +27,9 @@ class CreateOrder extends Component {
         priceDiscountTotal: null,
         taxRate: .07,
         taxAmount: 0,
-        totalAfterTax: 0
+        totalAfterTax: 0,
+        shippingFee: 0,
+        confirmSubmit: false
 
      } 
 
@@ -219,8 +221,12 @@ class CreateOrder extends Component {
         });
     }
 
-    populateDropdowns = () => {
-        let dropdowns = ['liSeedSelectList', 'extraSeedSelectList', 'orderStatus'];
+    populateDropdowns = (dd) => {
+        let dropdowns = [];
+        dropdowns.push(dd);
+        if(!dd) {
+            dropdowns = ['liSeedSelectList', 'extraSeedSelectList', 'orderStatus', 'shippingFee'];
+        }
         let seedList = this.state.allSeeds;
         let statusList = this.state.allPurchaseStatuses;
         let selectBox;
@@ -228,7 +234,7 @@ class CreateOrder extends Component {
             selectBox = document.getElementById(dropdown);
             selectBox.setAttribute('id', dropdown);
             selectBox.innerHTML = "";
-            selectBox.options.add(new Option("", "", true));
+            selectBox.options.add(new Option('', '', true));
             if (dropdown.includes('SeedSelectList')) {
                 seedList.forEach(seed => {
                     selectBox.options.add(new Option(seed.name + ' (' + seed.quantityAvailable + ')', seed.id, false));
@@ -239,7 +245,54 @@ class CreateOrder extends Component {
                     selectBox.options.add(new Option(status.label, status.statusCode));
                 });
             }
+            if (dropdown === 'shippingFee') {
+                // selectBox.innerHTML = "";
+                // selectBox.options.add(new Option('', null, true));
+                selectBox.options.add(new Option('Standard shipping', 1, false));
+                selectBox.options.add(new Option('Expedited shipping', 2, false));
+                selectBox.options.add(new Option('No shipping', 0, false));
+            }
         });
+    }
+
+    transLateShippingFee = (shippingOption) => {
+        let selectedUser = this.state.selectedUser;
+        let allPricingStructures = this.state.allPricingStructures;
+        let freeShipping = this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'freeShipping');
+        let freeShippingMin = this.crossReference(allPricingStructures, 'id', selectedUser.pricingStructure, 'minimumOrder');
+        let priceDiscountTotal = this.state.priceDiscountTotal;
+        if (!priceDiscountTotal) {
+            priceDiscountTotal = this.state.preDiscountSubTotal;
+        }
+        if (freeShipping && priceDiscountTotal >= freeShippingMin) {
+            switch (shippingOption) {
+                case '0':
+                    return 0;
+                    break;
+                case '1':
+                    return 0;
+                    break;
+                case '2':
+                    return 5;
+                    break;
+                default:
+                    return 0;
+            }
+        }else{
+            switch (shippingOption) {
+                case '0':
+                    return 0;
+                    break;
+                case '1':
+                    return 6;
+                    break;
+                case '2':
+                    return 10;
+                    break;
+                default:
+                    return 0;
+            }
+        }
     }
 
     updateOrder = (key) => (event) => {
@@ -273,7 +326,10 @@ class CreateOrder extends Component {
         }else if (event.target.value.replace(/\s/g, '') !== "") {
             no[key] = event.target.value;
             this.setState({ newOrder: no });
-            document.getElementById(key).value = '';
+            if (key != 'shippingFee') {
+                document.getElementById(key).value = '';
+            }
+            
         }
     }
 
@@ -319,6 +375,7 @@ class CreateOrder extends Component {
         setTimeout(() => {
             this.checkDiscountCode();
             this.getPricingStructureDiscount();
+            this.populateDropdowns('shippingOptions');
         }, 100);
         this.checkTax();
         
@@ -402,10 +459,13 @@ class CreateOrder extends Component {
             if (event.target.value < .01) {
                 bli.price = null;
                 document.getElementById('liPrice').value = '';
+            }else{
+                bli.price = parseFloat(event.target.value);
             }
         }
         if (key === 'itemId') {
-            bli.price = this.crossReference(this.state.allSeeds, 'id', parseInt(event.target.value), 'price');
+            bli.price = parseFloat(this.crossReference(this.state.allSeeds, 'id', parseInt(event.target.value), 'price'));
+            bli.itemId = parseInt(event.target.value);
             document.getElementById('liPrice').value = bli.price;
             // this.setState({ buildLineItem: bli });
         }
@@ -445,6 +505,7 @@ class CreateOrder extends Component {
             this.checkDiscountCode();
             this.getPricingStructureDiscount();
             this.checkTax();
+            this.populateDropdowns('shippingFee');
         }, 100);
     }
 
@@ -468,7 +529,7 @@ class CreateOrder extends Component {
             }
         }
         else {
-            be[key] = event.target.value;
+            be[key] = parseFloat(event.target.value);
         }
         this.setState({ buildLineItem: be });
     }
@@ -569,6 +630,39 @@ class CreateOrder extends Component {
         }, 100);
     }
 
+    prepareOrder = () => {
+        let no = this.state.newOrder;
+        let su = this.state.selectedUser;
+        no.pricingStructure = su.pricingStructure;
+        no.shippingFee = this.transLateShippingFee(no.shippingFee);
+        no.purchaseDate = this.getDateTime(true);
+        no.total = this.state.totalAfterTax + no.shippingFee;
+        no.preTax = this.state.priceDiscountTotal;
+        no.tax = this.state.taxAmount;
+        no.discountCode = this.state.discountCode;
+        no.discountAmount = this.state.discountAmount;
+        if (no.discountAmount) {
+            no.discountApplied = true;
+        }else{
+            no.discountApplied = false;
+        }
+        this.submitOrder(no);
+    }
+
+    submitOrder = (updateOrder) => {
+        let fetchUrl = this.state.baseUrl + '/purchases';
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: JSON.stringify(updateOrder)
+        };
+        fetch(fetchUrl, requestOptions)
+      .then(response => response.text())
+      .then(response => window.location.reload())
+      }
+
     render() { 
         const activeUsers = this.state.activeUsers;
         const allPurchaseStatuses = this.state.allPurchaseStatuses;
@@ -593,16 +687,20 @@ class CreateOrder extends Component {
         const priceDiscountAmount = this.state.priceDiscountAmount;
         const priceDiscountTotal = this.state.priceDiscountTotal ? this.state.priceDiscountTotal : discountAmount;
         const taxable = selectedUser.salesTax ?  'taxable' : 'hidden';
-        // const taxRate = this.state.taxRate;
         const taxAmount = this.state.taxAmount;
         const totalAfterTax = this.state.totalAfterTax;
+        const shippingFee = newOrder.shippingFee ? newOrder.shippingFee : 0;
+        const shippingFeeLabel = newOrder.shippingFee === null ? '' : newOrder.shippingFee === '1' ? 'Standard' : newOrder.shippingFee === '2' ? 'Expedite' : 'None';
+        const no = this.state.newOrder;
+        const submitOrder = no.deliveryAddress1 && no.city && no.state && no.zip && no.orderStatus && no.lineItems && no.lineItems.length > 0 && no.shippingFee ? 'submitOrder' : 'hidden';
+        const confirmSubmit = this.state.confirmSubmit ? 'confirmSubmit alertRedText' : 'hidden';
 
         return (
             <div className='adminPage'>
                 <div className="adminNavDiv">
                     <AdminNav />
                     <span className={showLoading}><h3>Loading... {secondsRemaining}</h3></span>
-                    <br/>{'newOrder: ' + JSON.stringify(newOrder)}<br/>
+                    {/* <br/>{'newOrder: ' + JSON.stringify(newOrder)}<br/> */}
                     {/* <br/>{'buildLineItem: ' + JSON.stringify(buildLineItem)}<br/> */}
                     {/* <br/>{'activeUsers: ' + JSON.stringify(activeUsers)}<br/> */}
                     {/* <br/>{'selectedUser: ' + JSON.stringify(selectedUser)}<br/> */}
@@ -777,6 +875,14 @@ class CreateOrder extends Component {
                                         )
                                     })}</td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                    <Link className={submitOrder} to='' onClick={()=>this.setState({confirmSubmit: true})}>Submit</Link><br/>
+                                    <span className={confirmSubmit}>Are you sure?</span><br/>
+                                    <Link className={confirmSubmit} to='' onClick={()=>this.prepareOrder()}>Yes</Link>&nbsp;
+                                    <Link className={confirmSubmit} to='' onClick={()=>this.setState({confirmSubmit: false})}>No</Link>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                         <div className='newOrder2'>
@@ -895,9 +1001,28 @@ class CreateOrder extends Component {
                                         <td><input className='priceInput' value={selectedUser.salesTax === false || isNaN(priceDiscountTotal) ? this.showAsCurrency(0) :  this.showAsCurrency(taxAmount)}/></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(totalAfterTax)}/></td>
                                     </tr>
+                                    <tr>
+                                        <td>Shipping</td>
+                                        <td/>
+                                        <td>Cost</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id='shippingFee' onChange={this.updateOrder('shippingFee')}/>
+                                        </td>
+                                        <td><span>{shippingFeeLabel}</span></td>
+                                        <td><input className='priceInput' value={this.showAsCurrency(this.transLateShippingFee(shippingFee))}/></td>
+                                        <td><input className='priceInput' value={this.showAsCurrency(totalAfterTax + this.transLateShippingFee(shippingFee))}/></td>
+                                    </tr>
                                 </tr>
                             </table>
                         </div>
+                        {/* <div className={submitOrder}>
+                            <Link to='' onClick={()=>this.setState({confirmSubmit: true})}>Submit</Link><br/>
+                            <span className={confirmSubmit}>Are you sure you want to save these changes?</span>&nbsp;
+                            <Link to='' onClick={()=>this.prepareOrder()}>Yes</Link>
+                            <Link to='' onClick={()=>this.setState({confirmSubmit: false})}>No</Link>
+                        </div> */}
                     </div>
                 </div>
             </div>
