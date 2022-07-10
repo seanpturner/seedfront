@@ -240,9 +240,20 @@ class CreateOrder extends Component {
                     selectBox.options.add(new Option(seed.name + ' (' + seed.quantityAvailable + ')', seed.id, false));
                 });
             }
+            // if (dropdown === 'orderStatus') {
+            //     statusList.forEach(status => {
+            //         selectBox.options.add(new Option(status.label, status.statusCode));
+            //     });
+            // }
             if (dropdown === 'orderStatus') {
+                selectBox.innerHTML = "";
+                selectBox.options.add(new Option('', '', false));
                 statusList.forEach(status => {
-                    selectBox.options.add(new Option(status.label, status.statusCode));
+                    if (status.label === 'Ordered') {
+                        selectBox.options.add(new Option(status.label, status.statusCode, true));
+                    }else{
+                        selectBox.options.add(new Option(status.label, status.statusCode));
+                    }
                 });
             }
             if (dropdown === 'shippingFee') {
@@ -268,13 +279,13 @@ class CreateOrder extends Component {
             switch (shippingOption) {
                 case '0':
                     return 0;
-                    break;
+                    // break;
                 case '1':
                     return 0;
-                    break;
+                    // break;
                 case '2':
                     return 5;
-                    break;
+                    // break;
                 default:
                     return 0;
             }
@@ -282,13 +293,13 @@ class CreateOrder extends Component {
             switch (shippingOption) {
                 case '0':
                     return 0;
-                    break;
+                    // break;
                 case '1':
                     return 6;
-                    break;
+                    // break;
                 case '2':
                     return 10;
-                    break;
+                    // break;
                 default:
                     return 0;
             }
@@ -326,7 +337,7 @@ class CreateOrder extends Component {
         }else if (event.target.value.replace(/\s/g, '') !== "") {
             no[key] = event.target.value;
             this.setState({ newOrder: no });
-            if (key != 'shippingFee') {
+            if (key !== 'shippingFee') {
                 document.getElementById(key).value = '';
             }
             
@@ -667,8 +678,8 @@ class CreateOrder extends Component {
         const activeUsers = this.state.activeUsers;
         const allPurchaseStatuses = this.state.allPurchaseStatuses;
         const allPricingStructures = this.state.allPricingStructures;
-        const allDiscounts = this.state.allDiscounts;
-        const allSeeds = this.state.allSeeds;
+        // const allDiscounts = this.state.allDiscounts;
+        // const allSeeds = this.state.allSeeds;
         const searchResults = this.state.searchResults;
         const selectedUser = this.state.selectedUser;
         const secondsRemaining = this.state.secondsRemaining;
@@ -1012,17 +1023,11 @@ class CreateOrder extends Component {
                                         </td>
                                         <td><span>{shippingFeeLabel}</span></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(this.transLateShippingFee(shippingFee))}/></td>
-                                        <td><input className='priceInput' value={this.showAsCurrency(totalAfterTax + this.transLateShippingFee(shippingFee))}/></td>
+                                        <td><b><input className='priceInput boldTotal' value={this.showAsCurrency(totalAfterTax + this.transLateShippingFee(shippingFee))}/></b></td>
                                     </tr>
                                 </tr>
                             </table>
                         </div>
-                        {/* <div className={submitOrder}>
-                            <Link to='' onClick={()=>this.setState({confirmSubmit: true})}>Submit</Link><br/>
-                            <span className={confirmSubmit}>Are you sure you want to save these changes?</span>&nbsp;
-                            <Link to='' onClick={()=>this.prepareOrder()}>Yes</Link>
-                            <Link to='' onClick={()=>this.setState({confirmSubmit: false})}>No</Link>
-                        </div> */}
                     </div>
                 </div>
             </div>
