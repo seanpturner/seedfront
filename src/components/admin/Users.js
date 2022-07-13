@@ -165,6 +165,8 @@ class Users extends Component {
 
   handlePassword = (pw) => (event) => {
     this.setState({[pw]: event.target.value});
+    // let md5 = require('md5');
+    // alert(md5(event.target.value))
   }
 
   savePassword = () => {

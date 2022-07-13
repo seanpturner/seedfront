@@ -21,6 +21,7 @@ import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
 import Shipper from './components/admin/Shipper';
 import CreateOrder from './components/admin/CreateOrder';
+import Login from './components/public/login';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route  path='/users' element={<Users/>} />
         <Route  path='/shipper' element={<Shipper/>} />
         <Route  path='/createOrder' element={<CreateOrder/>} />
+        <Route  path='/login' element={<Login/>} />
       </Routes>
     </Router>
 
