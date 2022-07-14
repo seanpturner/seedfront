@@ -4,8 +4,8 @@ import {
   Routes,
   Route
 } from 'react-router-dom';
-import Home from './components/Home';
-import About from './components/About';
+import Home from './components/public/Home';
+import About from './components/public/About';
 import Admin from './components/admin/Admin';
 import Comments from './components/admin/Comments';
 import Content from './components/admin/Content';
@@ -22,30 +22,35 @@ import Pricing from './components/admin/Pricing';
 import Shipper from './components/admin/Shipper';
 import CreateOrder from './components/admin/CreateOrder';
 import Login from './components/public/login';
+import Contact from './components/public/Contact';
+// import FindSeeds from './components/public/FindSeeds';
+import FindSeeds from './components/public/FindSeeds';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route exact path='/' element={<Home/>} />
-        <Route  path='/home' element={<Home/>} />
-        <Route  path='/about' element={<About/>} />
-        <Route  path='/admin' element={<Admin/>} />
-        <Route  path='/comments' element={<Comments/>} />
-        <Route  path='/content' element={<Content/>} />
-        <Route  path='/discounts' element={<Discounts/>} />
-        <Route  path='/lines' element={<Lines/>} />
-        <Route  path='/logins' element={<Logins/>} />
-        <Route  path='/messages' element={<Messages/>} />
-        <Route  path='/plants' element={<Plants/>} />
-        <Route  path='/pricing' element={<Pricing/>} />
-        <Route  path='/openorders' element={<OpenOrders/>} />
-        <Route  path='/allorders' element={<AllOrders/>} />
-        <Route  path='/seeds' element={<Seeds/>} />
-        <Route  path='/users' element={<Users/>} />
-        <Route  path='/shipper' element={<Shipper/>} />
-        <Route  path='/createOrder' element={<CreateOrder/>} />
-        <Route  path='/login' element={<Login/>} />
+        <Route path='/home' element={<Home/>} />
+        <Route path='/about' element={<About/>} />
+        <Route path='/admin' element={<Admin/>} />
+        <Route path='/comments' element={<Comments/>} />
+        <Route path='/content' element={<Content/>} />
+        <Route path='/discounts' element={<Discounts/>} />
+        <Route path='/lines' element={<Lines/>} />
+        <Route path='/logins' element={<Logins/>} />
+        <Route path='/messages' element={<Messages/>} />
+        <Route path='/plants' element={<Plants/>} />
+        <Route path='/pricing' element={<Pricing/>} />
+        <Route path='/openorders' element={<OpenOrders/>} />
+        <Route path='/allorders' element={<AllOrders/>} />
+        <Route path='/seeds' element={<Seeds/>} />
+        <Route path='/users' element={<Users/>} />
+        <Route path='/shipper' element={<Shipper/>} />
+        <Route path='/createOrder' element={<CreateOrder/>} />
+        <Route path='/login' element={<Login/>} />
+        <Route path='/contact' element={<Contact/>} />
+        <Route path='/findseeds' element={<FindSeeds/>} />
       </Routes>
     </Router>
 

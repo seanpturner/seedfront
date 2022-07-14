@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import NavBar from '../common/NavBar';
 
 function Login() {
 
@@ -78,11 +79,16 @@ function Login() {
     }
 
     return (
-        <div>
-            {/* {JSON.stringify(inputs)}<br/>Login page<br/> */}
-            <input id='userName' type='text' name='userName' onChange={(e)=>{handleChange(e)}}/><br/>
+        <div className='pubPage'>
+            <div className='navBar'>
+                <NavBar/>
+            </div>
+            <div className='loginInputs'>
+                <input id='userName' type='text' name='userName' onChange={(e)=>{handleChange(e)}}/><br/>
             <input id='password' type='password' name='password' onChange={(e)=>{handleChange(e)}}/><br/>
             <button onClick={()=>checkPassword()}>Submit</button>
+            </div>
+            
         </div>
     );
 }
