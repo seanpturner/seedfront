@@ -7,7 +7,9 @@ function FindSeeds() {
         <div className='navBar'>
             <NavBar/>
         </div>
-        FindSeeds
+        <div className='pubContent'>
+          FindSeeds
+        </div>
     </div>
   )
 }
