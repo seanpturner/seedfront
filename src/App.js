@@ -23,9 +23,9 @@ import Shipper from './components/admin/Shipper';
 import CreateOrder from './components/admin/CreateOrder';
 import Login from './components/public/login';
 import Contact from './components/public/Contact';
-// import FindSeeds from './components/public/FindSeeds';
 import FindSeeds from './components/public/FindSeeds';
-
+import LoginSuccess from './components/public/LoginSuccess';
+import LoginFailure from './components/public/LoginFailure';
 function App() {
   return (
     <Router>
@@ -51,6 +51,8 @@ function App() {
         <Route path='/login' element={<Login/>} />
         <Route path='/contact' element={<Contact/>} />
         <Route path='/findseeds' element={<FindSeeds/>} />
+        <Route path='/loginsuccess' element={<LoginSuccess/>} />
+        <Route path='/loginfailure' element={<LoginFailure/>} />
       </Routes>
     </Router>
 

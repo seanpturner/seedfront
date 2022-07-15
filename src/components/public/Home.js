@@ -14,6 +14,7 @@ function Home() {
                 <img className='homeImageLandscape' alt='cannabis going to seed' src={HomeImage1}/>
                 <img className='homeImagePortrait' alt='cannabis going to seed' src={HomeImage2}/>
             </div>
+            <div className='footerBlend'/>
             <div>
                 <Footer/>
             </div>

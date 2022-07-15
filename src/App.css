@@ -237,12 +237,6 @@
   object-fit: contain;
 }
 
-.navLogoDiv {
-  display: flex;
-  padding-left: 5vw;
-  padding-right: 3vw;;
-}
-
 .navLogo {
   height: 100px;
   width: auto;
@@ -312,9 +306,11 @@
 
 
 .homeImageDiv {
+  position: relative;
   max-width: 100vw;
   /* max-height: 85%; */
   object-fit: cover;
+  z-index: 2;
 }
 
 .noScroll {
@@ -325,11 +321,20 @@
   position: fixed;
   bottom: 0vh;
   width: 100%;
-  z-index: 2;
+  z-index: 3;
   text-align: center;
   background-color: rgb(10, 34, 10);
   color: gray;
   font-size: small;
+}
+
+.footerBlend {
+  background-color: rgb(10, 34, 10);
+  z-index: 1;
+  position: fixed;
+  width: 100vw;
+  height: 60vh;
+  bottom: 0px;
 }
 
 .linkDiv {
@@ -339,7 +344,22 @@
   padding-left: 1.25vw;
 }
 
+.liu {
+  position: absolute;
+  left: 5px;
+}
+
+.loginResult {
+  text-align: center;
+}
+
 @media (orientation: landscape) {
+  .navLogoDiv {
+    display: flex;
+    padding-left: 5vw;
+    padding-right: 3vw;;
+  }
+
   .linkDivLandscape {
     line-height: 70px;
     font-size: calc(20px + .5vh);
@@ -432,5 +452,12 @@
   .homeImagePortrait {
     /* display: none; */
     width: 100vw;
+  }
+  @media screen and (max-width: 400px) {
+    .navLogoDiv {
+      display: flex;
+      padding-left: 1vw;
+      padding-right: 1vw;;
+    }
   }
 }

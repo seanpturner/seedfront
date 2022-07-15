@@ -551,7 +551,8 @@ showAsCurrency = (amount) => {
               <td><Link to="">Notes</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "mother")}}>Mother</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "father")}}>Father</Link></td>
-              <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "quantityAvailable")}}>Father</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "quantityAvailable")}}>Quantity
+              </Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "maternalLine")}}>Maternal Line</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "paternalLine")}}>Paternal Line</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allSeeds, "feminized")}}>Feminized</Link></td>

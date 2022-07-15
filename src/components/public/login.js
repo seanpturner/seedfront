@@ -7,11 +7,9 @@ function Login() {
         userName: null,
         password: null
     });
-    // useEffect(() => {
-        // sessionStorage.clear();
-        // clearFields();
-        // alert('loaded');
-    // }, [])
+
+    // const history = useHistory;
+
     const baseUrl = 'http://localhost:8080/users/getToken/';
 
     const handleChange = (e) => {
@@ -23,12 +21,9 @@ function Login() {
         }
         i[e.target.name] = val;
         setInputs(i);
-        // document.getElementById('userName').value = '';
-        // document.getElementById('password').value = '';
     }
 
     const checkPassword = () => {
-        
         setTimeout(() => {
             timeOutLogIn(50);
         }, 1000);
@@ -38,7 +33,8 @@ function Login() {
     const submitPassword = () => {
         var requestOptions = {
             method: 'GET',
-            redirect: 'follow'
+            redirect: 'follow',
+            mode: 'cors'
         };
           
         fetch(baseUrl + inputs.userName + '/' + inputs.password, requestOptions)
@@ -46,6 +42,7 @@ function Login() {
             .then(response => {
                 sessionStorage.setItem('bearerToken', response)
                 sessionStorage.setItem('userName', inputs.userName);
+                // alert(response);
         })
         .then(() => clearFields()) 
             // .then(result => console.log(result))
@@ -56,13 +53,18 @@ function Login() {
         document.getElementById('userName').value = '';
         document.getElementById('password').value = '';
     }
+
+    const unableToLogIn = () => {
+        window.location.assign('./loginfailure');
+    }
     
     const timeOutLogIn = (n) => {
         let tokenCheck = sessionStorage.getItem('bearerToken');
         if (n > 0) {
             if (tokenCheck === 'invalid') {
                 sessionStorage.clear();
-                alert('bad username or password');
+                // alert('bad username or password');
+                unableToLogIn();
             }
             if (tokenCheck === '' || tokenCheck === null) {
                 console.log(n);
@@ -71,10 +73,14 @@ function Login() {
                     timeOutLogIn(n);
                 }, 100);
             }
+            if (tokenCheck && tokenCheck !== 'invalid' && tokenCheck !== '') {
+                window.location.assign('./loginsuccess');
+            } 
         }
         else{
-            alert('unable to log you in');
+            // alert('unable to log you in');
             sessionStorage.clear();
+            unableToLogIn();
         }    
     }
 
