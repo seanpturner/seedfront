@@ -292,8 +292,8 @@
 
 .loginInputs {
   position: relative;
-  top: 30vh;
-  left: calc(50vw - 100px);
+  top: 20vh;
+  left: calc(50vw - 120px);
 }
 
 .pubContent {
