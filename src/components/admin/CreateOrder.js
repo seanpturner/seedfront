@@ -198,6 +198,7 @@ class CreateOrder extends Component {
                     no.city = user.city;
                     no.state = user.state;
                     no.zip = user.zip;
+                    no.email = user.email
                 }
                 this.setState({
                 selectedUser: user,
@@ -838,6 +839,11 @@ class CreateOrder extends Component {
                                     <td>Zip</td>
                                     <td><input id='zip' type='text' onBlur={this.updateOrder('zip')}/></td>
                                     <td className='noteColumn nudgeRight4'>{newOrder.zip}</td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td><input id='zip' type='text' onBlur={this.updateOrder('email')}/></td>
+                                    <td className='noteColumn nudgeRight4'>{newOrder.email}</td>
                                 </tr>
                                 <tr>
                                     <td>Delivery notes</td>

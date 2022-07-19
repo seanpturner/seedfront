@@ -8,7 +8,7 @@ function Home() {
     return (
         <div className='pubPage noScroll'>
             <div className='navBar'>
-                <NavBar/>
+                <NavBar className='z3'/>
             </div>
             <div className='homeImageDiv'>
                 <img className='homeImageLandscape' alt='cannabis going to seed' src={HomeImage1}/>

@@ -318,7 +318,6 @@ function Login() {
                                 <option value='30'>30</option>
                                 <option value='31'>31</option>
                             </select>
-                            
                         </td>
                     </tr>
                     <tr>
@@ -351,6 +350,12 @@ function Login() {
                     </tr>
                     <tr>
                         <td className={okToSubmit}><button onClick={()=>addNewUser()}>Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td/>
+                    </tr>
+                    <tr>
+                        <td>Have an account?<br/><Link to='' onClick={()=>setViewDiv('login')}>Click here</Link></td>
                     </tr>
                 </table>
             </div>

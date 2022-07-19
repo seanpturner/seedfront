@@ -27,6 +27,9 @@ import FindSeeds from './components/public/FindSeeds';
 import LoginSuccess from './components/public/LoginSuccess';
 import LoginFailure from './components/public/LoginFailure';
 import CreationSuccess from './components/public/CreationSuccess';
+import FAQ from './components/public/FAQ';
+import ShoppingCart from './components/public/ShoppingCart';
+
 function App() {
   return (
     <Router>
@@ -55,6 +58,8 @@ function App() {
         <Route path='/loginsuccess' element={<LoginSuccess/>} />
         <Route path='/loginfailure' element={<LoginFailure/>} />
         <Route path='/creationsuccess' element={<CreationSuccess/>} />
+        <Route path='/faq' element={<FAQ/>} />
+        <Route path='/shoppingcart' element={<ShoppingCart/>} />
       </Routes>
     </Router>
 

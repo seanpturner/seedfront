@@ -74,9 +74,9 @@ class Shipper extends Component {
                             {selectedOrder.orderUser}<br/>
                             {selectedOrder.deliveryAddress1}<br/>
                             {selectedOrder.deliveryAddress2}{selectedOrder.deliveryAddress2 === null ? '' : <br/>}
-                            {selectedOrder.city + ', ' + selectedOrder.state}<br/>
-                            {selectedOrder.zip}<br/>
+                            {selectedOrder.city + ', ' + selectedOrder.state}&nbsp;{selectedOrder.zip}<br/>
                             {selectedOrder.phone}{selectedOrder.phone === null ? '' : <br/>}
+                            {selectedOrder.email}
                             {selectedOrder.purchaserName === null ? '' : 'Purchaser: '}{selectedOrder.purchaserName}{selectedOrder.purchaserName === null ? '' : <br/>}
                         </td>
                     </tr>
