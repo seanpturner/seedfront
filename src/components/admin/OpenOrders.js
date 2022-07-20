@@ -278,6 +278,25 @@ class OpenOrders extends Component {
     }
   }
 
+  setEcon = (so) => {
+    if (so) {
+      so = JSON.stringify(so);
+    }
+    let reload = false;
+    if (!so) {
+      so = JSON.stringify(this.state.selectedOrder);
+      reload = true;
+    }
+    localStorage.setItem('shipperInfo', so);
+    if (reload === true) {
+      window.open('/econfirm', '_blank', 'width=960px, height=1320px');
+      window.close();
+    }
+    if (reload === false) {
+      window.open('/econfirm', '_blank', 'width=960px, height=1320px');
+    }
+  }
+
   getSelectableDate = (selectStateMember, dateValue, y, m, d) => {
     let so = this.state.selectedOrder;
     let maxDay = 31;
@@ -731,7 +750,8 @@ class OpenOrders extends Component {
                         this.populateDropdowns();
                       }
                       }>Open</Link>
-                        <Link className='separateLinkLeft' to='' onClick={()=>this.setShipper(order)}>Shipping info </Link>
+                        <Link className='separateLinkLeft' to='' onClick={()=>this.setShipper(order)}>Shipper </Link>
+                        <Link className='separateLinkLeft' to='' onClick={()=>this.setEcon(order)}>E-con </Link>
                       </td>
                     </tr>
                     <td className='topAlignTable'>

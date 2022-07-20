@@ -20,6 +20,7 @@ import Seeds from './components/admin/Seeds';
 import Users from './components/admin/Users';
 import Pricing from './components/admin/Pricing';
 import Shipper from './components/admin/Shipper';
+import Econ from './components/admin/Econ';
 import CreateOrder from './components/admin/CreateOrder';
 import Login from './components/public/login';
 import Contact from './components/public/Contact';
@@ -29,6 +30,8 @@ import LoginFailure from './components/public/LoginFailure';
 import CreationSuccess from './components/public/CreationSuccess';
 import FAQ from './components/public/FAQ';
 import ShoppingCart from './components/public/ShoppingCart';
+import SendProps from './components/public/SendProps';
+import ReceiveProps from './components/public/ReceiveProps';
 
 function App() {
   return (
@@ -51,6 +54,7 @@ function App() {
         <Route path='/seeds' element={<Seeds/>} />
         <Route path='/users' element={<Users/>} />
         <Route path='/shipper' element={<Shipper/>} />
+        <Route path='/econfirm' element={<Econ/>} />
         <Route path='/createOrder' element={<CreateOrder/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/contact' element={<Contact/>} />
@@ -60,6 +64,8 @@ function App() {
         <Route path='/creationsuccess' element={<CreationSuccess/>} />
         <Route path='/faq' element={<FAQ/>} />
         <Route path='/shoppingcart' element={<ShoppingCart/>} />
+        <Route path='/sendprops' element={<SendProps/>} />
+        <Route path='/receiveprops/:id/:otherid' element={<ReceiveProps/>} />
       </Routes>
     </Router>
 
