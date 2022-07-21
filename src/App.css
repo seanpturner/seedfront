@@ -258,7 +258,14 @@
 }
 
 
+.centerText {
+  text-align: center;
+}
 
+.padCell {
+  padding-left: 5px;
+  padding-right: 5px;
+}
 
 .navLinksWrapper {
   display: inline-block;
@@ -357,6 +364,23 @@
   font-size: x-small;
 }
 
+.question {
+  font-weight: 600;
+  color: green;
+}
+
+.answer {
+  padding-bottom: 12px;
+}
+
+.faqTable {
+  width: 90vw;
+}
+
+.seedCol {
+  min-width: 150px;
+}
+
 /* Media queries */
 
 @media (orientation: landscape) {
@@ -405,6 +429,19 @@
 }
 
 @media (orientation: portrait) {
+  .adminRow {
+    vertical-align: top;
+    font-size: small;
+  }
+
+  .preTax {
+    font-size: small;
+  }
+
+  .seedCol {
+    min-width: 10px;
+  }
+
   .homeImageDiv {
     background-image: url('./components/photos/HomeImage2.jpeg');
     position: relative;

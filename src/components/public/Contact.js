@@ -7,7 +7,9 @@ function Contact() {
             <div className='navBar'>
                 <NavBar/>
             </div>
-            Contact
+            <div className='pubContent'>
+                Contact
+            </div>
         </div>
     )
 }

@@ -4,7 +4,7 @@ function Footer() {
   return (
     <div className='footerDiv'>
         <span id='footerText'>
-            Copyright © BoutiqueSeeds, 2022
+            Copyright © 2022 BoutiqueSeeds. All rights reserved.
         </span>
     </div>
   )

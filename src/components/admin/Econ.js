@@ -56,7 +56,7 @@ class Econ extends Component {
 
     getShipperInfo = (userId) => {
         setTimeout(() => {
-            let so = JSON.parse(localStorage.getItem('shipperInfo'));
+            let so = JSON.parse(sessionStorage.getItem('shipperInfo'));
             this.setState({ selectedOrder: so });
             this.clearStorage();
             if (so.userId === userId) {
@@ -72,7 +72,7 @@ class Econ extends Component {
 
     clearStorage = () => {
         setTimeout(() => {
-            localStorage.removeItem('shipperInfo');
+            sessionStorage.removeItem('shipperInfo');
         }, 200);
     }
 

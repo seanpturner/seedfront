@@ -24,7 +24,7 @@ function NavBar() {
     }
 
     const checkOpenCart = () => {
-        let openCart = JSON.parse(localStorage.getItem('userOrder'));
+        let openCart = JSON.parse(sessionStorage.getItem('userOrder'));
         if (openCart && openCart.length > 0) {
             setHasOpenCart(true);
         }else{

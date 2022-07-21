@@ -13,14 +13,14 @@ class Shipper extends Component {
     }
 
     getShipperInfo = () => {
-        let so = JSON.parse(localStorage.getItem('shipperInfo'));
+        let so = JSON.parse(sessionStorage.getItem('shipperInfo'));
         this.setState({ selectedOrder: so });
         this.clearStorage();
     }
 
     clearStorage = () => {
         setTimeout(() => {
-            localStorage.removeItem('shipperInfo');
+            sessionStorage.removeItem('shipperInfo');
         }, 200);
     }
 

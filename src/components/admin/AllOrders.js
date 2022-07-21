@@ -268,7 +268,7 @@ class AllOrders extends Component {
       so = JSON.stringify(this.state.selectedOrder);
       reload = true;
     }
-    localStorage.setItem('shipperInfo', so);
+    sessionStorage.setItem('shipperInfo', so);
     if (reload === true) {
       window.open('/shipper', '_blank', 'width=960px, height=1320px');
       window.close();
@@ -287,7 +287,7 @@ class AllOrders extends Component {
       so = JSON.stringify(this.state.selectedOrder);
       reload = true;
     }
-    localStorage.setItem('shipperInfo', so);
+    sessionStorage.setItem('shipperInfo', so);
     if (reload === true) {
       window.open('/econfirm', '_blank', 'width=960px, height=1320px');
       window.close();
