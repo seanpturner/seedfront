@@ -17,9 +17,9 @@ function NavBar() {
     const openCartP = hasOpenCart ? 'portraitLinks openCart' : 'hidden';
     const checkLoggedIn = () => {
         let un = sessionStorage.getItem('userName');
-        if (un) {
-            un = 'user: ' + un;
-        }
+        // if (un) {
+        //     un = 'user: ' + un;
+        // }
         setUserName(un);
     }
 
@@ -44,7 +44,8 @@ function NavBar() {
     return (
         <div className='nav'>
             <div className='greenBar'>
-                <span className='liu'>{userName}</span>
+                <span className='liu'>{userName ? userName.charAt(0).toUpperCase() + userName.slice(1) : ''}</span>
+                {/* <span className='liu'>{userName ? userName.slice(0,6) +  userName.charAt(6).toUpperCase() + userName.slice(7) : ''}</span> */}
                 <span className='questions'><Link to='/faq' className='whiteLink'>Have questions?</Link></span>
             </div>
             <div className='logoLinks'>

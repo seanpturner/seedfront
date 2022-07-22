@@ -5,7 +5,7 @@ function LoginSuccess() {
     useEffect(() => {
         setTimeout(() => {
             window.location.replace('./home');
-        }, 3000);
+        }, 2000);
     }, [])
   return (
     <div className='pubPage'>

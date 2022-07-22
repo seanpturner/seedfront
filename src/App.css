@@ -381,6 +381,20 @@
   min-width: 150px;
 }
 
+.paymentOptionDetails {
+  width: 50vw;
+  max-width: 50vw;
+}
+
+.paymentOptionSpan {
+  position: relative;
+  left: 2vw;
+}
+
+.paymentInstructions {
+  margin-bottom: 10px;
+}
+
 /* Media queries */
 
 @media (orientation: landscape) {
@@ -434,7 +448,7 @@
     font-size: small;
   }
 
-  .preTax {
+  .lineItemsTotal {
     font-size: small;
   }
 
