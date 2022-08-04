@@ -9,7 +9,7 @@ function ShoppingCart() {
     const [lineItems, setLineItems] = useState([]);
     const [seeds, setSeeds] = useState([]);
     const [discountCodeObject, setDiscountCodeObject] = useState({});
-    const [preTax, setPreTaxTotal] = useState(0);
+    const [preTax, setPreTax] = useState(0);
     // const [shippingSelected] = useState(false);
     const [tax, setTax] = useState(0);
     const [purchaseDate, setPurchaseDate] = useState();
@@ -29,7 +29,7 @@ function ShoppingCart() {
     const [orderUser, setOrderUser] = useState(null);
     const [email, setEmail] = useState(null);
     const [userPricing, setUserPricing] = useState({});
-    const [lineItemsTotal, setLineItemsTotal] = useState(0);
+    // const [lineItemsTotal, setLineItemsTotal] = useState(0);
     const [pricingStructureDiscount, setPricingStructureDiscount] = useState(0);
     const [totalWithoutPricingDiscount, setTotalWithoutPricingDiscount] = useState(0);
     const [alertDiscountedPrice, setAlertDiscountedPrice] = useState('');
@@ -47,9 +47,9 @@ function ShoppingCart() {
     const selectPayment = showModal === 'selectPayment' ? 'selectPayment' : 'hidden';
     const toSelectPayment = showModal === 'toSelectPayment' ? 'toSelectPayment' : 'hidden';
     const [paymentOption, setPaymentOption] = useState('');
-    const venmo = paymentOption === 'venmo' ? 'venmo' : 'hidden';
-    const cashApp = paymentOption === 'cashApp' ? 'cashApp' : 'hidden';
-    const card = paymentOption === 'card' ? 'card' : 'hidden';
+    // const venmo = paymentOption === 'venmo' ? 'venmo' : 'hidden';
+    // const cashApp = paymentOption === 'cashApp' ? 'cashApp' : 'hidden';
+    // const card = paymentOption === 'card' ? 'card' : 'hidden';
     const showDiscountRow = discountCodeValid && userPricing.allowDiscount ? 'showdiscountRow' : 'hidden';
     const standardShipping = userPricing.freeShipping === true ? 0 : 6;
     const expeditedShipping = userPricing.freeShipping === true ? 5: 12;
@@ -72,6 +72,7 @@ function ShoppingCart() {
     const hlShipping = showModal === 'chooseShipping' ? 'hlGreen' : '';
     const hlDiscountCode = showModal === 'addDiscountCode' ? 'hlGreen' : '';
     const showPricingDiscountRow = alertDiscountedPrice !== '' ? 'showPricingDiscountRow' : 'hidden';
+    const showBadCode = badCode ? 'alertRedText' : 'hidden';
 
     const order = {
         id: null,
@@ -236,7 +237,7 @@ function ShoppingCart() {
                 updateLineItemsTotal()
             }, 10);
         }else{
-            setLineItemsTotal(total );// * (1-pricingStructureDiscount));
+            setPreTax(total );// * (1-pricingStructureDiscount));
             if (applySalesTax) {
                 let t = total * taxRate;
                 t = parseFloat(t.toFixed(2));
@@ -344,10 +345,10 @@ function ShoppingCart() {
                 let dc = discountCodeObject;
                     let today = getDateTime(false);
                     if ((dc.customerSpecific && dc.customerId === userId) || !dc.customerSpecific) {
-                        if (lineItemsTotal >= dc.minimumOrderAmount) {
+                        if (preTax >= dc.minimumOrderAmount) {
                             if (dateAsInt(today) >= dateAsInt(dc.startDate) && dateAsInt(today) <= dateAsInt(dc.endDate)) {
                                 if (dc.discountRate) {
-                                    setDiscountAmount((lineItemsTotal * (dc.discountRate / 100)).toFixed(2));
+                                    setDiscountAmount((preTax * (dc.discountRate / 100)).toFixed(2));
                                     setDiscountApplied(true);
                                 }
                                 if (dc.discountAmount) {
@@ -446,7 +447,8 @@ function ShoppingCart() {
             && state.length >= 2
             && zip.length === 5
         ) {
-            setShowModal('selectPayment');
+            // setShowModal('selectPayment');
+            setShippingVerified(true);
         }
     }
 
@@ -471,13 +473,19 @@ function ShoppingCart() {
         applyDiscounts();
     // }, [checkCouponCode, lineItems, lineItemsTotal, userId, userPricing, discountCodeObject])
     // eslint-disable-next-line
-}, [lineItemsTotal, userId, userPricing, discountCodeObject])
+}, [preTax, userId, userPricing, discountCodeObject])
 
 
     useEffect(() => {
         updateLineItemsTotal();
         // eslint-disable-next-line
     }, [lineItems, seeds, pricingStructureDiscount])
+
+    useEffect(() => {
+        let t = preTax - discountAmount + tax + shippingFee;
+        setTotal(t);
+        //eslint-disable-next-line
+    },[preTax, discountAmount, shippingFee])
 
   return (
     <div className='pubPage'>
@@ -522,7 +530,7 @@ function ShoppingCart() {
                         <td>Subtotal</td>
                         <td/>
                         <td/>
-                        <td className='lineItemsTotal'>{showAsCurrency(lineItemsTotal)}</td>
+                        <td className='preTax'>{showAsCurrency(preTax)}</td>
                     </tr>
                     <tr className={showDiscountRow}>
                         <td/>
@@ -530,7 +538,7 @@ function ShoppingCart() {
                         {/* <td>Discount Code: <span className='alertRedText'>{discountCode}</span> </td> */}
                         <td/>
                         <td/>
-                        <td className={hlDiscountCode + ' lineItemsTotal'}>{showAsCurrency(-1 * discountAmount)}</td>
+                        <td className={hlDiscountCode + ' preTax'}>{showAsCurrency(-1 * discountAmount)}</td>
                     </tr>
                     <tr>
                         <td/>
@@ -551,7 +559,7 @@ function ShoppingCart() {
                         <td>Total</td>
                         <td/>
                         <td/>
-                        <td>{showAsCurrency(lineItemsTotal - discountAmount + tax + shippingFee)}</td>
+                        <td>{showAsCurrency(total)}</td>
                     </tr>
                 </table>
             </p>
@@ -567,22 +575,22 @@ function ShoppingCart() {
                 <p className='alertRedText'>Enter your discount code</p>
                 <input id='inputDiscountCode' type='text' onBlur={(e)=>setDiscountCode(e.target.value)}/><br/>
                 <Link to='' onClick={()=>{checkCouponCode()}}> Try this code</Link> or <Link to='' onClick={()=>{setShowModal('toChooseShipping'); setDiscountCode(null); setDiscountAmount(0); setDiscountCodeValid(false); document.getElementById('inputDiscountCode').value=''}}>Continue without a discount code</Link><br/>
-                    <span className='alertRedText'>{badCodeText}</span>
+                    <span className={showBadCode}>{badCodeText}</span>
                 <br/>
-                <span className={showChooseShippingLink}><Link className='nextText' to = '' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')} >Back to order</Link></span>
+                <span className={showChooseShippingLink}><Link className='nextText' to = '' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')} >Back: My order</Link></span>
             </div>
             <div className={toChooseShipping}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')}>Back to discount code</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')}>Back: Discount code</Link>
             </div>
             <div className={chooseShipping}>
                 <p className='alertRedText'>Select a shipping method</p>
                 <Link to='' onClick={()=>{setSelectedShipping('Standard shipping'); setShippingFee(standardShipping)}}>Standard shipping: {showAsCurrency(standardShipping)}</Link> or <Link to='' onClick={()=>{setSelectedShipping('Expedited shipping'); setShippingFee(expeditedShipping)}}>Expedited shipping: {showAsCurrency(expeditedShipping)}</Link><br/><br/>
                 <span className={showVerifyAddressLink}>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')} >Back to order</Link>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')} >Back: My order</Link>
                 </span>
             </div>
             <div className={toVerifyAddress}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')}>Back to choose shipping</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')}>Back: Choose shipping</Link>
             </div>
             <div className={verifyAddress}>
                 <p className='alertRedText'>Verify or edit the shipping information to select your payment option</p>
@@ -702,12 +710,12 @@ function ShoppingCart() {
                 </p>
                 <Link to='' onClick={()=>validateShipping()}>This shipping information is correct</Link>
                 {/* 'selectPayment' */}
-                <span className={showSelectPaymentLink}>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back to order</Link>
+                <span className={showSelectPaymentLink}><br/>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back: My order</Link>
                 </span>
             </div>
             <div className={toSelectPayment}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back to verify address</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back: Verify address</Link>
             </div>
             <div className={selectPayment}>
                 <span className='alertRedText'>Choose a payment option to be able to submit your order</span><br/>
@@ -721,14 +729,14 @@ function ShoppingCart() {
                     <div className='paymentOptionDetails'>{paymentOption === 'cashApp' ? <p><b>Cash App</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'cashApp' ? 'You will have 2 days to send ' + total + ' via Cash App to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
                     <div className='paymentOptionDetails'>{paymentOption === 'card' ? <p><b>Credit/Debit Card</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'card' ? 'You will be connected to the Stripe credit/debit card processing system when you submit your order. We will be notified immediately when payment is successfully processed, and you will receive an order confirmation at the email you provided.' : ''}</span></div>
                 </div>
-                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back to order</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back: My order</Link>
             </div>
             <div className={toSubmitOrder}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back to verify address</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back: Verify address</Link>
             </div>
             <div className={submitOrder}>
                 Submit Order<br/>
-                <Link to=''>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back to order</Link>
+                <Link to=''>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
             </div>
         </div>
     </div>

@@ -11,6 +11,7 @@ class OpenOrders extends Component {
     allPricingStructures: [],
     allDiscounts: [],
     allSeeds: [],
+    allPaymentTypes: [],
     masterJson: [],
     selectedOrder: "none",
     verifyCancel: false,
@@ -165,7 +166,10 @@ class OpenOrders extends Component {
         this.getFetch('discounts', null, 'allDiscounts', 'discountCode', 'ascending', 'seeds');
         break;
       case 'seeds':
-        this.getFetch('seeds', null, 'allSeeds', 'name', 'ascending', 'createMasterJson');
+        this.getFetch('seeds', null, 'allSeeds', 'name', 'ascending', 'payment');
+        break;
+      case 'payment':
+        this.getFetch('payment', null, 'allPaymentTypes', 'type', 'ascending', 'createMasterJson');
         break;
       case 'createMasterJson':
         setTimeout(() => {
@@ -390,8 +394,10 @@ class OpenOrders extends Component {
   crossReference = (list, sentKey, sentValue, returnKey) => {
     let returnItem;
     list.forEach(item => {
-      if (item[sentKey].toString() === sentValue.toString()) {
-        returnItem =  item[returnKey];
+      if (sentValue && sentValue !== undefined) {
+        if (item[sentKey].toString() === sentValue.toString()) {
+          returnItem =  item[returnKey];
+        }
       }
     });
     return returnItem;
@@ -653,10 +659,17 @@ class OpenOrders extends Component {
     });
  }
 
+ updatePaymentType = () => (event) => {
+  let so = this.state.selectedOrder;
+  so.paymentType = event.target.value;
+  this.setState({ selectedOrder: so });
+ }
+
  populateDropdowns = () => {
-  let dropdowns = ['updateOrderStatus'];
+  let dropdowns = ['updateOrderStatus', 'paymentOptions'];
   let seedList = this.state.allSeeds;
   let statusList = this.state.allPurchaseStatuses;
+  let paymentTypes = this.state.allPaymentTypes;
   let selectBox;
   dropdowns.forEach(dropdown => {
       selectBox = document.getElementById(dropdown);
@@ -672,6 +685,11 @@ class OpenOrders extends Component {
           statusList.forEach(status => {
               selectBox.options.add(new Option(status.label, status.statusCode));
           });
+      }
+      if (dropdown === 'paymentOptions') {
+        paymentTypes.forEach(payment => {
+            selectBox.options.add(new Option(payment.type, payment.id));
+        });
       }
   });
 }
@@ -816,7 +834,7 @@ class OpenOrders extends Component {
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable grayText'>Order Date</td>
                     <td/>
-                    <td className='topAlignTable'>{selectedOrder.purchaseDate}</td>
+                    <td className='topAlignTable rightCell'>{selectedOrder.purchaseDate}</td>
                     <td className='topAlignTable alertRedText'>{selectPurchaseDate}
                     </td>
                     <td/>
@@ -846,7 +864,12 @@ class OpenOrders extends Component {
                       }}>Close</Link>
                       </span>
                     </td>
-                    <td className='topAlignTable'>{selectedOrder.paymentDate}</td>
+                    <td className='topAlignTable rightCell'>{selectedOrder.paymentDate}</td>
+                  </tr>
+                  <tr className='topAlignTableRow'>
+                    <td className='topAlignTable grayText'>Payment Type</td>
+                    <td className='topAlignTable'><b>{this.crossReference(this.state.allPaymentTypes, 'id', selectedOrder?.paymentType, 'type')}</b></td>
+                    <td className='topAlignTable rightCell'><select name='paymentType' id='paymentOptions' onChange={this.updatePaymentType()}/></td>
                   </tr>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable grayText'>Picked Date</td>
@@ -874,7 +897,7 @@ class OpenOrders extends Component {
                       }}>Close</Link>
                       </span>
                     </td>
-                    <td className='topAlignTable'>{selectedOrder.orderPickedDate}</td>
+                    <td className='topAlignTable rightCell'>{selectedOrder.orderPickedDate}</td>
                   </tr>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable grayText'>Shipped Date</td>
@@ -901,7 +924,7 @@ class OpenOrders extends Component {
                       }}>Close</Link>
                       </span>
                     </td>
-                    <td className='topAlignTable'>{selectedOrder.shippedDate}</td>
+                    <td className='topAlignTable rightCell'>{selectedOrder.shippedDate}</td>
                   </tr>
                 </td>
                 <td  className='topAlignTable rightBorder'>
