@@ -186,6 +186,31 @@ reloadPage = () => {
   window.location.reload();
 }
 
+addRequirement = () => (event) => {
+  let req = event.target.value;
+  let p = this.state.newPricing;
+  let existingReqs = p.requirements;
+  if (existingReqs === null || existingReqs === undefined) {
+    // existingReqs.push(req);
+    p.requirements = [req];
+    this.setState({ newPricing: p });
+  }
+  if (!p.requirements.includes(req)) {
+    existingReqs.push(req);
+    this.setState({ newPricing: p });
+  }
+  document.getElementById('inputUpdateRequirement').value = '';
+  document.getElementById('inputAddRequirement').value = '';
+}
+
+removeRequirement = (req) => {
+  let p = this.state.newPricing;
+  let existingReqs = p.requirements;
+  let filteredArray = existingReqs.filter(data => data !== req);
+  p.requirements = filteredArray;
+  this.setState({ newPricing: p });
+}
+
   render() {
     const dataSet = "Sorted by " + this.state.dataSet;
     const searchResults = this.state.searchResults;
@@ -204,6 +229,7 @@ reloadPage = () => {
         </div>
         <div className={selectedPricingDiv}>
         <h1 className='adminSectionTitle'>Update A Pricing Structure</h1>
+        <br/>{JSON.stringify(newPricing)}<br/>
         <p>
             <Link to="" onClick={()=>{this.setState({
                         selectedPricing: "none",
@@ -218,6 +244,7 @@ reloadPage = () => {
               <tr className='adminRow'>
                 <td>Label</td>
                 <td>Description</td>
+                <td>Requirements1</td>
                 <td>Discount</td>
                 <td>Minimum Order</td>
                 <td>Allow Other Discounts</td>
@@ -226,6 +253,7 @@ reloadPage = () => {
               <tr className='adminRow'>
                 <td>{selectedPricing.label}</td>
                 <td>{selectedPricing.description}</td>
+                <td>{selectedPricing.requirements?.toString()}</td>
                 <td>{selectedPricing.discount === undefined ? "" : selectedPricing.discount + "%"}</td>
                 <td>{selectedPricing.minimumOrder === undefined ? "" : this.showAsCurrency(selectedPricing.minimumOrder)}</td>
                 <td>{selectedPricing.allowDiscount?.toString()}</td>
@@ -260,6 +288,7 @@ reloadPage = () => {
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "id")}}>ID</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "label")}}>Label</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "description")}}>Description</Link></td>
+              <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "requirements")}}>Requirements2</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "discount")}}>Discount</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "minimumOrder")}}>Minimum Order</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPricing, "allowDiscount")}}>Allow Other Discounts</Link></td>
@@ -277,6 +306,7 @@ reloadPage = () => {
                   <td>{price.id}</td>
                   <td>{price.label}</td>
                   <td>{price.description}</td>
+                  <td>{price.requirements?.toString()}</td>
                   <td>{price.discount + "%"}</td>
                   <td>{price.minimumOrder}</td>
                   <td>{price.allowDiscount === true ? "Yes" : "No"}</td>
@@ -302,6 +332,20 @@ reloadPage = () => {
             <td>Description</td>
               <td><input type="text" className="clearField" name = "description" onChange={this.buildNewPricing("description")} defaultValue={selectedPricing.description}/></td>
             </tr>
+            <tr>
+            <td>Requirements3</td>
+              <td><input id='inputUpdateRequirement' type="text" className="clearField" name = "description" onBlur={this.addRequirement()}/></td>
+            </tr>
+            {selectedPricing.requirements?.map((req)=>{
+              return (
+                <tr>
+                <td/>
+                  <td>
+                    <Link to='' onClick={()=>this.removeRequirement(req)}>X</Link> {req}
+                  </td>
+                </tr>
+              )
+            })}
             <tr>
             <td>Discount</td>
               <td><input type="text" className="clearField" name = "discount" onChange={this.buildNewPricing("discount")} defaultValue={selectedPricing.discount}/></td>
@@ -340,6 +384,7 @@ reloadPage = () => {
         </div>
         <div className={addPricingDiv}>
         <h1 className='adminSectionTitle'>Add A Pricing Structure</h1>
+        <br/>{JSON.stringify(newPricing)}<br/>
         <p>
             <Link to="" onClick={()=>{this.setState({
                         selectedPricing: "none",
@@ -364,7 +409,21 @@ reloadPage = () => {
             <tr>
             <td>Discount</td>
               <td><input type="text" className="clearField" name = "discount" onChange={this.buildNewPricing("discount")}/></td>
-            </tr>    
+            </tr>
+            <tr>
+            <td>Requirements4</td>
+              <td><input id='inputAddRequirement' type="text" className="clearField" name = "discount" onBlur={this.addRequirement()}/></td>
+            </tr>
+            {newPricing.requirements?.map((req)=>{
+              return (
+                <tr>
+                <td/>
+                  <td>
+                    <Link to='' onClick={()=>this.removeRequirement(req)}>X</Link> {req}
+                  </td>
+                </tr>
+              )
+            })}
             <tr>
             <td>Minimum Order</td>
               <td><input type="text" className="clearField" name = "minimumOrder" onChange={this.buildNewPricing("minimumOrder")}/></td>

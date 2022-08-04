@@ -10,12 +10,14 @@ function ShoppingCart() {
     const [seeds, setSeeds] = useState([]);
     const [discountCodeObject, setDiscountCodeObject] = useState({});
     const [preTax, setPreTaxTotal] = useState(0);
+    const [shippingSelected] = useState(false);
     const [tax, setTax] = useState(0);
     const [purchaseDate, setPurchaseDate] = useState();
     const [shippingFee, setShippingFee] = useState(null);
     const [discountApplied, setDiscountApplied] = useState(false);
     const [discountAmount, setDiscountAmount] = useState(0); 
-    const [discountCode, setDiscountCode] = useState(null); 
+    const [discountCode, setDiscountCode] = useState(null);
+    const [discountCodeValid, setDiscountCodeValid] = useState(false);
     const [total, setTotal] = useState(null);
     const [deliveryAddress1, setDeliveryAddress1] = useState(null);
     const [deliveryAddress2, setDeliveryAddress2] = useState(null);
@@ -32,7 +34,8 @@ function ShoppingCart() {
     const [totalWithoutPricingDiscount, setTotalWithoutPricingDiscount] = useState(0);
     const [alertDiscountedPrice, setAlertDiscountedPrice] = useState('');
     const [okToAlertDiscount, setOkToAlertDiscount] = useState(false);
-    const [showModal, setShowModal] = useState('toAddDiscountCode');
+    const [showModal, setShowModal] = useState('completeOrder');
+    const completeOrder = showModal === 'completeOrder' ? 'completeOrder' : 'hidden';
     const toAddDiscountCode = showModal === 'toAddDiscountCode' ? 'toAddDiscountCode' : 'hidden';
     const addDiscountCode = showModal === 'addDiscountCode' ? 'addDiscountCode' : 'hidden';
     const toChooseShipping = showModal === 'toChooseShipping' ? 'toChooseShipping' : 'hidden';
@@ -47,8 +50,27 @@ function ShoppingCart() {
     const venmo = paymentOption === 'venmo' ? 'venmo' : 'hidden';
     const cashApp = paymentOption === 'cashApp' ? 'cashApp' : 'hidden';
     const card = paymentOption === 'card' ? 'card' : 'hidden';
-
-    
+    const showDiscountRow = discountCodeValid && userPricing.allowDiscount ? 'showdiscountRow' : 'hidden';
+    const standardShipping = userPricing.freeShipping === true ? 0 : 6;
+    const expeditedShipping = userPricing.freeShipping === true ? 5: 12;
+    const [selectedShipping, setSelectedShipping] = useState(null);
+    const shippingRow = selectedShipping ? 'shippingRow' : 'hidden';
+    const [badCode, setBadCode] = useState(false);
+    const [badCodeText, setBadCodeText] = useState('');
+    const [chooseShippingLink, setChooseShippingLink] = useState(false);
+    const showChooseShippingLink = chooseShippingLink ? 'showChooseShippingLink' : 'hidden';
+    const showVerifyAddressLink = shippingFee !== null ? 'showVerifyAddressLink' : 'hidden';
+    const [shippingVerified, setShippingVerified] = useState(false);
+    const showSelectPaymentLink = shippingVerified ? 'showSelectPaymentLink' : 'hidden';
+    const [validateFields, setValidateFields] = useState([]);
+    const vOrderUser = validateFields.includes('orderUser') && (!orderUser || orderUser.replace(/\s/g, '').length < 3) ? 'Name is required and must be at least 3 characters' : '';
+    const vAddress1 = validateFields.includes('address1') && (!deliveryAddress1 || deliveryAddress1.replace(/\s/g, '').length < 5) ? 'Address is required and must be at least 5 characters' : '';
+    const vCity = validateFields.includes('city') && (!city || city.replace(/\s/g, '').length < 3) ? 'City is required and must be at least 3 characters' : '';
+    const vState = validateFields.includes('state') && (!state || state.replace(/\s/g, '').length < 2) ? 'State is required and must be at least 2 characters' : '';
+    const vZip = validateFields.includes('zip') && (!zip || zip.replace(/\s/g, '').length < 5) ? 'ZIP is required and must be 5 consecutive numbers' : '';
+    const dnLength = deliveryNotes && deliveryNotes !== undefined ? deliveryNotes.length.toString() : '0';
+    const hlShipping = showModal === 'chooseShipping' ? 'hlGreen' : '';
+    const hlDiscountCode = showModal === 'addDiscountCode' ? 'hlGreen' : '';
 
     const order = {
         id: null,
@@ -256,17 +278,26 @@ function ShoppingCart() {
         }
     }
 
-    const checkCouponCode = (e) => {
-        let code = e.target.value;
+    const checkCouponCode = () => {
+        let code = discountCode;
         let requestOptions = {
             method: 'GET',
             redirect: 'follow'
         };
-          
+        setDiscountCodeValid(false);
+        setDiscountAmount(0);
+        setBadCodeText('This code is not valid');
+        setBadCode(true);
         fetch('http://localhost:8080/discounts/code/' + code, requestOptions)
         .then(response => response.json())
         .then(result => {
             setDiscountCodeObject(result);
+            if (result.discountCode && result.discountCode === code) {
+                setDiscountCodeValid(true);
+                // setShowModal('chooseShipping');
+                setBadCode(false);
+                setChooseShippingLink(true);
+            }
         })
     }
 
@@ -295,7 +326,7 @@ function ShoppingCart() {
         if (userPricing.active) {
             if (userPricing.minimumOrder <= totalWithoutPricingDiscount) {
                 if (okToAlertDiscount && userPricing.discount !== 0) {
-                    setAlertDiscountedPrice('Discount Pricing');
+                    setAlertDiscountedPrice('Discounted Pricing');
                 }
                 setPricingStructureDiscount(userPricing.discount / 100);
                 // refreshLineItems();
@@ -308,20 +339,49 @@ function ShoppingCart() {
 
         if (userPricing.allowDiscount){
             if (discountCode){
+                if (discountCodeValid){
                 let dc = discountCodeObject;
-                let today = getDateTime(false);
-                if ((dc.customerSpecific && dc.customerId === userId) || !dc.customerSpecific) {
-                    if (lineItemsTotal >= dc.minimumOrderAmount) {
-                        if (dateAsInt(today) >= dateAsInt(dc.startDate) && dateAsInt(today) <= dateAsInt(dc.endDate)) {
-                            if (dc.discountRate) {
-                                setDiscountAmount(lineItemsTotal * (dc.discountRate / 100));
+                    let today = getDateTime(false);
+                    if ((dc.customerSpecific && dc.customerId === userId) || !dc.customerSpecific) {
+                        if (lineItemsTotal >= dc.minimumOrderAmount) {
+                            if (dateAsInt(today) >= dateAsInt(dc.startDate) && dateAsInt(today) <= dateAsInt(dc.endDate)) {
+                                if (dc.discountRate) {
+                                    setDiscountAmount((lineItemsTotal * (dc.discountRate / 100)).toFixed(2));
+                                    setDiscountApplied(true);
+                                }
+                                if (dc.discountAmount) {
+                                    setDiscountAmount(dc.discountAmount.toFixed(2));
+                                    setDiscountApplied(true);
+                                }
+                                setBadCode(false);
+                                setBadCodeText('');
+                            }else{
+                                setBadCode(true);
+                                setBadCodeText(`The code ${discountCode} is not applicable at this time`);
                             }
-                            if (dc.discountAmount) {
-                                setDiscountAmount(dc.discountAmount);
-                            }
+                        }else{
+                            setBadCode(true);
+                            setBadCodeText(`The code "${discountCode}" requires a ${showAsCurrency(dc.minimumOrderAmount)} minimum order amount`);
                         }
+                    }else{
+                        setBadCode(true);
+                        setBadCodeText('This code cannot be applied to your account');
                     }
+                }else{
+                    setBadCode(true);
+                    setBadCodeText(`"${discountCode}" is not a valid code`);
                 }
+            }else{
+                setBadCode(false);
+                setBadCodeText('');
+            }
+        }else{
+            if (discountCode) {
+                setBadCode(true);
+                setBadCodeText('Your pricing structure does not allow discount codes');
+            }else{
+                setBadCode(false);
+                setBadCodeText('');
             }
         }
     }
@@ -339,14 +399,55 @@ function ShoppingCart() {
         }
     }
 
-    // const chooseModal = (modal) => {
-    //     switch (modal) {
-    //         case '':
-    //             //do a thing
-    //             break;
-            
-    //     }
-    // }
+    const setFieldsToValidate = (field) => {
+        let vf = [...validateFields];
+        if (!vf.includes(field)) {
+            vf.push(field);
+            setValidateFields(vf);
+        }
+    }
+
+    const validateZipInput = (zipChars) => {
+        if (zipChars === '') {
+            setZip('');
+        }
+        if (isNaN(zipChars) || zipChars.length > 5 || zipChars.includes('.') || zipChars.includes('-') || zipChars[0].toString() === '0') {
+            document.getElementById('inputZip').value = zip;
+        }
+        else{
+            setZip(zipChars);
+        }
+    }
+
+    const validateDeliveryNotes = (dn) => {
+        if ((dn && dn.length <= 80) || (dn === '')) {
+            setDeliveryNotes(dn.toString());
+        }else{
+            document.getElementById('inputDeliveryNotes').value = deliveryNotes;
+        }
+    }
+
+    const validateShipping = () => {
+        setValidateFields(['orderUser', 'deliveryAddress1', 'city', 'state', 'zip']);
+        if (orderUser
+            && deliveryAddress1
+            && city
+            && state
+            && zip
+            && orderUser !== undefined
+            && deliveryAddress1 !== undefined
+            && city !== undefined
+            && state !== undefined
+            && zip !== undefined
+            && orderUser.length >= 3
+            && deliveryAddress1.length >= 5
+            && city.length >= 3
+            && state.length >= 2
+            && zip.length === 5
+        ) {
+            setShowModal('selectPayment');
+        }
+    }
 
     useEffect(() => {
         fetchSeeds();
@@ -357,16 +458,20 @@ function ShoppingCart() {
 
     useEffect(() => {
         refreshLineItems();
+        // eslint-disable-next-line
     },[seeds, updateQuantity, pricingStructureDiscount])
 
     useEffect(() => {
         getPricing();
+        // eslint-disable-next-line
     },[pricingStructure])
 
     useEffect(() => {
         applyDiscounts();
-        // eslint-disable-next-line
-    }, [checkCouponCode, lineItems, lineItemsTotal, userId, userPricing])
+    // }, [checkCouponCode, lineItems, lineItemsTotal, userId, userPricing, discountCodeObject])
+    // eslint-disable-next-line
+}, [lineItemsTotal, userId, userPricing, discountCodeObject])
+
 
     useEffect(() => {
         updateLineItemsTotal();
@@ -377,7 +482,8 @@ function ShoppingCart() {
     <div className='pubPage'>
         <div className='navBar'>
             <NavBar/>
-            <br/>{JSON.stringify(order)}<br/>
+            {/* <br/>{JSON.stringify(order)}<br/>
+            <br/>{validateFields.toString()}<br/> */}
         </div>
         <div className='pubContent'>
             <p>
@@ -405,17 +511,23 @@ function ShoppingCart() {
                             )})}
                     <tr>
                         <td/>
-                        <td className='alertRedText'>{alertDiscountedPrice}</td>
+                        <td className='hlRed'>{alertDiscountedPrice}</td>
+                        {/* <td className='alertRedText'>{alertDiscountedPrice}</td> */}
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td>Subtotal</td>
                         <td/>
                         <td/>
                         <td className='lineItemsTotal'>{showAsCurrency(lineItemsTotal)}</td>
                     </tr>
-                    <tr>
+                    <tr className={showDiscountRow}>
                         <td/>
-                        <td className='alertRedText'>Discount Code: ____ </td>
+                        <td className={hlDiscountCode}>Discount Code: {discountCode}</td>
+                        {/* <td>Discount Code: <span className='alertRedText'>{discountCode}</span> </td> */}
                         <td/>
                         <td/>
-                        <td className='lineItemsTotal'>$5.00</td>
+                        <td className={hlDiscountCode + ' lineItemsTotal'}>{showAsCurrency(-1 * discountAmount)}</td>
                     </tr>
                     <tr>
                         <td/>
@@ -424,50 +536,178 @@ function ShoppingCart() {
                         <td/>
                         <td >{applySalesTax ? showAsCurrency(tax) : ''}</td>
                     </tr>
-                    <tr>
+                    <tr className={shippingRow}>
                         <td/>
-                        <td>Standard shipping</td>
+                        <td className={hlShipping}>Standard shipping</td>
                         <td/>
                         <td/>
-                        <td >$8.00</td>
+                        <td className={hlShipping}>{showAsCurrency(shippingFee)}</td>
                     </tr>
                     <tr>
                         <td/>
                         <td>Total</td>
                         <td/>
                         <td/>
-                        <td >$188.00</td>
+                        <td>{showAsCurrency(lineItemsTotal - discountAmount + tax + shippingFee)}</td>
                     </tr>
                 </table>
             </p>
+            <div className={completeOrder}>
+                {/* <p className='alertRedText'>What would you like to do next?</p> */}
+                <Link to='/findseeds'>Add more seeds</Link> or <Link to='' onClick={()=>setShowModal('toAddDiscountCode')}>Wrap up my order</Link><br/>
+            </div>
             <div className={toAddDiscountCode}>
-                <Link to='/findseeds'>Add more to my order</Link><br/>
-                Do you have a discount code?<br/>
+                <p className='alertRedText'>Do you have a discount code?</p>
                 <Link to='' onClick={()=>setShowModal('addDiscountCode')}>Yes</Link> or <Link to='' onClick={()=>setShowModal('toChooseShipping')}>No</Link>
             </div>
             <div className={addDiscountCode}>
-                Discount Code<br/>
-                <Link to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link to='' onClick={()=>setShowModal('toAddDiscountCode')} >Back to order</Link>
+                <p className='alertRedText'>Enter your discount code</p>
+                <input id='inputDiscountCode' type='text' onBlur={(e)=>setDiscountCode(e.target.value)}/><br/>
+                <Link to='' onClick={()=>{checkCouponCode()}}> Try this code</Link> or <Link to='' onClick={()=>{setShowModal('toChooseShipping'); setDiscountCode(null); setDiscountAmount(0); setDiscountCodeValid(false); document.getElementById('inputDiscountCode').value=''}}>Continue without a discount code</Link><br/>
+                    <span className='alertRedText'>{badCodeText}</span>
+                <br/>
+                <span className={showChooseShippingLink}><Link className='nextText' to = '' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')} >Back to order</Link></span>
             </div>
             <div className={toChooseShipping}>
-                <Link to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link to='' onClick={()=>setShowModal('toAddDiscountCode')}>Back to discount code</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')}>Back to discount code</Link>
             </div>
             <div className={chooseShipping}>
-                Select a shipping method to proceed to the next step<br/>
-                <Link to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link to='' onClick={()=>setShowModal('toChooseShipping')} >Back to order</Link>
+                <p className='alertRedText'>Select a shipping method</p>
+                <Link to='' onClick={()=>{setSelectedShipping('Standard shipping'); setShippingFee(standardShipping)}}>Standard shipping: {showAsCurrency(standardShipping)}</Link> or <Link to='' onClick={()=>{setSelectedShipping('Expedited shipping'); setShippingFee(expeditedShipping)}}>Expedited shipping: {showAsCurrency(expeditedShipping)}</Link><br/><br/>
+                <span className={showVerifyAddressLink}>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')} >Back to order</Link>
+                </span>
             </div>
             <div className={toVerifyAddress}>
-                <Link to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify address</Link> or <Link to='' onClick={()=>setShowModal('toChooseShipping')}>Back to choose shipping</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')}>Back to choose shipping</Link>
             </div>
             <div className={verifyAddress}>
-                Verify the shipping address to select your payment option<br/>
-                <Link to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link to='' onClick={()=>setShowModal('toVerifyAddress')} >Back to order</Link>
+                <p className='alertRedText'>Verify or edit the shipping information to select your payment option</p>
+                <p>
+                    <table>
+                        <tr>
+                            <td>Name:</td>
+                            <td><input type='text' defaultValue={orderUser} onChange={(e)=>{setOrderUser(e.target.value); setFieldsToValidate('orderUser')}} onBlur={(e)=>{setOrderUser(e.target.value); setFieldsToValidate('orderUser')}}/></td>
+                            
+                        </tr>
+                        <tr className={vOrderUser === '' ? 'hidden' : 'validationText'}>
+                            <td/>
+                            <td>{vOrderUser}</td>
+                        </tr>
+                        <tr>
+                            <td>Address:</td>
+                            <td><input type='text' defaultValue={deliveryAddress1} onChange={(e)=>{setDeliveryAddress1(e.target.value); setFieldsToValidate('address1')}} onBlur={(e)=>{setDeliveryAddress1(e.target.value); setFieldsToValidate('address1')}}/></td>
+                        </tr>
+                        <tr>
+                            <td/>
+                            <td><input type='text' defaultValue={deliveryAddress2} onBlur={(e)=>{setDeliveryAddress2(e.target.value)}}/></td>
+                        </tr>
+                        <tr className={vAddress1 === '' ? 'hidden' : 'validationText'}>
+                            <td/>
+                            <td>{vAddress1}</td>
+                        </tr>
+                        <tr>
+                            <td>City:</td>
+                            <td><input type='text' defaultValue={city} onChange={(e)=>{setCity(e.target.value); setFieldsToValidate('city')}} onBlur={(e)=>{setCity(e.target.value); setFieldsToValidate('city')}}/></td>
+                        </tr>
+                        <tr className={vCity === '' ? 'hidden' : 'validationText'}>
+                            <td/>
+                            <td>{vCity}</td>
+                        </tr>
+                        <tr>
+                            <td>State:</td>
+                            <input list='stateList' id='selectState' defaultValue={state} onChange={(e)=>{setState(e.target.value); setFieldsToValidate('state')}} onBlur={(e)=>{setState(e.target.value); setFieldsToValidate('state')}}/>
+                                        <datalist id='stateList'>
+                                        <option value = 'NM'/>
+                                        <option value = 'AK'/>
+                                        <option value = 'AL'/>
+                                        <option value = 'AR'/>
+                                        <option value = 'AZ'/>
+                                        <option value = 'CA'/>
+                                        <option value = 'CO'/>
+                                        <option value = 'CT'/>
+                                        <option value = 'DE'/>
+                                        <option value = 'FL'/>
+                                        <option value = 'GA'/>
+                                        <option value = 'HI'/>
+                                        <option value = 'IA'/>
+                                        <option value = 'ID'/>
+                                        <option value = 'IL'/>
+                                        <option value = 'IN'/>
+                                        <option value = 'KS'/>
+                                        <option value = 'KY'/>
+                                        <option value = 'LA'/>
+                                        <option value = 'MA'/>
+                                        <option value = 'MD'/>
+                                        <option value = 'ME'/>
+                                        <option value = 'MI'/>
+                                        <option value = 'MN'/>
+                                        <option value = 'MO'/>
+                                        <option value = 'MS'/>
+                                        <option value = 'MT'/>
+                                        <option value = 'NC'/>
+                                        <option value = 'ND'/>
+                                        <option value = 'NE'/>
+                                        <option value = 'NH'/>
+                                        <option value = 'NJ'/>
+                                        <option value = 'NM'/>
+                                        <option value = 'NV'/>
+                                        <option value = 'NY'/>
+                                        <option value = 'OH'/>
+                                        <option value = 'OK'/>
+                                        <option value = 'OR'/>
+                                        <option value = 'PA'/>
+                                        <option value = 'RI'/>
+                                        <option value = 'SC'/>
+                                        <option value = 'SD'/>
+                                        <option value = 'TN'/>
+                                        <option value = 'TX'/>
+                                        <option value = 'UT'/>
+                                        <option value = 'VA'/>
+                                        <option value = 'VT'/>
+                                        <option value = 'WA'/>
+                                        <option value = 'WI'/>
+                                        <option value = 'WV'/>
+                                        <option value = 'WY'/>
+                                        </datalist>
+                            {/* <td><input type='text' defaultValue={state} onBlur={(e)=>{setState(e.target.value)}}/></td> */}
+                        </tr>
+                        <tr className={vState === '' ? 'hidden' : 'validationText'}>
+                            <td/>
+                            <td>{vState}</td>
+                        </tr>
+                        <tr>
+                            <td>ZIP:</td>
+                            <td><input id='inputZip' type='text' defaultValue={zip} onChange={(e)=>{validateZipInput(e.target.value); setFieldsToValidate('zip')}} onBlur={(e)=>{validateZipInput(e.target.value); setFieldsToValidate('zip')}}/></td>
+                        </tr>
+                        <tr className={vZip === '' ? 'hidden' : 'validationText'}>
+                            <td/>
+                            <td>{vZip}</td>
+                        </tr>
+                        <tr className='topAlignTableRow'>
+                            <td>Delivery Notes:</td>
+                            <td><textarea id='inputDeliveryNotes' type='text' rows='3' defaultValue={deliveryNotes} onChange={(e)=>{validateDeliveryNotes(e.target.value)}}/></td>
+                            <td className={deliveryNotes === '' || deliveryNotes === undefined ? 'hidden' : 'validationText'}>{deliveryNotes && deliveryNotes !== undefined ? dnLength + '/80' : ''}</td>
+                        </tr>
+                        {/* <tr className={deliveryNotes === '' || deliveryNotes == undefined ? 'hidden' : 'validationText'}>
+                            <td/>
+                            <td>
+                                {deliveryNotes}
+                            </td>
+                        </tr> */}
+                    </table>
+                </p>
+                <Link to='' onClick={()=>validateShipping()}>This shipping information is correct</Link>
+                {/* 'selectPayment' */}
+                <span className={showSelectPaymentLink}>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back to order</Link>
+                </span>
             </div>
             <div className={toSelectPayment}>
-                <Link to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link to='' onClick={()=>setShowModal('toVerifyAddress')}>Back to choose shipping</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back to verify address</Link>
             </div>
             <div className={selectPayment}>
-                Choose a payment option to be able to submit your order<br/>
+                <span className='alertRedText'>Choose a payment option to be able to submit your order</span><br/>
                 <ul>
                     <li><Link to='' onClick={()=>setPaymentOption('venmo')}>Pay with Venmo</Link><br/></li>
                     <li><Link to='' onClick={()=>setPaymentOption('cashApp')}>Pay with Cash App</Link><br/></li>
@@ -478,10 +718,10 @@ function ShoppingCart() {
                     <div className='paymentOptionDetails'>{paymentOption === 'cashApp' ? <p><b>Cash App</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'cashApp' ? 'You will have 2 days to send ' + total + ' via Cash App to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
                     <div className='paymentOptionDetails'>{paymentOption === 'card' ? <p><b>Credit/Debit Card</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'card' ? 'You will be connected to the Stripe credit/debit card processing system when you submit your order. We will be notified immediately when payment is successfully processed, and you will receive an order confirmation at the email you provided.' : ''}</span></div>
                 </div>
-                <Link to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link to='' onClick={()=>setShowModal('toSelectPayment')} >Back to order</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back to order</Link>
             </div>
             <div className={toSubmitOrder}>
-                <Link to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link to='' onClick={()=>setShowModal('toSelectPayment')}>Back to verify address</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back to verify address</Link>
             </div>
             <div className={submitOrder}>
                 Submit Order<br/>

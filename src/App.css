@@ -1,3 +1,11 @@
+body {
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+textarea {
+  font-family: 'Lexend Deca', sans-serif;
+}
+
 .hidden {
   display: none;
 }
@@ -11,6 +19,18 @@
   position: absolute;
   left: .5vw;
   width: 99vw;
+}
+
+textarea, .inputDeliveryNotes {
+  display: block;
+  overflow: hidden;
+  width: 171px;
+  resize: vertical;
+}
+
+.validationText {
+  font-size: small;
+  color: red;
 }
 
 .adminDiv {
@@ -312,21 +332,20 @@
   position: relative;
   top: 0%;
   left: 0%;
-  width: 100vw;
-  height: 100vh;
-}
-
-.loginInputs {
-  position: relative;
-  top: 20vh;
-  left: calc(50vw - 120px);
+  width: 100%;
+  height: 100%;
 }
 
 .pubContent {
   padding-left: 4vw;
   padding-right: 4vw;
   padding-top: 4vh;
-  width: 100%;
+  width: 92%;
+}
+.loginInputs {
+  position: relative;
+  top: 20vh;
+  left: calc(50vw - 120px);
 }
 
 .noScroll {
@@ -393,6 +412,24 @@
 
 .paymentInstructions {
   margin-bottom: 10px;
+}
+
+.greenText {
+  color: green;
+  font-weight: 500;
+}
+
+.nextText:hover, .nextText:link, .nextText:visited {
+  font-size: small;
+  color: green;
+}
+
+.hlGreen {
+  text-shadow: 1px 1px green
+}
+
+.hlRed {
+  text-shadow: 1px 1px red
 }
 
 /* Media queries */
