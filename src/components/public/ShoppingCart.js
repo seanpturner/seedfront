@@ -10,7 +10,7 @@ function ShoppingCart() {
     const [seeds, setSeeds] = useState([]);
     const [discountCodeObject, setDiscountCodeObject] = useState({});
     const [preTax, setPreTaxTotal] = useState(0);
-    const [shippingSelected] = useState(false);
+    // const [shippingSelected] = useState(false);
     const [tax, setTax] = useState(0);
     const [purchaseDate, setPurchaseDate] = useState();
     const [shippingFee, setShippingFee] = useState(null);
@@ -71,6 +71,7 @@ function ShoppingCart() {
     const dnLength = deliveryNotes && deliveryNotes !== undefined ? deliveryNotes.length.toString() : '0';
     const hlShipping = showModal === 'chooseShipping' ? 'hlGreen' : '';
     const hlDiscountCode = showModal === 'addDiscountCode' ? 'hlGreen' : '';
+    const showPricingDiscountRow = alertDiscountedPrice !== '' ? 'showPricingDiscountRow' : 'hidden';
 
     const order = {
         id: null,
@@ -509,10 +510,12 @@ function ShoppingCart() {
                                     <td>{seeds.length ===0 ? '' : showAsCurrency(lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount))}</td>
                                 </tr>
                             )})}
-                    <tr>
+                    <tr className={showPricingDiscountRow}>
                         <td/>
                         <td className='hlRed'>{alertDiscountedPrice}</td>
-                        {/* <td className='alertRedText'>{alertDiscountedPrice}</td> */}
+                        <td/>
+                        <td/>
+                        <td className='strikeThrough'>{showAsCurrency(totalWithoutPricingDiscount)}</td>
                     </tr>
                     <tr>
                         <td/>
