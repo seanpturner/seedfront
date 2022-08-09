@@ -226,6 +226,12 @@ function Login() {
         .then(result => {window.location.assign('./creationsuccess');})
     }
 
+    const catchEnter = (e) => {
+        if (e.key === 'Enter' && (e.target.id === 'userName' || e.target.id === 'password')) {
+            checkPassword();
+        }
+    }
+
     return (
         <div className='pubPage'>
             <div className='navBar'>
@@ -234,8 +240,8 @@ function Login() {
                 <br/>{JSON.stringify(inputs)} */}
             </div>
             <div className={loginInputs}>
-                <input id='userName' type='text' name='userName' onChange={(e)=>{handleChange(e)}}/><br/>
-                <input id='password' type='password' name='password' onChange={(e)=>{handleChange(e)}}/><br/>
+                <input id='userName' type='text' name='userName' onKeyDown={(e)=>{catchEnter(e)}} onChange={(e)=>{handleChange(e)}}/><br/>
+                <input id='password' type='password' name='password' onKeyDown={(e)=>{catchEnter(e)}} onChange={(e)=>{handleChange(e)}}/><br/>
                 <button onClick={()=>checkPassword()}>Submit</button><br/>
                 <span>Don't have an account?<br/>
                 <Link to='' onClick={()=>setViewDiv('createAccount')}>Click here</Link></span>

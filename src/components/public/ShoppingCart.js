@@ -3,6 +3,7 @@ import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 
 function ShoppingCart() {
+    const baseUrl = 'http://localhost:8080/';
     const taxRate = .0784;
     const [applySalesTax, setApplySalesTax] = useState(true);
     const [userId, setUserID] = useState(6);
@@ -178,7 +179,7 @@ function ShoppingCart() {
                 itemList.push({
                     'itemId': item.itemId,
                     'quantity': item.quantity,
-                    'price': (parseFloat((item.quantity * crossReference(seeds, 'id', item.itemId, 'price')) * (1 - pricingStructureDiscount)).toFixed(2))
+                    'price': (parseFloat((crossReference(seeds, 'id', item.itemId, 'price')) * (1 - pricingStructureDiscount)).toFixed(2))
                     // let price =      ((Item.quantity * crossReference(seeds, 'id', Item.itemId, 'price')) * (1 - pricingStructureDiscount));
                 })
                 totalWithoutPricingStructureDiscount += item.quantity * crossReference(seeds, 'id', item.itemId, 'price');
@@ -230,6 +231,7 @@ function ShoppingCart() {
         let total = 0;
         li.forEach(lineItem => {
             let ext = lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount);
+            // let ext = lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount);
             total += ext;
         });
         if (isNaN(total) || total === 0) {
@@ -393,7 +395,8 @@ function ShoppingCart() {
         if (li && li.length > 0) {
             li.forEach(lineItem => {
                 if (isNaN(lineItem.price)) {
-                    let price = ((lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price')) * (1 - pricingStructureDiscount));
+                    // let price = ((lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price')) * (1 - pricingStructureDiscount));
+                    let price = ((crossReference(seeds, 'id', lineItem.itemId, 'price')) * (1 - pricingStructureDiscount));
                     lineItem.price = price;
                 }
             });
@@ -452,6 +455,28 @@ function ShoppingCart() {
         }
     }
 
+    const placeOrder = () => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let raw = JSON.stringify(order);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(baseUrl + 'purchases', requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            console.log(result);
+            window.location.replace('/home');
+        })
+        // .catch(error => console.log('error', error));
+    }
+
     useEffect(() => {
         fetchSeeds();
         getOrder();
@@ -491,8 +516,8 @@ function ShoppingCart() {
     <div className='pubPage'>
         <div className='navBar'>
             <NavBar/>
-            {/* <br/>{JSON.stringify(order)}<br/>
-            <br/>{validateFields.toString()}<br/> */}
+            {/* <br/>{JSON.stringify(order)}<br/>    */}
+            {/* <br/>{validateFields.toString()}<br/> */}
         </div>
         <div className='pubContent'>
             <p>
@@ -736,7 +761,7 @@ function ShoppingCart() {
             </div>
             <div className={submitOrder}>
                 Submit Order<br/>
-                <Link to=''>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
+                <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
             </div>
         </div>
     </div>

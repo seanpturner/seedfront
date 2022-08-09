@@ -953,6 +953,11 @@ class AllOrders extends Component {
                       </select>
                     </td>
                   </tr>
+                  <tr className='topAlignTableRow'>
+                        <td className='topAlignTable'>
+                          {'Shipping: ' + selectedOrder.shippingMethod }
+                        </td>
+                  </tr>
                 </td>
                 <td className='topAlignTable rightBorder'>
                   <tr className='topAlignTableRow'>

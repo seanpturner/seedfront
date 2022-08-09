@@ -30,7 +30,7 @@ class CreateOrder extends Component {
         totalAfterTax: 0,
         shippingFee: 0,
         confirmSubmit: false
-
+        // shippingMethod: null
      } 
 
     componentDidMount = () => {
@@ -276,32 +276,54 @@ class CreateOrder extends Component {
         if (!priceDiscountTotal) {
             priceDiscountTotal = this.state.preDiscountSubTotal;
         }
+        // switch (shippingOption) {
+        //     case '0':
+        //         this.setState({ shippingMethod: 'None' });
+        //         break;
+        //     case '1':
+        //         this.setState({ shippingMethod: 'Standard' });
+        //         break;
+        //     case '2':
+        //         this.setState({ shippingMethod: 'Expedited' });
+        //         break;
+        //     default:
+        //         this.setState({ shippingMethod: null });
+        //         break;
+        // }
         if (freeShipping && priceDiscountTotal >= freeShippingMin) {
             switch (shippingOption) {
                 case '0':
+                    // this.setState({ shippingMethod: 'None' });
                     return 0;
                     // break;
                 case '1':
+                    // this.setState({ shippingMethod: 'Standard' });
                     return 0;
                     // break;
                 case '2':
+                    // this.setState({ shippingMethod: 'Expedited' });
                     return 5;
                     // break;
                 default:
+                    // this.setState({ shippingMethod: null });
                     return 0;
             }
         }else{
             switch (shippingOption) {
                 case '0':
+                    // this.setState({ shippingMethod: 'none' });
                     return 0;
                     // break;
                 case '1':
+                    // this.setState({ shippingMethod: 'Standard' });
                     return 6;
                     // break;
                 case '2':
+                    // this.setState({ shippingMethod: 'Expedited' });
                     return 10;
                     // break;
                 default:
+                    // this.setState({ shippingMethod: null });
                     return 0;
             }
         }
@@ -343,6 +365,10 @@ class CreateOrder extends Component {
             }
             
         }
+        // if (key === 'shippingFee') {
+        //     let sfLabel = document.getElementById('shippingFeeLabel').innerText;
+        //     this.setState({ shippingMethod: sfLabel });
+        // }
     }
 
     addOrderArray = (key) => (event) => {
@@ -449,7 +475,12 @@ class CreateOrder extends Component {
                     taxAmount: (priceDiscountTotal * taxRate),
                     totalAfterTax: priceDiscountTotal + (priceDiscountTotal * taxRate)
                 });
-        }
+            }else{
+                this.setState({
+                    taxAmount: (0),
+                    totalAfterTax: this.state.priceDiscountTotal
+                });
+            }
         }, 50);
         
     }
@@ -647,6 +678,8 @@ class CreateOrder extends Component {
         let su = this.state.selectedUser;
         no.pricingStructure = su.pricingStructure;
         no.shippingFee = this.transLateShippingFee(no.shippingFee);
+        // no.shippingMethod = this.state.shippingMethod;
+        no.shippingMethod = document.getElementById('shippingFeeLabel').innerText;
         no.purchaseDate = this.getDateTime(true);
         no.total = this.state.totalAfterTax + no.shippingFee;
         no.preTax = this.state.priceDiscountTotal;
@@ -702,7 +735,7 @@ class CreateOrder extends Component {
         const taxAmount = this.state.taxAmount;
         const totalAfterTax = this.state.totalAfterTax;
         const shippingFee = newOrder.shippingFee ? newOrder.shippingFee : 0;
-        const shippingFeeLabel = newOrder.shippingFee === null ? '' : newOrder.shippingFee === '1' ? 'Standard' : newOrder.shippingFee === '2' ? 'Expedite' : 'None';
+        const shippingFeeLabel = newOrder.shippingFee === null ? '' : newOrder.shippingFee === '1' ? 'Standard' : newOrder.shippingFee === '2' ? 'Expedited' : 'None';
         const no = this.state.newOrder;
         const submitOrder = no.deliveryAddress1 && no.city && no.state && no.zip && no.orderStatus && no.lineItems && no.lineItems.length > 0 && no.shippingFee ? 'submitOrder' : 'hidden';
         const confirmSubmit = this.state.confirmSubmit ? 'confirmSubmit alertRedText' : 'hidden';
@@ -1027,9 +1060,11 @@ class CreateOrder extends Component {
                                         <td>
                                             <select id='shippingFee' onChange={this.updateOrder('shippingFee')}/>
                                         </td>
-                                        <td><span>{shippingFeeLabel}</span></td>
+                                        <td><span id='shippingFeeLabel'>{shippingFeeLabel}</span></td>
                                         <td><input className='priceInput' value={this.showAsCurrency(this.transLateShippingFee(shippingFee))}/></td>
-                                        <td><b><input className='priceInput boldTotal' value={this.showAsCurrency(totalAfterTax + this.transLateShippingFee(shippingFee))}/></b></td>
+                                        <td><b><input className='priceInput boldTotal' value={this.showAsCurrency(totalAfterTax + this.transLateShippingFee(shippingFee))}/></b></td>                                        
+                                        {/* <td>TAT<b><input className='priceInput boldTotal' value={totalAfterTax }/></b></td>
+                                        <td>SF<b><input className='priceInput boldTotal' value={this.transLateShippingFee(shippingFee) }/></b></td> */}
                                     </tr>
                                 </tr>
                             </table>
