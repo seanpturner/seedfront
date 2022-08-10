@@ -51,15 +51,15 @@ function Login() {
     const newPassword2Err = validateFields.includes('newPassword2') && (newUser.newPassword1 !== newUser.newPassword2) ? 'newPassword2Err' : 'hidden';
     const fNameErr = validateFields.includes('newFName') && (!newUser.fName || !/^[A-Za-z]+$/.test(newUser.fName) || newUser.fName.length < 2) ? 'fNameErr' : 'hidden';
     const lNameErr = validateFields.includes('newLName') && (!newUser.lName || !/^[a-zA-Z]+$/.test(newUser.lName) || newUser.lName.length < 2) ? 'lNameErr' : 'hidden';
-    const emailErr = validateFields.includes('newEmail') && (!newUser.email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(newUser.email)) ? 'emailErr' : 'hidden';
+    const emailErr = validateFields.includes('newEmail') && (!newUser.email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(newUser.email)) ? 'emailErr' : 'hidden';
     const [birthYearErr, setBirthYearErr] = useState('hidden');
     const [birthYearErrMsg,setBirthYearErrMsg] = useState(null);
     const address1Err = validateFields.includes('newAddress1') && (!newUser.address1 || newUser.address1.length < 6) ? 'address1Err' : 'hidden';
     const cityErr = validateFields.includes('newCity') && (!newUser.city || newUser.city.length < 2) ? 'address1Err' : 'hidden';
     const [stateAbbreviationError, setStateAbbreviationError] = useState(false);
     const stateErr = validateFields.includes('newState') && (!newUser.state || newUser.state.length !== 2 || stateAbbreviationError) ? 'stateErr' : 'hidden';
-    const zipErr = validateFields.includes('newZip') && (!newUser.zip || newUser.zip.length != 5) ? 'zipErr' : 'hidden';
-    const phoneErr = validateFields.includes('newPhone') && (!newUser.phone || newUser.phone.length != 12) ? 'phoneErr' : 'hidden';
+    const zipErr = validateFields.includes('newZip') && (!newUser.zip || newUser.zip.length !== 5) ? 'zipErr' : 'hidden';
+    const phoneErr = validateFields.includes('newPhone') && (!newUser.phone || newUser.phone.length !== 12) ? 'phoneErr' : 'hidden';
 
     const revalidateBirthYear = () => {
         let nu = newUser;
@@ -98,7 +98,7 @@ function Login() {
             let noDash = '';
             let newDash = '';
             for (let i=0; i<e.target.value.length; i++) {
-                if (e.target.value[i] != '-') {
+                if (e.target.value[i] !== '-') {
                     noDash += e.target.value[i];
                 }
             }
