@@ -634,9 +634,10 @@ class OpenOrders extends Component {
       let searchString1 = element.userName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString2 = element.fName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString3 = element.lName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      console.log(searchString1);
-      if (noSpace === searchString1 || noSpace === searchString2 || noSpace === searchString3) {
-        let addOrder = {"id": element.id, "date": element.purchaseDate, "userName": element.userName, "fName": element.fName, "lName": element.lName};
+      let searchString4 = element.recordLocator.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
+      // console.log(searchString1);
+      if (noSpace === searchString1 || noSpace === searchString2 || noSpace === searchString3 || noSpace === searchString4) {
+        let addOrder = {"id": element.id, "date": element.purchaseDate, "userName": element.userName, "fName": element.fName, "lName": element.lName, 'recordLocator': element.recordLocator};
         if (!returnArray.includes(addOrder)) {
           returnArray.push(addOrder);
         }
@@ -732,14 +733,14 @@ class OpenOrders extends Component {
           <h1 className='adminSectionTitle'>Open Orders</h1><br/>
           <Link to='/allorders'>Go to all orders</Link><br/>
           <Link to='/createorder'>Create an order</Link><br/>
-          <span className='adminSortText'>Search by name &nbsp;</span><input id="searchInput" type="text" onChange = {this.searchFor("userName")} /><br/>
+          <span className='adminSortText'>Search&nbsp;</span><input id="searchInput" type="text" onChange = {this.searchFor("userName")} /><br/>
           <div className={searchResultsDiv}>
             <table>
                   {searchResults.map((sr)=>{
                     return (
                       <tr>
                         <td>
-                          <Link to="" onClick={()=>this.setSearchEntity(sr.id)}>{sr.date} {sr.fName} {sr.lName} { "<" + sr.userName + ">"}</Link>
+                          <Link to="" onClick={()=>this.setSearchEntity(sr.id)}>{sr.date} {sr.fName} {sr.lName} { "<" + sr.userName + ">"} {sr.recordLocator}</Link>
                         </td>
                       </tr>
                     )
@@ -751,6 +752,7 @@ class OpenOrders extends Component {
               <tr className='topAlignTableRow'>
               <td/>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'id', 'masterJson', )}>ID</Link></td>
+                <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'recordLocator', 'masterJson', )}>Locator</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'purchaseDate', 'masterJson', )}>Date</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'orderStatus', 'masterJson', )}>Status</Link></td>
                 <td><Link to='' onClick={()=>this.listObjectSort(masterJson, 'user', 'masterJson', )}>Customer</Link></td>
@@ -775,6 +777,11 @@ class OpenOrders extends Component {
                     <td className='topAlignTable'>
                       <tr className='topAlignTableRow'>
                         <td>{order.id}</td>
+                      </tr>
+                    </td>
+                    <td className='topAlignTable'>
+                      <tr className='topAlignTableRow'>
+                        <td>{order.recordLocator}</td>
                       </tr>
                     </td>
                     <td className='topAlignTable'>
@@ -822,6 +829,11 @@ class OpenOrders extends Component {
                 <td className='topAlignTable rightBorder'>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'><span className='grayText'>Order #&nbsp;</span><span className='alertRedText'>{selectedOrder.id}</span></td>
+                  </tr>
+                  <tr className='topAlignTableRow'>
+                    <td className='topAlignTable'>
+                      <span className='grayText'>Locator: </span><span>{selectedOrder.recordLocator}</span>
+                    </td>
                   </tr>
                   <tr className='topAlignTableRow'>
                     <td className='topAlignTable'><Link to='' onClick={()=>this.setState({verifyCancel: true})}>Cancel this order</Link></td>

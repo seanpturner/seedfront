@@ -74,6 +74,7 @@ function ShoppingCart() {
     const hlDiscountCode = showModal === 'addDiscountCode' ? 'hlGreen' : '';
     const showPricingDiscountRow = alertDiscountedPrice !== '' ? 'showPricingDiscountRow' : 'hidden';
     const showBadCode = badCode ? 'alertRedText' : 'hidden';
+    const [recordLocator, setRecordLocator] = useState(null);
 
     const order = {
         id: null,
@@ -97,7 +98,8 @@ function ShoppingCart() {
         zip: zip,
         pricingStructure: pricingStructure,
         orderUser: orderUser,
-        email: email
+        email: email,
+        recordLocator: recordLocator
     }
 
     const fetchSeeds = () => {
@@ -478,6 +480,18 @@ function ShoppingCart() {
         // .catch(error => console.log('error', error));
     }
 
+    const getLocator = () => {
+        let requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+          
+        fetch("http://localhost:8080/purchases/createLocator", requestOptions)
+            .then(response => response.text())
+            .then(result => setRecordLocator(result))
+            // .catch(error => console.log('error', error));
+        }
+
     useEffect(() => {
         fetchSeeds();
         getOrder();
@@ -513,11 +527,16 @@ function ShoppingCart() {
         //eslint-disable-next-line
     },[preTax, discountAmount, shippingFee])
 
+    useEffect(() => {
+        getLocator();
+        //eslint-disable-next-line
+    },[])
+
   return (
     <div className='pubPage'>
         <div className='navBar'>
             <NavBar/>
-            {/* <br/>{JSON.stringify(order)}<br/>    */}
+            <br/>{JSON.stringify(order)}<br/>   
             {/* <br/>{validateFields.toString()}<br/> */}
         </div>
         <div className='pubContent'>

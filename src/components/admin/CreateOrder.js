@@ -256,6 +256,12 @@ class CreateOrder extends Component {
                         selectBox.options.add(new Option(status.label, status.statusCode));
                     }
                 });
+                let no = this.state.newOrder;
+                if (!no.orderStatus) {
+                    no.orderStatus = 100;
+                    this.setState({ newOrder: no });
+                }
+                document.getElementById('orderStatus').value = no.orderStatus;
             }
             if (dropdown === 'shippingFee') {
                 // selectBox.innerHTML = "";
@@ -356,7 +362,7 @@ class CreateOrder extends Component {
                 no.shippedDate = null;
             }
             this.setState({ newOrder: no });
-            document.getElementById(key).value = '';
+            // document.getElementById(key).value = '';
         }else if (event.target.value.replace(/\s/g, '') !== "") {
             no[key] = event.target.value;
             this.setState({ newOrder: no });
@@ -889,7 +895,7 @@ class CreateOrder extends Component {
                                 <tr>
                                     <td>Order status</td>
                                     <td><select id='orderStatus' onClick={this.updateOrder('orderStatus')}/></td>
-                                    <td className='topAlignTable nudgeRight4'>{newOrder.orderStatus ? this.crossReference(allPurchaseStatuses, 'statusCode', newOrder.orderStatus, 'label') : ''}</td>
+                                    {/* <td className='topAlignTable nudgeRight4'>{newOrder.orderStatus ? this.crossReference(allPurchaseStatuses, 'statusCode', newOrder.orderStatus, 'label') : ''}</td> */}
                                 </tr>
                                 <tr>
                                     <td>Shipped Via</td>
