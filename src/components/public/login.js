@@ -3,7 +3,6 @@ import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 
 function Login() {
-
     const [inputs, setInputs] = useState({
         userName: null,
         password: null
@@ -35,15 +34,105 @@ function Login() {
 
     const okToSubmit = newUser.userName && newUser.password && newUser.fName && newUser.lName && newUser.email && newUser.birthDate && newUser.address1 && newUser.city && newUser.state && newUser.zip ? 'okToSubmit' : 'hidden';
 
+    const [validateFields, setValidateFields] = useState([]);
+    const [duplicateUserName, setDuplicateUserName] = useState(false);
+    const alertDuplicateUserName = duplicateUserName && newUser.userName ? 'alertDuplicateUserName' : 'hidden';
+
+    const updateValidateFields = (e)=> {
+        if (!validateFields.includes(e.target.id)) {
+            let updVF = [...validateFields];
+            updVF.push(e.target.id);
+            setValidateFields(updVF);
+        }
+    }
+    
+    const userNameErr = validateFields.includes('newUserName') && alertDuplicateUserName === 'hidden' && (!newUser.userName || newUser.userName === undefined || newUser.userName.length < 5) ? 'userNameErr' : 'hidden';
+    const newPassword1Err = validateFields.includes('newPassword1') && (!newUser.newPassword1 || newUser.newPassword1.length < 8 || newUser.newPassword1.includes(' ')) ? 'password1Err' : 'hidden';
+    const newPassword2Err = validateFields.includes('newPassword2') && (newUser.newPassword1 !== newUser.newPassword2) ? 'newPassword2Err' : 'hidden';
+    const fNameErr = validateFields.includes('newFName') && (!newUser.fName || !/^[A-Za-z]+$/.test(newUser.fName) || newUser.fName.length < 2) ? 'fNameErr' : 'hidden';
+    const lNameErr = validateFields.includes('newLName') && (!newUser.lName || !/^[a-zA-Z]+$/.test(newUser.lName) || newUser.lName.length < 2) ? 'lNameErr' : 'hidden';
+    const emailErr = validateFields.includes('newEmail') && (!newUser.email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(newUser.email)) ? 'emailErr' : 'hidden';
+    const [birthYearErr, setBirthYearErr] = useState('hidden');
+    const [birthYearErrMsg,setBirthYearErrMsg] = useState(null);
+    const address1Err = validateFields.includes('newAddress1') && (!newUser.address1 || newUser.address1.length < 6) ? 'address1Err' : 'hidden';
+    const cityErr = validateFields.includes('newCity') && (!newUser.city || newUser.city.length < 2) ? 'address1Err' : 'hidden';
+    const [stateAbbreviationError, setStateAbbreviationError] = useState(false);
+    const stateErr = validateFields.includes('newState') && (!newUser.state || newUser.state.length !== 2 || stateAbbreviationError) ? 'stateErr' : 'hidden';
+    const zipErr = validateFields.includes('newZip') && (!newUser.zip || newUser.zip.length != 5) ? 'zipErr' : 'hidden';
+    const phoneErr = validateFields.includes('newPhone') && (!newUser.phone || newUser.phone.length != 12) ? 'phoneErr' : 'hidden';
+
+    const revalidateBirthYear = () => {
+        let nu = newUser;
+        if (!validateFields.includes('birthYear')) {
+            let updVF = [...validateFields];
+            updVF.push('birthYear');
+            setValidateFields(updVF);
+        }
+        if (!nu.birthYear || (nu.birthYear && nu.birthYear.length !== 4)) {
+            nu.birthYear = '';
+            document.getElementById('birthYear').value = '';
+            setBirthYearErrMsg('You must enter a valid 4-digit year');
+            setBirthYearErr('birthYearErr');
+        }
+    }
+
+    const revalidateState = () => {
+        let nu = newUser;
+        if (!validateFields.includes('newState')) {
+            let updVF = [...validateFields];
+            updVF.push('newState');
+            setValidateFields(updVF);
+        }
+        if (!nu.state || (nu.state && (nu.state === undefined || nu.state.length !== 2))) {
+            nu.state = null;
+            document.getElementById('newState').value = '';
+            setStateAbbreviationError(true);
+            // setBirthYearErr('birthYearErr');
+        }
+    }
+
+    const catchDelete = (e) => {
+        let key = e.key;
+        let nu = newUser;
+        if (key === "Backspace" || key === "Delete") {
+            let noDash = '';
+            let newDash = '';
+            for (let i=0; i<e.target.value.length; i++) {
+                if (e.target.value[i] != '-') {
+                    noDash += e.target.value[i];
+                }
+            }
+            // e.target.value = noDash;
+            for (let i=0; i< noDash.length; i++) {
+                newDash += noDash[i];
+                if (newDash.length === 3 && noDash.length > 3) {
+                    newDash += '-';
+                }
+                if (newDash.length === 7 && noDash.length > 6) {
+                    newDash += '-';
+                }
+            }
+            nu.phone = newDash;
+            document.getElementById('newPhone').value = newDash;
+            // e.target.value = newDash;
+            // updateNewUser(e);
+        }
+    }
+
     const updateNewUser = (e) => {
         let nu = {...newUser};
+        let prevNu = {...newUser};
+        let d = new Date();
+        let year = d.getFullYear();
+        if (nu.userName === null) {
+            setDuplicateUserName(false);
+        }
         nu.dateCreated = todaysDate();
         nu[e.target.name] = e.target.value;
         if (e.target.name === 'newPassword1' || e.target.name === 'newPassword2') {
             let md5 = require('md5');
-            nu[e.target.name] = md5(e.target.value);
             if (nu.newPassword1 === nu.newPassword2) {
-                nu.password = nu.newPassword1;
+                nu.password = md5(nu.newPassword1);
                 let i = inputs;
                 i.password = nu.password;
                 setInputs(i);
@@ -55,18 +144,34 @@ function Login() {
             }
         }
         if (e.target.name === 'birthYear') {
+            setBirthYearErrMsg('');
+            setBirthYearErr('hidden');
             let by = e.target.value;
-            for (let i=0; i<by.length; i++) {
-                let compareTo = '0123456789';
-                let digit = by[i];
-                if (!compareTo.includes(digit)) {
-                    document.getElementById('birthYear').value = '';
+            if (by.length <5 && /^[0-9]*$/.test(by)) {
+                if (by.length === 4 && !/^(19|20)\d{2}$/.test(by)) {
                     nu.birthYear = null;
+                    document.getElementById('birthYear').value = '';
+                    setBirthYearErrMsg('You must enter a valid 4-digit year');
+                    setBirthYearErr('birthYearErr');
+                }else{
+                    if (by.length === 4 && year - by < 18) {
+                        setBirthYearErrMsg('You must be at least 18 years old to create an account');
+                        setBirthYearErr('birthYearErr');
+                    }
+                    if (by.length === 4 && year - by > 110) {
+                        setBirthYearErrMsg('If you can prove you\'re older than 110, I\'ll send you free seeds');
+                        setBirthYearErr('birthYearErr');
+                    }
                 }
+            }else{
+                nu.birthYear = null;
+                document.getElementById('birthYear').value = '';
+                setBirthYearErrMsg('You must enter a valid 4-digit year');
+                setBirthYearErr('birthYearErr')
             }
         }
         if (e.target.name === 'birthMonth' || e.target.name === 'birthDay' || e.target.name === 'birthYear') {
-            if (nu.birthYear && nu.birthYear.length === 4 && parseInt(nu.birthYear) > 1900 && parseInt(nu.birthYear) < 2022 && nu.birthMonth && nu.birthDay) {
+            if (nu.birthYear && nu.birthMonth && nu.birthDay) {
                 nu.birthDate = nu.birthYear + nu.birthMonth + nu.birthDay;
             }
         }
@@ -82,6 +187,52 @@ function Login() {
             }
             
         }
+        if (e.target.name === 'state') {
+            document.getElementById('newState').value = e.target.value.toUpperCase();
+        }
+        if (e.target.name === 'state' && e.target.value.length > 1) {
+            // document.getElementById('newState').value = e.target.value.toUpperCase();
+                setStateAbbreviationError(false);
+            if (!/^((A[LKSZR])|(C[AOT])|(D[EC])|(F[ML])|(G[AU])|(HI)|(I[DLNA])|(K[SY])|(LA)|(M[EHDAINSOT])|(N[EVHJMYCD])|(MP)|(O[HKR])|(P[WAR])|(RI)|(S[CD])|(T[NX])|(UT)|(V[TIA])|(W[AVIY]))$/.test(e.target.value.toUpperCase())) {
+                document.getElementById('newState').value = '';
+                setStateAbbreviationError(true);
+            }
+        }
+        // <td><input id='newZip' name='zip' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
+        if (e.target.name === 'zip') {
+            if (!/^[0-9]*$/.test(e.target.value)) {
+                document.getElementById('newZip').value = '';
+            }
+            else if (e.target.value.length > 5) {
+                nu.zip = prevNu.zip;
+                document.getElementById('newZip').value = prevNu.zip;
+            }
+            else {
+                nu.zip = e.target.value;
+            }
+        }
+        if (e.target.name === 'phone') {
+            let compareTo = '0123456789-';
+            for (let i=0; i<e.target.value.length; i++) {
+                let iChar = e.target.value[i];
+                if (i !== 3 && i !== 7 && isNaN(iChar)) {
+                    nu.phone = prevNu.phone;
+                    document.getElementById('newPhone').value = prevNu.phone;
+                }
+                if (!compareTo.includes(e.target.value[i]) || e.target.value.length > 12) {
+                    nu.phone = prevNu.phone;
+                    document.getElementById('newPhone').value = prevNu.phone;
+                }
+                if (e.target.value.length === 3 || e.target.value.length === 7) {
+                    nu.phone = nu.phone + '-';
+                    document.getElementById('newPhone').value = nu.phone;
+                }
+                // if (i === 2 || i === 7) {
+                //     nu.phone = nu.phone + '-';
+                //     document.getElementById('newPhone').value = nu.phone;
+                // }
+            }
+        }
         if (e.target.value.replace(/\s/g, '') === '') {
             nu[e.target.name] = null;
         }
@@ -89,15 +240,18 @@ function Login() {
     }
 
     const updateUserName = (availability) => {
+        setDuplicateUserName(false);
         let nu = newUser;
         if (availability !== '') {
-            nu.userName = null;
-            setNewUser(nu);
-            alert('this username is taken');
+            // nu.userName = null;
+            // setNewUser(nu);
+            setDuplicateUserName(true);
+            // alert('this username is taken');
         }else{
             let i = inputs;
             i.userName = nu.userName;
             setInputs(i);
+            setDuplicateUserName(false);
         }
     }
 
@@ -132,6 +286,7 @@ function Login() {
     const [viewDiv, setViewDiv] = useState('login');
     const loginInputs = viewDiv === 'login' ? 'loginInputs' : 'hidden';
     const createAccount = viewDiv === 'createAccount' ? 'createAccount' : 'hidden';
+    const loader = viewDiv === 'loader' ? 'loader' : 'hidden';
 
     const baseUrl = 'http://localhost:8080/users/getToken/';
 
@@ -147,6 +302,7 @@ function Login() {
     }
 
     const checkPassword = () => {
+        setViewDiv('loader');
         setTimeout(() => {
             timeOutLogIn(50);
         }, 1000);
@@ -232,50 +388,169 @@ function Login() {
         }
     }
 
+    const clearInputFields = () => {
+        let nu = newUser;
+        let fieldsToClear = [
+            'userName'
+            ,'password'
+            ,'newUserName'
+            ,'newPassword1'
+            ,'newPassword2'
+            ,'newFName'
+            ,'newLName'
+            ,'newEmail'
+            ,'birthMonth'
+            ,'birthDay'
+            ,'birthYear'
+            ,'newAddress1'
+            ,'newAddress2'
+            ,'newCity'
+            ,'newState'
+            ,'newZip'
+            ,'newPhone'
+        ];
+        let jsonToReset = [
+            'userName'
+            ,'password'
+            ,'fName'
+            ,'lName'
+            ,'email'
+            ,'birthDate'
+            ,'address1'
+            ,'address2'
+            ,'city'
+            ,'state'
+            ,'zip'
+            ,'phone'
+            ,'newPassword1'
+            ,'newPassword2'
+            ,'birthMonth'
+            ,'birthDay'
+            ,'birthYear'
+        ]
+        fieldsToClear.forEach(field => {
+            document.getElementById(field).value = '';
+        });
+        jsonToReset.forEach(element => {
+            nu[element] = '';
+        });
+        setNewUser(nu);
+        setValidateFields([]);
+    }
+
     return (
         <div className='pubPage'>
             <div className='navBar'>
                 <NavBar/>
-                {/* <br/>{JSON.stringify(newUser)}<br/>
-                <br/>{JSON.stringify(inputs)} */}
+                {/* <br/>{JSON.stringify(newUser)}<br/> */}
+                {/* <br/>{JSON.stringify(inputs)} */}
+                {/* <br/>{validateFields.toString()}<br/> */}
+                {/* <br/>{fNameErr.toString()}<br/> */}
+            </div>
+            <div className={loader}>
+                <div className='spinner'/>
+                <span>logging you in...</span>
             </div>
             <div className={loginInputs}>
-                <input id='userName' type='text' name='userName' onKeyDown={(e)=>{catchEnter(e)}} onChange={(e)=>{handleChange(e)}}/><br/>
-                <input id='password' type='password' name='password' onKeyDown={(e)=>{catchEnter(e)}} onChange={(e)=>{handleChange(e)}}/><br/>
-                <button onClick={()=>checkPassword()}>Submit</button><br/>
-                <span>Don't have an account?<br/>
-                <Link to='' onClick={()=>setViewDiv('createAccount')}>Click here</Link></span>
+                <table>
+                    <tr>
+                        <td>User Name</td>
+                        <td><input id='userName' type='text' name='userName' onKeyDown={(e)=>{catchEnter(e)}} onChange={(e)=>{handleChange(e)}}/><br/></td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td><input id='password' type='password' name='password' onKeyDown={(e)=>{catchEnter(e)}} onChange={(e)=>{handleChange(e)}}/><br/></td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td><button onClick={()=>checkPassword()}>Submit</button><br/></td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td>Don't have an account?</td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td><Link to='' onClick={()=>{setViewDiv('createAccount'); clearInputFields();}}>Click here</Link></td>
+                    </tr>
+                </table>
             </div>
             <div className={createAccount}>
                 <table>
                     <tr>
                         <td>User Name</td>
-                        <td><input id='newUserName' type='text' name='userName' onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                        <td><input id='newUserName' type='text' name='userName'onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
                     </tr>
+                    <tr className={alertDuplicateUserName}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            This User Name is taken
+                        </td>
+                    </tr>
+                    <tr className={userNameErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            User Name must be at least 5 characters with no spaces
+                        </td>
+                    </tr>
+                    {/* <tr>
+                        <td/>
+                        <td className='validationText'></td>
+                    </tr> */}
                     <tr>
                         <td>Password</td>
-                        <td><input id='newPassword1' type='password' name='newPassword1' onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                        <td><input id='newPassword1' type='password' name='newPassword1' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                    </tr>
+                    <tr className={newPassword1Err}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Password must be at least 8 characters with no spaces
+                        </td>
                     </tr>
                     <tr>
                         <td>Re-enter password</td>
-                        <td><input id='newPassword2' type='password' name='newPassword2' onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                        <td><input id='newPassword2' type='password' name='newPassword2' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                    </tr>
+                    <tr className={newPassword2Err}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Passwords do not match
+                        </td>
                     </tr>
                     <tr>
                         <td>First name</td>
-                        <td><input id='newFName' type='text' name='fName' onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                        <td><input id='newFName' type='text' name='fName' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                    </tr>
+                    <tr className={fNameErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            First Name must be at least 2 characters with no spaces
+                        </td>
                     </tr>
                     <tr>
                         <td>Last name</td>
-                        <td><input id='newLName' type='text' name='lName' onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                        <td><input id='newLName' type='text' name='lName' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                    </tr>
+                    <tr className={lNameErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Last Name must be at least 2 characters with no spaces
+                        </td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input id='newEmail' type='text' name='email' onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                        <td><input id='newEmail' type='text' name='email' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
+                    </tr>
+                    <tr className={emailErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Email address must be formatted properly
+                        </td>
                     </tr>
                     <tr>
                         <td>Birth Date</td>
                         <td>
-                            <select id='birthMonth' name='birthMonth' onChange={(e)=>{updateNewUser(e)}}>
+                            <select id='birthMonth' name='birthMonth' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}>
                                 <option value=''>Month</option>
                                 <option value='-01-'>January</option>
                                 <option value='-02-'>February</option>
@@ -290,7 +565,7 @@ function Login() {
                                 <option value='-11-'>November</option>
                                 <option value='-12-'>December</option>
                             </select>
-                            <select id='birthDay' name='birthDay' onChange={(e)=>{updateNewUser(e)}}>
+                            <select id='birthDay' name='birthDay' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}>
                                 <option value=''>Day</option>
                                 <option value='01'>01</option>
                                 <option value='02'>02</option>
@@ -328,31 +603,123 @@ function Login() {
                     </tr>
                     <tr>
                         <td>Birth year</td>
-                        <td><input id='birthYear' name='birthYear' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        <td><input id='birthYear' name='birthYear' onBlur={(e)=>{revalidateBirthYear()}} onChange={(e)=>{updateNewUser(e)}}/></td>
+                    </tr>
+                    <tr className={birthYearErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            {birthYearErrMsg}
+                        </td>
                     </tr>
                     <tr>
                         <td>Address1</td>
-                        <td><input id='newAddress1' name='address1' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        <td><input id='newAddress1' name='address1' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
+                    </tr>
+                    <tr className={address1Err}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Address must be at least 6 characters
+                        </td>
                     </tr>
                     <tr>
                         <td>Address2</td>
-                        <td><input id='newAddress2' name='address2' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        <td><input id='newAddress2' name='address2' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
                     </tr>
                     <tr>
                         <td>City</td>
-                        <td><input id='newCity' name='city' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        <td><input id='newCity' name='city' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
+                    </tr>
+                    <tr className={cityErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            City must be at least 2 characters
+                        </td>
                     </tr>
                     <tr>
                         <td>State</td>
-                        <td><input id='newState' name='state' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        {/* <td><input id='newState' name='state' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td> */}
+                        <td>
+                            <input list='stateList' id='newState' name='state' onBlur={()=>{revalidateState()}} onChange={(e)=>{updateNewUser(e)}}/>
+                            <datalist id='stateList'>
+                                <option value = 'NM'/>
+                                <option value = 'AK'/>
+                                <option value = 'AL'/>
+                                <option value = 'AR'/>
+                                <option value = 'AZ'/>
+                                <option value = 'CA'/>
+                                <option value = 'CO'/>
+                                <option value = 'CT'/>
+                                <option value = 'DE'/>
+                                <option value = 'FL'/>
+                                <option value = 'GA'/>
+                                <option value = 'HI'/>
+                                <option value = 'IA'/>
+                                <option value = 'ID'/>
+                                <option value = 'IL'/>
+                                <option value = 'IN'/>
+                                <option value = 'KS'/>
+                                <option value = 'KY'/>
+                                <option value = 'LA'/>
+                                <option value = 'MA'/>
+                                <option value = 'MD'/>
+                                <option value = 'ME'/>
+                                <option value = 'MI'/>
+                                <option value = 'MN'/>
+                                <option value = 'MO'/>
+                                <option value = 'MS'/>
+                                <option value = 'MT'/>
+                                <option value = 'NC'/>
+                                <option value = 'ND'/>
+                                <option value = 'NE'/>
+                                <option value = 'NH'/>
+                                <option value = 'NJ'/>
+                                <option value = 'NM'/>
+                                <option value = 'NV'/>
+                                <option value = 'NY'/>
+                                <option value = 'OH'/>
+                                <option value = 'OK'/>
+                                <option value = 'OR'/>
+                                <option value = 'PA'/>
+                                <option value = 'RI'/>
+                                <option value = 'SC'/>
+                                <option value = 'SD'/>
+                                <option value = 'TN'/>
+                                <option value = 'TX'/>
+                                <option value = 'UT'/>
+                                <option value = 'VA'/>
+                                <option value = 'VT'/>
+                                <option value = 'WA'/>
+                                <option value = 'WI'/>
+                                <option value = 'WV'/>
+                                <option value = 'WY'/>
+                            </datalist>
+                        </td>
+                    </tr>
+                    <tr className={stateErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            State must be a valid 2 character abbreviation
+                        </td>
                     </tr>
                     <tr>
                         <td>Zip</td>
-                        <td><input id='newZip' name='zip' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        <td><input id='newZip' name='zip' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
+                    </tr>
+                    <tr className={zipErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Zip must be 5 consecutive numbers
+                        </td>
                     </tr>
                     <tr>
                         <td>Phone</td>
-                        <td><input id='newPhone' name='phone' onChange={(e)=>{updateNewUser(e)}}/></td>
+                        <td><input id='newPhone' name='phone' onKeyDown={(e)=>catchDelete(e)} onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
+                    </tr>
+                    <tr className={phoneErr}>
+                        <td/>
+                        <td className='max200 validationText'>
+                            Phone must follow ###-###-#### format
+                        </td>
                     </tr>
                     <tr>
                         <td className={okToSubmit}><button onClick={()=>addNewUser()}>Submit</button></td>
@@ -361,7 +728,7 @@ function Login() {
                         <td/>
                     </tr>
                     <tr>
-                        <td>Have an account?<br/><Link to='' onClick={()=>setViewDiv('login')}>Click here</Link></td>
+                        <td>Have an account?<br/><Link to='' onClick={()=>{setViewDiv('login'); clearInputFields();}}>Click here</Link></td>
                     </tr>
                 </table>
             </div>

@@ -343,9 +343,29 @@ textarea, .inputDeliveryNotes {
   width: 92%;
 }
 .loginInputs {
-  position: relative;
+  /* position: relative;
   top: 20vh;
-  left: calc(50vw - 120px);
+  left: calc(50vw - 120px); */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.createAccount {
+  display: inline-block;
+  /* position: relative;
+  top: 20vh;
+  left: calc(50vw - 120px); */
+  position: relative;
+  left: 50%;
+  top: 2vw;
+  transform: translate(-50%, 0%);
+}
+
+.max200 {
+  display: inline-block;
+  max-width:200px;
 }
 
 .noScroll {
@@ -575,9 +595,16 @@ textarea, .inputDeliveryNotes {
   }
 }
 
-/* loader */
-
 .loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* spinner */
+
+.spinner {
   border: 16px solid #f3f3f3;
   border-radius: 50%;
   border-top: 16px solid #3498db;

@@ -81,6 +81,7 @@ function ShoppingCart() {
         purchaseDate: purchaseDate,
         lineItems: lineItems,
         shippingFee: shippingFee,
+        shippingMethod: selectedShipping,
         preTax: preTax,
         tax: tax,
         discountApplied: discountApplied,
@@ -609,7 +610,7 @@ function ShoppingCart() {
             </div>
             <div className={chooseShipping}>
                 <p className='alertRedText'>Select a shipping method</p>
-                <Link to='' onClick={()=>{setSelectedShipping('Standard shipping'); setShippingFee(standardShipping)}}>Standard shipping: {showAsCurrency(standardShipping)}</Link> or <Link to='' onClick={()=>{setSelectedShipping('Expedited shipping'); setShippingFee(expeditedShipping)}}>Expedited shipping: {showAsCurrency(expeditedShipping)}</Link><br/><br/>
+                <Link to='' onClick={()=>{setSelectedShipping('Standard'); setShippingFee(standardShipping)}}>Standard shipping: {showAsCurrency(standardShipping)}</Link> or <Link to='' onClick={()=>{setSelectedShipping('Expedited'); setShippingFee(expeditedShipping)}}>Expedited shipping: {showAsCurrency(expeditedShipping)}</Link><br/><br/>
                 <span className={showVerifyAddressLink}>
                     <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')} >Back: My order</Link>
                 </span>
