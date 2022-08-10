@@ -319,8 +319,8 @@ function Login() {
         fetch(baseUrl + inputs.userName + '/' + inputs.password, requestOptions)
             .then(response => response.text())
             .then(response => {
-                sessionStorage.setItem('bearerToken', response)
-                sessionStorage.setItem('userName', inputs.userName);
+                localStorage.setItem('bearerToken', response)
+                localStorage.setItem('userName', inputs.userName);
         })
         .then(() => clearFields()) 
     }
@@ -335,10 +335,10 @@ function Login() {
     }
     
     const timeOutLogIn = (n) => {
-        let tokenCheck = sessionStorage.getItem('bearerToken');
+        let tokenCheck = localStorage.getItem('bearerToken');
         if (n > 0) {
             if (tokenCheck === 'invalid') {
-                sessionStorage.clear();
+                localStorage.clear();
                 unableToLogIn();
             }
             if (tokenCheck === '' || tokenCheck === null) {
@@ -353,7 +353,7 @@ function Login() {
             } 
         }
         else{
-            sessionStorage.clear();
+            localStorage.clear();
             unableToLogIn();
         }    
     }

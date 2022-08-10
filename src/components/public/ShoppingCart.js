@@ -116,8 +116,8 @@ function ShoppingCart() {
 
     const checkCredentials = () => {
         let requestOptions;
-        let un = sessionStorage.getItem('userName');
-        let token = sessionStorage.getItem('bearerToken');
+        let un = localStorage.getItem('userName');
+        let token = localStorage.getItem('bearerToken');
 
         if (un && token) {
             let myHeaders = new Headers();
@@ -138,7 +138,7 @@ function ShoppingCart() {
     }
 
     const getUser = () => {
-        let un = sessionStorage.getItem('userName');
+        let un = localStorage.getItem('userName');
         let requestOptions = {
             method: 'GET',
             redirect: 'follow'

@@ -16,7 +16,7 @@ function NavBar() {
     const openCartL = hasOpenCart ? 'linkDivLandscape openCart' : 'hidden';
     const openCartP = hasOpenCart ? 'portraitLinks openCart' : 'hidden';
     const checkLoggedIn = () => {
-        let un = sessionStorage.getItem('userName');
+        let un = localStorage.getItem('userName');
         // if (un) {
         //     un = 'user: ' + un;
         // }
@@ -34,6 +34,7 @@ function NavBar() {
 
     const logUserOut = () => {
         sessionStorage.clear();
+        localStorage.clear();
         setUserName('');
     }
 

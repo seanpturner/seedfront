@@ -5,8 +5,8 @@ function AdminNav() {
   
     const checkAuth = () => {
         let requestOptions;
-        let un = sessionStorage.getItem('userName');
-        let token = sessionStorage.getItem('bearerToken');
+        let un = localStorage.getItem('userName');
+        let token = localStorage.getItem('bearerToken');
 
         if (!un || un === '' || !token || token === '') {
             kickToLogin();
@@ -32,6 +32,7 @@ function AdminNav() {
 
     const kickToLogin = () => {
         sessionStorage.clear();
+        localStorage.clear();
         window.location.replace('./login');
     }
 

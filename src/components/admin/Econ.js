@@ -17,8 +17,8 @@ class Econ extends Component {
 
     checkAuth = () => {
         let requestOptions;
-        let un = sessionStorage.getItem('userName');
-        let token = sessionStorage.getItem('bearerToken');
+        let un = localStorage.getItem('userName');
+        let token = localStorage.getItem('bearerToken');
 
         if (!un || un === '' || !token || token === '') {
             this.kickToLogin();
@@ -51,6 +51,7 @@ class Econ extends Component {
 
     kickToLogin = () => {
         sessionStorage.clear();
+        localStorage.clear();
         window.location.replace('./login');
     }
 
