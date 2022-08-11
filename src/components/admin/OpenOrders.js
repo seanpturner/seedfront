@@ -88,6 +88,8 @@ class OpenOrders extends Component {
             }
           })
         });
+      }else{
+        order.extras = [];
       }
       let orderNotes = order.orderNotes;
       if (orderNotes) {
@@ -544,6 +546,9 @@ class OpenOrders extends Component {
     let so = this.state.selectedOrder;
     let newExtra = this.state.addExtra;
     let extras = so.extras;
+    if (!extras || extras === undefined) {
+      extras = [];
+    }
     extras.push(newExtra);
     this.setState({ selectedOrder: so});
     this.setState({ addExtras: {} });

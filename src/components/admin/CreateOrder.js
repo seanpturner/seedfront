@@ -716,7 +716,7 @@ class CreateOrder extends Component {
 
     render() { 
         const activeUsers = this.state.activeUsers;
-        const allPurchaseStatuses = this.state.allPurchaseStatuses;
+        // const allPurchaseStatuses = this.state.allPurchaseStatuses;
         const allPricingStructures = this.state.allPricingStructures;
         // const allDiscounts = this.state.allDiscounts;
         // const allSeeds = this.state.allSeeds;

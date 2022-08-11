@@ -65,7 +65,8 @@ class Shipper extends Component {
                     </tr>
                     <tr>
                         <td>
-                            {'Order # ' + selectedOrder.id}
+                            {/* {'Order # ' + selectedOrder.id} */}
+                            {'Ref: ' + selectedOrder.recordLocator}
                         </td>
                     </tr>
                     <tr>
