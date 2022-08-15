@@ -492,9 +492,10 @@ showAsCurrency = (amount) => {
               <tr className='adminRow'>
                 <td>Seed Name</td>
                 <td>Notes</td>
+                <td>Available</td>
                 <td>Mother</td>
                 <td>Father</td>
-                <td>Qty Available</td>
+                {/* <td>Qty Available</td> */}
                 <td>Maternal line</td>
                 <td>Paternal line</td>
                 <td>Feminized</td>
@@ -638,11 +639,15 @@ showAsCurrency = (amount) => {
             </tr>
             <tr className='adminRow topAlignTable'>
               <td>Quantity Available</td>
-              <td><input type="number" name = "quantityAvailable" onChange={this.buildNewSeed("quantityAvailable")}/></td>
+              <td><input type="number" name = "quantityAvailable" defaultValue={selectedSeed.quantityAvailable} onChange={this.buildNewSeed("quantityAvailable")}/></td>
             </tr>
             <tr className='adminRow topAlignTable'>
               <td>Price</td>
-              <td><input type="number" name = "price" onChange={this.buildNewSeed("price")}/></td>
+              <td><input type="number" name = "price" defaultValue={selectedSeed.price} onChange={this.buildNewSeed("price")}/></td>
+            </tr>
+            <tr className='adminRow topAlignTable'>
+              <td>Storage id</td>
+              <td><input type="text" name = "storageId" defaultValue={selectedSeed.storageId} onChange={this.buildNewSeed("storageId")}/></td>
             </tr>
             <tr>
             <td>Maternal Line</td>

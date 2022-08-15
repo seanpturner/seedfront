@@ -112,7 +112,7 @@ class Users extends Component {
     this.setState({ selectedUser: "none" });
     this.getUsers(this.state.dataSet, "get");
   })
-  // .then(response => window.location.reload())
+  .then(response => window.location.reload())
   }
 
   sortList = (users, by) => {
@@ -300,7 +300,8 @@ class Users extends Component {
     return (
       <div className="adminPage">
         <div className="adminNavDiv">
-          <AdminNav />            
+          <AdminNav />
+          <br/>{JSON.stringify(selectedUser)}<br/>
         </div>
         <div className={selectedUserDiv}>
         <h1 className="adminSectionTitle">Update A User</h1>
