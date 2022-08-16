@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
+import PayPal from './PayPal';
 
 function ShoppingCart() {
     const baseUrl = 'http://localhost:8080/';
@@ -458,27 +459,27 @@ function ShoppingCart() {
         }
     }
 
-    const placeOrder = () => {
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+    // const placeOrder = () => {
+    //     let myHeaders = new Headers();
+    //     myHeaders.append("Content-Type", "application/json");
 
-        let raw = JSON.stringify(order);
+    //     let raw = JSON.stringify(order);
 
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
+    //     var requestOptions = {
+    //         method: 'POST',
+    //         headers: myHeaders,
+    //         body: raw,
+    //         redirect: 'follow'
+    //     };
 
-        fetch(baseUrl + 'purchases', requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            console.log(result);
-            window.location.replace('/home');
-        })
-        // .catch(error => console.log('error', error));
-    }
+    //     fetch(baseUrl + 'purchases', requestOptions)
+    //     .then(response => response.text())
+    //     .then(result => {
+    //         console.log(result);
+    //         window.location.replace('/home');
+    //     })
+    //     // .catch(error => console.log('error', error));
+    // }
 
     const getLocator = () => {
         let requestOptions = {
@@ -781,7 +782,8 @@ function ShoppingCart() {
             </div>
             <div className={submitOrder}>
                 Submit Order<br/>
-                <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
+                {/* <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link> */}
+                <PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/>
             </div>
         </div>
     </div>

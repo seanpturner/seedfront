@@ -32,6 +32,8 @@ import FAQ from './components/public/FAQ';
 import ShoppingCart from './components/public/ShoppingCart';
 import SendProps from './components/public/SendProps';
 import ReceiveProps from './components/public/ReceiveProps';
+import PaymentSuccess from './components/public/PaymentSuccess';
+import OrderSuccess from './components/public/OrderSuccess';
 
 function App() {
   return (
@@ -66,6 +68,10 @@ function App() {
         <Route path='/shoppingcart' element={<ShoppingCart/>} />
         <Route path='/sendprops' element={<SendProps/>} />
         <Route path='/receiveprops/:id/:otherid' element={<ReceiveProps/>} />
+        <Route path='/paymentSuccess/:purchase' element={<PaymentSuccess/>} />
+        <Route path='/orderSuccess/:locator' element={<OrderSuccess/>} />
+        {/* <Route path='/orderSuccess/' element={<OrderSuccess/>} /> */}
+
       </Routes>
     </Router>
 
