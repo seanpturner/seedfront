@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import PayPal from './PayPal';
 
 function ShoppingCart() {
-    const baseUrl = 'http://localhost:8080/';
+    // const baseUrl = 'http://localhost:8080/';
     const taxRate = .0784;
     const [applySalesTax, setApplySalesTax] = useState(true);
     const [userId, setUserID] = useState(6);
@@ -46,9 +46,9 @@ function ShoppingCart() {
     const verifyAddress = showModal === 'verifyAddress' ? 'verifyAddress' : 'hidden';
     const toSubmitOrder = showModal === 'toSubmitOrder' ? 'toSubmitOrder' : 'hidden';
     const submitOrder = showModal === 'submitOrder' ? 'submitOrder' : 'hidden';
-    const selectPayment = showModal === 'selectPayment' ? 'selectPayment' : 'hidden';
+    // const selectPayment = showModal === 'selectPayment' ? 'selectPayment' : 'hidden';
     const toSelectPayment = showModal === 'toSelectPayment' ? 'toSelectPayment' : 'hidden';
-    const [paymentOption, setPaymentOption] = useState('');
+    // const [paymentOption, setPaymentOption] = useState('');
     // const venmo = paymentOption === 'venmo' ? 'venmo' : 'hidden';
     // const cashApp = paymentOption === 'cashApp' ? 'cashApp' : 'hidden';
     // const card = paymentOption === 'card' ? 'card' : 'hidden';
@@ -758,13 +758,13 @@ function ShoppingCart() {
                 <Link to='' onClick={()=>validateShipping()}>This shipping information is correct</Link>
                 {/* 'selectPayment' */}
                 <span className={showSelectPaymentLink}><br/>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back: My order</Link>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Select payment and submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back: My order</Link>
                 </span>
             </div>
             <div className={toSelectPayment}>
                 <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back: Verify address</Link>
             </div>
-            <div className={selectPayment}>
+            {/* <div className={selectPayment}>
                 <span className='alertRedText'>Choose a payment option to be able to submit your order</span><br/>
                 <ul>
                     <li><Link to='' onClick={()=>setPaymentOption('venmo')}>Pay with Venmo</Link><br/></li>
@@ -777,14 +777,18 @@ function ShoppingCart() {
                     <div className='paymentOptionDetails'>{paymentOption === 'card' ? <p><b>Credit/Debit Card</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'card' ? 'You will be connected to the Stripe credit/debit card processing system when you submit your order. We will be notified immediately when payment is successfully processed, and you will receive an order confirmation at the email you provided.' : ''}</span></div>
                 </div>
                 <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back: My order</Link>
-            </div>
+            </div> */}
             <div className={toSubmitOrder}>
                 <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back: Verify address</Link>
             </div>
             <div className={submitOrder}>
-                Submit Order<br/>
+                {/* Submit Order<br/> */}
                 {/* <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link> */}
-                <PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/>
+                <div className='payPalButtonDiv'>
+                    <PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/><br/>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
+                </div>
+                
             </div>
         </div>
     </div>

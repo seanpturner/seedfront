@@ -456,6 +456,11 @@ textarea, .inputDeliveryNotes {
   text-decoration: line-through;
 }
 
+.payPalButtonDiv {
+  display: inline-block;
+  max-width: 800px;
+}
+
 /* Media queries */
 
 @media (orientation: landscape) {
