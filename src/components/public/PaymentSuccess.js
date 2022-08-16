@@ -42,7 +42,7 @@ export default function PaymentSuccess() {
         purchaseDate: order.purchaseDate,
         lineItems: order.lineItems,
         shippingFee: order.shippingFee,
-        shippingMethod: order.selectedShipping,
+        shippingMethod: order.shippingMethod,
         preTax: order.preTax,
         tax: order.tax,
         discountApplied: order.discountApplied,
@@ -60,7 +60,8 @@ export default function PaymentSuccess() {
         orderUser: order.orderUser,
         email: order.email,
         recordLocator: order.recordLocator,
-        paymentDate: getDateTime()
+        paymentDate: getDateTime(),
+        paymentType: 4
     }
 
         const placeOrder = () => {
@@ -81,8 +82,8 @@ export default function PaymentSuccess() {
 
             fetch(baseUrl + 'purchases', requestOptions)
             .then(response => response.text())
-            .then(result => window.location.href = '/orderSuccess/' + updPurchase.recordLocator)
-            // .then(result => window.location.replace('/orderSuccess/' + updPurchase.recordLocator))
+            // .then(result => window.location.href = '/orderSuccess/' + updPurchase.recordLocator)
+            .then(result => window.location.replace('/orderSuccess/' + updPurchase.recordLocator))
             // .catch(error => console.log('error', error));
         // }
     }

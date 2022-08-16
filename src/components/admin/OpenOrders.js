@@ -729,7 +729,7 @@ class OpenOrders extends Component {
           <AdminNav />
           {/* {JSON.stringify(masterJson)}<br/> */}
           {/* {selectablePurchaseDate} */}
-          {/* {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)} */}
+          {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)}
           {/* {JSON.stringify(this.state.addLineItems)} */}
         </div>
         <div className={allOrdersDiv}>

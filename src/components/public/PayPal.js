@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 // export default function 
 
 function PayPal (props) {
-
+    // alert(props.purchase);
     const paypal = useRef();
 
     useEffect(() => {

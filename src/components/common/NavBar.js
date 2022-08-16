@@ -41,7 +41,7 @@ function NavBar() {
     useEffect(() => {
         checkLoggedIn();
         checkOpenCart()
-    }, [])
+    }, [hasOpenCart, userName])
     return (
         <div className='nav'>
             <div className='greenBar'>

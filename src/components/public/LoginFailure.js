@@ -5,7 +5,7 @@ function LoginFailure() {
     useEffect(() => {
         setTimeout(() => {
             window.location.replace('./login');
-        }, 3000);
+        }, 1500);
     }, [])
   return (
     <div className='pubPage'>
