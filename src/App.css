@@ -28,6 +28,13 @@ textarea, .inputDeliveryNotes {
   resize: vertical;
 }
 
+textarea, .messageBody {
+  display: block;
+  overflow: hidden;
+  width: 171px;
+  resize: vertical;
+}
+
 .validationText {
   font-size: small;
   color: red;
@@ -460,6 +467,11 @@ textarea, .inputDeliveryNotes {
   display: inline-block;
   max-width: 800px;
 }
+
+/* .contactFormItem {
+  display: inline-block;
+  width: 12vw;
+} */
 
 /* Media queries */
 
