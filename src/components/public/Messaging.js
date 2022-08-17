@@ -45,9 +45,15 @@ function Messaging(props) {
           
         fetch('http://localhost:8080/messages/user/' + userName, requestOptions)
             .then(response => response.json())
-            .then(result => setAllMessages(result))
+            .then(result => sortMessages(result))
+            // .then(result => setAllMessages(result))
             // .then(result => console.log(result))
             // .catch(error => console.log('error', error));
+    }
+
+    const sortMessages = (messageArray) => {
+        messageArray.sort((a, b) => (a.id < b.id ? 1 : -1));
+        setAllMessages(messageArray);
     }
 
     const filterMessages = () => {
@@ -94,7 +100,8 @@ function Messaging(props) {
     }
 
     const updateRead = (message) => {
-        if (message.id && (!message.read || !message.timestampOpened)) {
+        let senderName = crossReference(nameHash, 'userId', message.senderId, 'userName');
+        if (message.id && senderName !== userName && (!message.read || !message.timestampOpened)) {
             let requestOptions = {
                 method: 'PUT',
                 redirect: 'follow'
@@ -127,6 +134,8 @@ function Messaging(props) {
         // setFilter(firstFilter);
         if (!firstFilter) {
             setFilter('unread');
+        }else{
+            setFilter(firstFilter);
         }
     }, [])
 
@@ -160,6 +169,7 @@ function Messaging(props) {
                     <table>
                         <tr>
                             <td className='messagePadding'/>
+                            <td className='messagePadding'>Date</td>
                             <td className='messagePadding'>{filter === 'sent' ? 'To' : 'From'}</td>
                             <td className='messagePadding'>Subject</td>
                             <td className='messagePadding'>Message</td>
@@ -167,8 +177,10 @@ function Messaging(props) {
                         {nameHash && filteredMessages?.map((message) => {
                             return(
                                 <tr>
+                                    {/* <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>{message.id}</Link></td> */}
                                     <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>Open</Link></td>
-                                    {filter === 'sent' ? <td className='messagePadding'>{maxLength(crossReference(nameHash, 'userId', message.receiverId, 'userName'),10)}</td> : <td className='messagePadding'>{!message.senderId ? 'user' : maxLength(crossReference(nameHash, 'userId', message.senderId, 'userName'),10)}</td>}
+                                    <td className='messagePadding'>{message.timestampSent.substring(0,10)}</td>
+                                    {filter === 'sent' ? <td className='messagePadding'>{maxLength(crossReference(nameHash, 'userId', message.receiverId, 'userName'),10)}</td> : <td className='messagePadding'>{!message.senderId ? '[user]' : maxLength(crossReference(nameHash, 'userId', message.senderId, 'userName'),10)}</td>}
                                     <td className='messagePadding'>{maxLength(message.messageSubject, 30)}</td>
                                     <td className='messagePadding'>{maxLength(message.messageBody, 40)}</td>
                                     <td className='messagePadding'>{message.read || filter === 'sent' ? '' : <Link to='' onClick={()=>{updateRead(message); window.location.replace('/messaging/' + filter)}}>Mark as read </Link>}</td>

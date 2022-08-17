@@ -57,7 +57,7 @@ function Contact() {
         }
     }
     const submitForm = () => {
-        contactObject.timestampSent = getDateTime();
+        // contactObject.timestampSent = getDateTime();
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -81,33 +81,33 @@ function Contact() {
     //     setShowDiv('submitSuccess');
     // }
 
-    const getDateTime = () => {
-        let today = new Date();
-        let dash1 = '-';
-        let dash2 = '-';
-            let day = today.getDate();
-            let month = today.getMonth() +1;
-            let year = today.getFullYear();
-            let hours = today.getHours();
-            let minutes = today.getMinutes();
-            let seconds = today.getSeconds();
-        if (month < 10) {
-            dash1 = '-0';
-        }
-        if (day < 10) {
-            dash2 = '-0';
-        }
-        if (hours < 10) {
-            hours = '0' + hours;
-        }
-        if (minutes < 10) {
-            minutes = '0' + minutes;
-        }
-        if (seconds < 10) {
-            seconds = '0' + seconds;
-        }
-        return year + dash1 + month + dash2 + day + 'T' + hours + ':' + minutes + ':' + seconds + '.000000';
-    }
+    // const getDateTime = () => {
+    //     let today = new Date();
+    //     let dash1 = '-';
+    //     let dash2 = '-';
+    //         let day = today.getDate();
+    //         let month = today.getMonth() +1;
+    //         let year = today.getFullYear();
+    //         let hours = today.getHours();
+    //         let minutes = today.getMinutes();
+    //         let seconds = today.getSeconds();
+    //     if (month < 10) {
+    //         dash1 = '-0';
+    //     }
+    //     if (day < 10) {
+    //         dash2 = '-0';
+    //     }
+    //     if (hours < 10) {
+    //         hours = '0' + hours;
+    //     }
+    //     if (minutes < 10) {
+    //         minutes = '0' + minutes;
+    //     }
+    //     if (seconds < 10) {
+    //         seconds = '0' + seconds;
+    //     }
+    //     return year + dash1 + month + dash2 + day + 'T' + hours + ':' + minutes + ':' + seconds + '.000000';
+    // }
 
     useEffect(() => {
         if (showDiv === 'submitSuccess') {
