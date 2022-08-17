@@ -410,6 +410,11 @@ textarea, .messageBody {
   font-size: x-small;
 }
 
+.messageCount {
+  font-size: medium;
+  vertical-align: top;
+}
+
 .question {
   font-weight: 600;
   color: green;
@@ -468,6 +473,19 @@ textarea, .messageBody {
   max-width: 800px;
 }
 
+.selectedMessages {
+  background-color: #043d632f;
+  border-radius: 45%;
+}
+
+.messagePadding {
+  /* margin-left: 3px;
+  margin-right: 3px;
+  border: solid black 3px; */
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 /* .contactFormItem {
   display: inline-block;
   width: 12vw;
@@ -492,7 +510,7 @@ textarea, .messageBody {
 
   .linkDivLandscape {
     line-height: 70px;
-    font-size: calc(20px + .5vh);
+    font-size: calc(18px + .5vh);
     padding-right: 1.25vw;
     padding-left: 1.25vw;
   }

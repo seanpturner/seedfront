@@ -11,7 +11,7 @@ function Contact() {
     const [contactMessage, setContactMessage] = useState(null);
     const [contactName, setContactName] = useState(null);
     const [contactEmail, setContactEmail] = useState(null);
-    const [timeStamp, setTimeStamp] = useState(null);
+    // const [timeStamp, setTimeStamp] = useState(null);
     const [showValidationText, setShowValidationText] = useState(false);
     const validateType = showValidationText && (!contactType || contactType === '') ? 'validateType' : 'hidden';
     const validateSubject = showValidationText && (!contactSubject || contactSubject.replace(/\s/g, '') === '') ? 'validateSubject' : 'hidden';
@@ -22,7 +22,8 @@ function Contact() {
         id: null,
         senderId: null,
         receiverId: 1,
-        // timestampSent: timeStamp,
+        read: false,
+        archived: false,
         messageSubject: contactType + ' - ' + contactSubject,
         messageBody: contactMessage + ' - ' + contactName + ' - ' + contactEmail
     }
@@ -38,7 +39,7 @@ function Contact() {
         setContactMessage(null);
         setContactEmail(null);
         setContactName(null);
-        setTimeStamp(null);
+        // setTimeStamp(null);
     }
 
     const validateFormInputs = () => {

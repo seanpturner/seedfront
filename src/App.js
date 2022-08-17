@@ -34,43 +34,45 @@ import SendProps from './components/public/SendProps';
 import ReceiveProps from './components/public/ReceiveProps';
 import PaymentSuccess from './components/public/PaymentSuccess';
 import OrderSuccess from './components/public/OrderSuccess';
+import Messaging from './components/public/Messaging';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path='/' element={<Home/>} />
-        <Route path='/home' element={<Home/>} />
-        <Route path='/about' element={<About/>} />
-        <Route path='/admin' element={<Admin/>} />
-        <Route path='/comments' element={<Comments/>} />
-        <Route path='/content' element={<Content/>} />
-        <Route path='/discounts' element={<Discounts/>} />
-        <Route path='/lines' element={<Lines/>} />
-        <Route path='/logins' element={<Logins/>} />
-        <Route path='/messages' element={<Messages/>} />
-        <Route path='/plants' element={<Plants/>} />
-        <Route path='/pricing' element={<Pricing/>} />
-        <Route path='/openorders' element={<OpenOrders/>} />
-        <Route path='/allorders' element={<AllOrders/>} />
-        <Route path='/seeds' element={<Seeds/>} />
-        <Route path='/users' element={<Users/>} />
-        <Route path='/shipper' element={<Shipper/>} />
-        <Route path='/econfirm' element={<Econ/>} />
-        <Route path='/createOrder' element={<CreateOrder/>} />
-        <Route path='/login' element={<Login/>} />
-        <Route path='/contact' element={<Contact/>} />
-        <Route path='/findseeds' element={<FindSeeds/>} />
-        <Route path='/loginsuccess' element={<LoginSuccess/>} />
-        <Route path='/loginfailure' element={<LoginFailure/>} />
-        <Route path='/creationsuccess' element={<CreationSuccess/>} />
-        <Route path='/faq' element={<FAQ/>} />
-        <Route path='/shoppingcart' element={<ShoppingCart/>} />
-        <Route path='/sendprops' element={<SendProps/>} />
-        <Route path='/receiveprops/:id/:otherid' element={<ReceiveProps/>} />
-        <Route path='/paymentSuccess/:purchase' element={<PaymentSuccess/>} />
-        <Route path='/orderSuccess/:locator' element={<OrderSuccess/>} />
-        {/* <Route path='/orderSuccess/' element={<OrderSuccess/>} /> */}
+        <Route exact path='/' element={<Home/>}/>
+        <Route path='/home' element={<Home/>}/>
+        <Route path='/about' element={<About/>}/>
+        <Route path='/admin' element={<Admin/>}/>
+        <Route path='/comments' element={<Comments/>}/>
+        <Route path='/content' element={<Content/>}/>
+        <Route path='/discounts' element={<Discounts/>}/>
+        <Route path='/lines' element={<Lines/>}/>
+        <Route path='/logins' element={<Logins/>}/>
+        <Route path='/messages' element={<Messages/>}/>
+        <Route path='/plants' element={<Plants/>}/>
+        <Route path='/pricing' element={<Pricing/>}/>
+        <Route path='/openorders' element={<OpenOrders/>}/>
+        <Route path='/allorders' element={<AllOrders/>}/>
+        <Route path='/seeds' element={<Seeds/>}/>
+        <Route path='/users' element={<Users/>}/>
+        <Route path='/shipper' element={<Shipper/>}/>
+        <Route path='/econfirm' element={<Econ/>}/>
+        <Route path='/createOrder' element={<CreateOrder/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/contact' element={<Contact/>}/>
+        <Route path='/findseeds' element={<FindSeeds/>}/>
+        <Route path='/loginsuccess' element={<LoginSuccess/>}/>
+        <Route path='/loginfailure' element={<LoginFailure/>}/>
+        <Route path='/creationsuccess' element={<CreationSuccess/>}/>
+        <Route path='/faq' element={<FAQ/>}/>
+        <Route path='/shoppingcart' element={<ShoppingCart/>}/>
+        <Route path='/sendprops' element={<SendProps/>}/>
+        <Route path='/receiveprops/:id/:otherid' element={<ReceiveProps/>}/>
+        <Route path='/paymentSuccess/:purchase' element={<PaymentSuccess/>}/>
+        <Route path='/orderSuccess/:locator' element={<OrderSuccess/>}/>
+        <Route path='/messaging/:firstFilter' element={<Messaging/>}/>
+        <Route path='/messaging' element={<Messaging/>}/>
 
       </Routes>
     </Router>
