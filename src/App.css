@@ -35,6 +35,22 @@ textarea, .messageBody {
   resize: vertical;
 }
 
+.messageReply {
+  display: block;
+  /* overflow: hidden; */
+  overflow-y: scroll;
+  width: 90vw;
+  resize: none;
+}
+
+.messageSend {
+  display: block;
+  /* overflow: hidden; */
+  overflow-y: scroll;
+  width: 80vw;
+  resize: none;
+}
+
 .validationText {
   font-size: small;
   color: red;
@@ -410,9 +426,13 @@ textarea, .messageBody {
   font-size: x-small;
 }
 
-.messageCount {
+.showMessageCount {
   font-size: medium;
   vertical-align: top;
+}
+
+.boldText {
+  font-weight: bold;
 }
 
 .question {
