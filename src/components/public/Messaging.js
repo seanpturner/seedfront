@@ -1,4 +1,4 @@
-import React, { createElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NavBar from '../common/NavBar';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -13,8 +13,6 @@ function Messaging(props) {
     const showSend = filter === 'send' ? 'selectedMessages' : 'showSend';
     const [allMessages, setAllMessages] = useState([]);
     const [filteredMessages, setFilteredMessages] = useState([]);
-    const [updateMessages, setUpdateMessages] = useState(0);
-    const [lastUpdate, setLastUpdate] = useState(null);
     const [userName, setUserName] = useState(null);
     const [userId, setUserId] = useState(null);
     const [nameHash, setNameHash] = useState(null);
@@ -23,14 +21,13 @@ function Messaging(props) {
     const singleMessage = showDiv === 'singleMessage' ? 'singleMessage' : 'hidden';
     const [openMessage, setOpenMessage] = useState(null);
     const [messageReply, setMessageReply] = useState(null);
-    const [showReply, setShowReply] = useState(true);
-    const replyMessage = showReply ? 'replyMessage' : 'hidden';
     const sendMessage = showDiv === 'sendMessage' ? 'sendMessage' : 'hidden';
     const [authLevel, setAuthLevel] = useState('user');
     const [newMessageReceiverId, setNewMessageReceiverId] = useState(null);
     const [newMessageSubject, setNewMessageSubject] = useState(null);
     const [newMessageBody, setNewMessageBody] = useState(null);
     const okToSendNewMessage = newMessageSubject && newMessageSubject.replace(/\s/g, '') !== "" && newMessageBody && newMessageBody.replace(/\s/g, '') !== "" && newMessageReceiverId ? 'okToSendNewMessage' : 'hidden';
+    const showReplyButton = filter === 'sent' ? 'hidden' : 'showReplyButton';
     const newMessage = {
         id: null,
         senderId: userId,
@@ -53,7 +50,6 @@ function Messaging(props) {
             .then(response => response.json())
             .then(result => {
                 filterNameHash(result);
-                // setNameHash(result);
                 getAllMessages();
             })
             // .then(result => console.log(result))
@@ -61,18 +57,6 @@ function Messaging(props) {
     }
 
     const filterNameHash = (nameHash) => {
-        // objectSort = (obj, sortKey, statePosition, sortOrder) => {
-        //     let sortedObject = [];
-        //     obj.forEach(element => {
-        //       sortedObject.push(element);
-        //     });
-        //     if (sortOrder === "descending") {
-        //       sortedObject.sort((a, b) => (a[sortKey] < b[sortKey] ? 1 : -1));
-        //     }else{
-        //       sortedObject.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1));
-        //     }
-        //     this.setState({ [statePosition]: sortedObject });
-        //   }
         nameHash.sort((a,b) => (a.userName > b.userName ? 1 : -1));
         setNameHash(nameHash);
     }
@@ -112,23 +96,6 @@ function Messaging(props) {
             if (filter === 'sent') {
                 filteredArray = allMessages.filter(data => data.senderId === uid);
             }
-            // if (filter === 'unread' || !filter) {
-            //     let filteredArray = allMessages.filter(data => !data.read && crossReference(nameHash, 'userId', data.receiverId, 'userName') === userName)
-            //     setFilteredMessages(filteredArray);
-            // }
-            // if (filter === 'unarchived') {
-            //     let filteredArray = allMessages.filter(data => !data.archived && crossReference(nameHash, 'userId', data.receiverId, 'userName') === userName)
-            //     setFilteredMessages(filteredArray);
-            // }
-            // if (filter === 'all') {
-            //     let filteredArray = allMessages.filter(data => crossReference(nameHash, 'userId', data.receiverId, 'userName') === userName)
-            //     setFilteredMessages(filteredArray);
-            // }
-
-            // if (filter === 'sent') {
-            //     let filteredArray = allMessages.filter(data => crossReference(nameHash, 'userId', data.senderId, 'userName') === userName)
-            //     setFilteredMessages(filteredArray);
-            // }
             setFilteredMessages(filteredArray);
         }
     }
@@ -158,7 +125,6 @@ function Messaging(props) {
         if (message.id && senderName !== userName && (!message.read || !message.timestampOpened)) {
             let requestOptions = {
                 method: 'PUT',
-                // body: JSON.stringify(message),
                 redirect: 'follow'
               };
               
@@ -192,7 +158,6 @@ function Messaging(props) {
         if (subjectStart !== 'Reply:') {
             messageSub = 'Reply: ' + messageSub;
         }
-        // let messageChain = messageReply + '     <previous message>     ' + message.messageBody;
         const replyMessage = {
             id: null,
             senderId: message.receiverId,
@@ -202,7 +167,6 @@ function Messaging(props) {
             read: false,
             archived: false
         }
-        // alert(JSON.stringify(replyMessage));
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -225,16 +189,6 @@ function Messaging(props) {
     }
 
     const sendNewMessage = () => {
-        // const replyMessage = {
-        //     id: null,
-        //     senderId: message.receiverId,
-        //     receiverId: message.senderId,
-        //     messageBody: messageReply,
-        //     messageSubject: messageSub,
-        //     read: false,
-        //     archived: false
-        // }
-        // alert(JSON.stringify(replyMessage));
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -263,11 +217,6 @@ function Messaging(props) {
         setNewMessageBody(null);
     }
 
-    // const auto_grow = (element) => {
-    //     element.style.height = "5px";
-    //     element.style.height = (element.scrollHeight)+"px";
-    // }
-
     const updateUserList = () => {
         let dd = document.getElementById('usersSelect');
         if (authLevel && authLevel === 'admin') {
@@ -291,18 +240,14 @@ function Messaging(props) {
         let un = localStorage.getItem('userName');
         let token = localStorage.getItem('bearerToken');
 
-        if (!un || un === '' || !token || token === '') {
-            // kickToLogin();
-        }else{
         let myHeaders = new Headers();
         myHeaders.append("bearerToken", token);
 
         requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
-        }
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
 
         fetch("http://localhost:8080/users/checkUserLevel/" + un, requestOptions)
         .then(response => response.json())
@@ -315,38 +260,34 @@ function Messaging(props) {
 
     useEffect(() => {
         setUserName(localStorage.getItem('userName'));
-        // setFilter(firstFilter);
         if (!firstFilter) {
             setFilter('unread');
         }else{
             setFilter(firstFilter);
         }
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
         if (allMessages) {
             filterMessages();
         }
-        
+        // eslint-disable-next-line
     }, [allMessages, filter])
-
-    useEffect(() => {
-        let now = new Date();
-        if (!lastUpdate || lastUpdate - now > 20000) {
-            getNameHash();
-        }
-    }, [updateMessages, userName])
 
     useEffect(() => {
         if (nameHash && nameHash !== undefined) {
             updateUserList();
         }
+        // eslint-disable-next-line
     }, [nameHash])
 
     useEffect(() => {
         if (userName && userName !== undefined) {
             checkAuth();
         }
+        getNameHash();
+        // eslint-disable-next-line
     }, [userName])
 
     useEffect(() => {
@@ -420,17 +361,14 @@ function Messaging(props) {
                             <td className='messagePadding'>Subject:</td>
                             <td className='messagePadding'>{openMessage?.messageSubject}</td>
                         </tr>
-                        {/* <tr className='topAlignTableRow'>
-                            <td className='messagePadding'>Message:</td>
-                            <td className='messagePadding'>{openMessage?.messageBody}</td>
-                        </tr> */}
                     </table>
-                    {/* <p><Link to='' onClick={()=>{setShowReply(!showReply);}}>Reply</Link></p> */}
-                    {/* <p><Link to='' onClick={()=>{setShowReply(!showReply); document.getElementById('messageReply').value=''; setMessageReply(null)}}>Reply</Link></p> */}
-                    <div className={replyMessage}>
+                    <div className='replyMessage'>
                         <textarea id='messageReply' className='messageReply' type='text' rows='15' defaultValue={openMessage && openMessage.messageBody ? '\n\n\n' + openMessage.messageBody : ''} onChange={(e)=>setMessageReply(e.target.value)}/>
-                        <Link to='' onClick={()=>{sendReply(openMessage)}}>Send Reply
-                        </Link>{' | '}<Link to='' onClick={()=>{document.getElementById('messageReply').value=''; setMessageReply(null)}}>Clear</Link>
+                        <span className={showReplyButton}>
+                            <Link className={showReplyButton} to='' onClick={()=>{sendReply(openMessage)}}>Send Reply</Link>
+                            {' | '}
+                            <Link to='' onClick={()=>{document.getElementById('messageReply').value=''; setMessageReply(null)}}>Clear</Link>
+                        </span>
                     </div>
                 </div>
                 <div className={sendMessage}>

@@ -91,7 +91,7 @@ function NavBar() {
                                 <span className={logOutP + ' portraitLinks'}><Link className='navLink' to='/messaging'>MESSAGES {'(' + messageCount + ')'}</Link></span><br/>
                                 <span className='portraitLinks'><Link className='navLink' to='/findseeds'>SEEDS</Link></span>
                                 <span className={logInP}><Link className='navLink' to='/login'>LOG IN</Link></span>
-                                <span className={logOutP}><Link className='navLink' to='/login' onClick={()=>logUserOut()}>LOG OUT</Link></span>
+                                <span className={logOutP}><Link className='navLink' to='/login' onClick={()=>logUserOut()}>LOG OUT</Link></span><br/>
                                 <span className={openCartP}><Link className='navLink' to='/shoppingcart'>MY CART</Link></span>
                             </div>
                         </div>
