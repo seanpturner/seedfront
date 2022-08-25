@@ -210,7 +210,7 @@ function ShoppingCart() {
           currency: 'USD',
         });
         return formatter.format(amount);
-      }
+    }
 
     const updateQuantity = (id, v) => {
         let li = lineItems;

@@ -236,6 +236,11 @@ textarea, .messageBody {
   width: 50px;
 }
 
+.qtyInput {
+  width: 20px;
+  text-align: center;
+}
+
 .priceInput {
   width: 90px;
 }
@@ -504,6 +509,11 @@ textarea, .messageBody {
   border: solid black 3px; */
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.itemPadding {
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 /* .contactFormItem {
