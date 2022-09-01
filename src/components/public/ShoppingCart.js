@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
-// import PayPal from './PayPal';
+import PayPal from './PayPal';
 
 function ShoppingCart() {
     // const baseUrl = 'http://localhost:8080/';
@@ -765,35 +765,16 @@ function ShoppingCart() {
                 <div className={toSelectPayment}>
                     <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back: Verify address</Link>
                 </div>
-                {/* <div className={selectPayment}>
-                    <span className='alertRedText'>Choose a payment option to be able to submit your order</span><br/>
-                    <ul>
-                        <li><Link to='' onClick={()=>setPaymentOption('venmo')}>Pay with Venmo</Link><br/></li>
-                        <li><Link to='' onClick={()=>setPaymentOption('cashApp')}>Pay with Cash App</Link><br/></li>
-                        <li><Link to='' onClick={()=>setPaymentOption('card')}>Pay securely online with a credit or debit card</Link><br/></li>
-                    </ul>
-                    <div className='paymentInstructions'>
-                        <div className='paymentOptionDetails'>{paymentOption === 'venmo' ? <p><b>Venmo</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'venmo' ? 'You will have 2 days to send ' + total + ' via Venmo to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
-                        <div className='paymentOptionDetails'>{paymentOption === 'cashApp' ? <p><b>Cash App</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'cashApp' ? 'You will have 2 days to send ' + total + ' via Cash App to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
-                        <div className='paymentOptionDetails'>{paymentOption === 'card' ? <p><b>Credit/Debit Card</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'card' ? 'You will be connected to the Stripe credit/debit card processing system when you submit your order. We will be notified immediately when payment is successfully processed, and you will receive an order confirmation at the email you provided.' : ''}</span></div>
-                    </div>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back: My order</Link>
-                </div> */}
                 <div className={toSubmitOrder}>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back: Verify address</Link>
+                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back: Verify address</Link>
+            </div>
+            <div className={submitOrder}>
+                {/* Submit Order<br/> */}
+                {/* <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link> */}
+                <div className='payPalButtonDiv'>
+                    <p><PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/></p>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
                 </div>
-                <div className={submitOrder}>
-                    {/* Submit Order<br/> */}
-                    {/* <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link> */}
-                    <div className='payPalButtonDiv'>
-                        {/* <PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/><br/> */}
-                        <p className='alertRedText'>If everything is correct, proceed below.</p>
-                        <Link to='/payment' onClick={()=>{
-                            sessionStorage.setItem('tempO', JSON.stringify(order));
-                            // window.location.replace('/payment');
-                        }}>Submit order and go to payment</Link><br/>
-                        <Link className='nextText' to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
-                    </div>
                     
                 </div>
             </div>
