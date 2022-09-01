@@ -31,7 +31,7 @@ function FAQ() {
                     <td className='question'>Do you guarantee your seeds will grow?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>Yes. If you have an issue with any seeds that just won't pop, let me know and I'll replace each seed, one time, free of charge.</td>
+                    <td className='answer'>Yes. If you've planted the seed within 3 months of receiving it and have an issue with any seeds that just won't pop, let me know and I'll replace each seed, one time, free of charge.</td>
                 </tr>
                 <tr>
                     <td className='question'>I noticed that you don't have any of the typical strains I'm familiar with. Why is that?</td>
@@ -40,6 +40,12 @@ function FAQ() {
                     <td className='answer'>
                     I've found that cannabis strains don't frequently look, smell, taste, or have the same effect when they are bought at different times or from different places. Upon looking into it, I found that science agrees. <a href='https://jcannabisresearch.biomedcentral.com/articles/10.1186/s42238-019-0001-1' target='blank'>See here</a>, <a href='https://www.dal.ca/news/2022/01/07/cannabis-labels-study-indica-sativa.html' target='blank'>and here</a>, <a href='https://www.marijuanamoment.net/marijuana-strain-labels-often-mislead-consumers-study-of-nearly-90000-samples-shows/' target='blank'>and here.</a> I realized that there must be a better way, and I set upon focusing on finding plants that I really like and not only breeding them, but also closely tracking both their maternal and paternal lineage. This way, when you find a plant that you really enjoy and later want seeds to grow something similar, I can find something with the same lineage from seeds that have shown that they display consistent characteristics.
                     </td>
+                </tr>
+                <tr>
+                    <td className='question'>Why aren't there more varieties of seeds in stock?</td>
+                </tr>
+                <tr>
+                    <td className='answer'>I look at breeding almost as a form of art, and I'm not always happy with my breeds for various reasons. Perhaps they don't have a good smell, taste, or effect. Perhaps they aren't hearty enough. For whatever the reason, if I'm not happy with what I've curated, I stop that line and focus on others. So, what you might see as a limited selection, is what I see as only offering the best of what I've created.</td>
                 </tr>
                 <tr>
                     <td className='question'>I don't see any feminized seeds. Why not?</td>

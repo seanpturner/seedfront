@@ -305,98 +305,100 @@ function Messaging(props) {
             {/* <p>{JSON.stringify(filteredMessages)}</p> */}
             {/* <p>{JSON.stringify(newMessage)}</p> */}
             <div className='pubContent'>
-                <div className={messageTable}>
-                    <p>
-                        <span>Show: </span>
-                        <span className={showUnread}><Link to='' onClick={()=>{setFilter('unread')}}>Unread</Link></span>{' '}
-                        <span className={showUnarchived}><Link to='' onClick={()=>{setFilter('unarchived')}}>Unarchived</Link></span>{' '}
-                        <span className={showAll}><Link to='' onClick={()=>{setFilter('all')}}>All</Link></span>{' '}
-                        <span className={showSent}><Link to='' onClick={()=>{setFilter('sent')}}>Sent</Link></span>{' '}
-                        <span>|</span>{' '}
-                        <span className={showSend}><Link to='' onClick={()=>{setShowDiv('sendMessage')}}>Send a message</Link></span>{' '}
-                    </p>
-                    <table>
-                        <tr>
-                            <td className='messagePadding boldText'/>
-                            <td className='messagePadding boldText'>Date</td>
-                            <td className='messagePadding boldText'>{filter === 'sent' ? 'To' : 'From'}</td>
-                            <td className='messagePadding boldText'>Subject</td>
-                            <td className='messagePadding boldText'>Message</td>
-                        </tr>
-                        {nameHash && filteredMessages?.map((message) => {
-                            return(
-                                <tr>
-                                    {/* <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>{message.id}</Link></td> */}
-                                    <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>Open</Link></td>
-                                    <td className='messagePadding'>{message.timestampSent.substring(0,10)}</td>
-                                        {filter === 'sent' ? <td className='messagePadding'>{maxLength(crossReference(nameHash, 'userId', message.receiverId, 'userName'),10)}</td> : <td className='messagePadding'>{!message.senderId ? '[user]' : maxLength(crossReference(nameHash, 'userId', message.senderId, 'userName'),10)}
-                                    </td>}
-                                    <td className='messagePadding trunc'>{maxLength(message.messageSubject, 25)}</td>
-                                    <td className='messagePadding'>{maxLength(message.messageBody, 40)}</td>
-                                    <td className='messagePadding'>
-                                        {message.read || filter === 'sent' ? '' : <Link to='' onClick={()=>{updateRead(message); window.location.replace('/messaging/' + filter)}}>+Read</Link>}{' '}
-                                        {message.archived || filter === 'sent' ? '' : <Link to='' onClick={()=>{updateArchived(message); window.location.replace('/messaging/' + filter)}}>+Archive</Link>}
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </table>
-                </div>
-                <div className={singleMessage}>
-                    <p><Link to='' onClick={()=>{window.location.replace('/messaging/' + filter)}}>Back to Messages</Link></p>
-                    <table>
-                        <tr className='topAlignTableRow'>
-                            <td className='messagePadding'>Sent:</td>
-                            <td className='messagePadding'>{openMessage?.timestampSent.substring(0,10)}</td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td className='messagePadding'>From:</td>
-                            <td className='messagePadding'>{openMessage && openMessage.senderId ? crossReference(nameHash, 'userId', openMessage.senderId, 'userName').charAt(0).toUpperCase() + crossReference(nameHash, 'userId', openMessage.senderId, 'userName').slice(1) : '[user]'}</td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td className='messagePadding'>To:</td>
-                            <td className='messagePadding'>{openMessage && openMessage.receiverId ? crossReference(nameHash, 'userId', openMessage.receiverId, 'userName').charAt(0).toUpperCase() + crossReference(nameHash, 'userId', openMessage.receiverId, 'userName').slice(1) : 'user'}</td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td className='messagePadding'>Subject:</td>
-                            <td className='messagePadding'>{openMessage?.messageSubject}</td>
-                        </tr>
-                    </table>
-                    <div className='replyMessage'>
-                        <textarea id='messageReply' className='messageReply' type='text' rows='15' defaultValue={openMessage && openMessage.messageBody ? '\n\n\n' + openMessage.messageBody : ''} onChange={(e)=>setMessageReply(e.target.value)}/>
-                        <span className={showReplyButton}>
-                            <Link className={showReplyButton} to='' onClick={()=>{sendReply(openMessage)}}>Send Reply</Link>
-                            {' | '}
-                            <Link to='' onClick={()=>{document.getElementById('messageReply').value=''; setMessageReply(null)}}>Clear</Link>
-                        </span>
-                    </div>
-                </div>
-                <div className={sendMessage}>
+                <div className='topCenteredDiv'>
+                    <div className={messageTable}>
                         <p>
-                            <span className={sendMessage}><Link to='' onClick={()=>{setShowDiv('messageTable')}}>Back to messages</Link></span>{' '}
+                            <span>Show: </span>
+                            <span className={showUnread}><Link to='' onClick={()=>{setFilter('unread')}}>Unread</Link></span>{' '}
+                            <span className={showUnarchived}><Link to='' onClick={()=>{setFilter('unarchived')}}>Unarchived</Link></span>{' '}
+                            <span className={showAll}><Link to='' onClick={()=>{setFilter('all')}}>All</Link></span>{' '}
+                            <span className={showSent}><Link to='' onClick={()=>{setFilter('sent')}}>Sent</Link></span>{' '}
+                            <span>|</span>{' '}
+                            <span className={showSend}><Link to='' onClick={()=>{setShowDiv('sendMessage')}}>Send a message</Link></span>{' '}
                         </p>
                         <table>
                             <tr>
+                                <td className='messagePadding boldText'/>
+                                <td className='messagePadding boldText'>Date</td>
+                                <td className='messagePadding boldText'>{filter === 'sent' ? 'To' : 'From'}</td>
+                                <td className='messagePadding boldText'>Subject</td>
+                                <td className='messagePadding boldText'>Message</td>
+                            </tr>
+                            {nameHash && filteredMessages?.map((message) => {
+                                return(
+                                    <tr>
+                                        {/* <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>{message.id}</Link></td> */}
+                                        <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>Open</Link></td>
+                                        <td className='messagePadding'>{message.timestampSent.substring(0,10)}</td>
+                                            {filter === 'sent' ? <td className='messagePadding'>{maxLength(crossReference(nameHash, 'userId', message.receiverId, 'userName'),10)}</td> : <td className='messagePadding'>{!message.senderId ? '[user]' : maxLength(crossReference(nameHash, 'userId', message.senderId, 'userName'),10)}
+                                        </td>}
+                                        <td className='messagePadding trunc'>{maxLength(message.messageSubject, 25)}</td>
+                                        <td className='messagePadding'>{maxLength(message.messageBody, 40)}</td>
+                                        <td className='messagePadding'>
+                                            {message.read || filter === 'sent' ? '' : <Link to='' onClick={()=>{updateRead(message); window.location.replace('/messaging/' + filter)}}>+Read</Link>}{' '}
+                                            {message.archived || filter === 'sent' ? '' : <Link to='' onClick={()=>{updateArchived(message); window.location.replace('/messaging/' + filter)}}>+Archive</Link>}
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </table>
+                    </div>
+                    <div className={singleMessage}>
+                        <p><Link to='' onClick={()=>{window.location.replace('/messaging/' + filter)}}>Back to Messages</Link></p>
+                        <table>
+                            <tr className='topAlignTableRow'>
+                                <td className='messagePadding'>Sent:</td>
+                                <td className='messagePadding'>{openMessage?.timestampSent.substring(0,10)}</td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td className='messagePadding'>From:</td>
+                                <td className='messagePadding'>{openMessage && openMessage.senderId ? crossReference(nameHash, 'userId', openMessage.senderId, 'userName').charAt(0).toUpperCase() + crossReference(nameHash, 'userId', openMessage.senderId, 'userName').slice(1) : '[user]'}</td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
                                 <td className='messagePadding'>To:</td>
-                                <td className='messagePadding'><select id='usersSelect' onChange={(e)=>{setNewMessageReceiverId(e.target.value)}}/></td>
+                                <td className='messagePadding'>{openMessage && openMessage.receiverId ? crossReference(nameHash, 'userId', openMessage.receiverId, 'userName').charAt(0).toUpperCase() + crossReference(nameHash, 'userId', openMessage.receiverId, 'userName').slice(1) : 'user'}</td>
                             </tr>
-                            <tr>
+                            <tr className='topAlignTableRow'>
                                 <td className='messagePadding'>Subject:</td>
-                                <td className='messagePadding'><input id='newMessageSubject'  type='text' onChange={(e)=>{setNewMessageSubject(e.target.value)}}/></td>
-                            </tr>
-                            <tr>
-                                <td/>
-                                <td className='messagePadding'>
-                                    <textarea id='newMessageBody' className='messageSend' type='text' rows='15' onChange={(e)=>setNewMessageBody(e.target.value)}/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td/>
-                                <td className='messagePadding'>
-                                    <Link to='' className={okToSendNewMessage} onClick={()=>sendNewMessage()}>Send</Link> <Link to='' onClick={()=>clearNewMessage()}>Clear</Link>
-                                </td>
+                                <td className='messagePadding'>{openMessage?.messageSubject}</td>
                             </tr>
                         </table>
+                        <div className='replyMessage'>
+                            <textarea id='messageReply' className='messageReply' type='text' rows='15' defaultValue={openMessage && openMessage.messageBody ? '\n\n\n' + openMessage.messageBody : ''} onChange={(e)=>setMessageReply(e.target.value)}/>
+                            <span className={showReplyButton}>
+                                <Link className={showReplyButton} to='' onClick={()=>{sendReply(openMessage)}}>Send Reply</Link>
+                                {' | '}
+                                <Link to='' onClick={()=>{document.getElementById('messageReply').value=''; setMessageReply(null)}}>Clear</Link>
+                            </span>
+                        </div>
+                    </div>
+                    <div className={sendMessage}>
+                            <p>
+                                <span className={sendMessage}><Link to='' onClick={()=>{setShowDiv('messageTable')}}>Back to messages</Link></span>{' '}
+                            </p>
+                            <table>
+                                <tr>
+                                    <td className='messagePadding'>To:</td>
+                                    <td className='messagePadding'><select id='usersSelect' onChange={(e)=>{setNewMessageReceiverId(e.target.value)}}/></td>
+                                </tr>
+                                <tr>
+                                    <td className='messagePadding'>Subject:</td>
+                                    <td className='messagePadding'><input id='newMessageSubject'  type='text' onChange={(e)=>{setNewMessageSubject(e.target.value)}}/></td>
+                                </tr>
+                                <tr>
+                                    <td/>
+                                    <td className='messagePadding'>
+                                        <textarea id='newMessageBody' className='messageSend' type='text' rows='15' onChange={(e)=>setNewMessageBody(e.target.value)}/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td/>
+                                    <td className='messagePadding'>
+                                        <Link to='' className={okToSendNewMessage} onClick={()=>sendNewMessage()}>Send</Link> <Link to='' onClick={()=>clearNewMessage()}>Clear</Link>
+                                    </td>
+                                </tr>
+                            </table>
+                    </div>
                 </div>
             </div>
         </div>
