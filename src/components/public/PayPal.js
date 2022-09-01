@@ -7,11 +7,11 @@ function PayPal (props) {
     const paypal = useRef();
 
     useEffect(() => {
-        if (props.totalCost && props.totalCost !== undefined) {
-            let ppbd = document.getElementById('paypalButtonsDiv');
-            let wrapper = ppbd.firstElementChild;
-            wrapper.innerHTML = '';
-            console.log('from Paypal Page: ' + props.totalCost);
+        if (props.totalCost && props.totalCost !== undefined && props.purchase && props.orderRef) {
+            // let ppbd = document.getElementById('paypalButtonsDiv');
+            // let wrapper = ppbd.firstElementChild;
+            // wrapper.innerHTML = '';
+            // console.log('from Paypal Page: ' + props.totalCost);
             window.paypal.Buttons({
                 createOrder: (data, actions, err) => {
                     return actions.order.create({

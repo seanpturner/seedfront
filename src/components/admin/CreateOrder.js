@@ -29,8 +29,8 @@ class CreateOrder extends Component {
         taxAmount: 0,
         totalAfterTax: 0,
         shippingFee: 0,
-        confirmSubmit: false
-        // shippingMethod: null
+        confirmSubmit: false,
+        recordLocator: null
      } 
 
     componentDidMount = () => {
@@ -126,6 +126,9 @@ class CreateOrder extends Component {
                 break;
             case 'populateDropdowns':
                 this.populateDropdowns();
+                break;
+            case 'getLocator':
+                this.getLocator();
                 break;
             default:
                 break;
@@ -271,6 +274,7 @@ class CreateOrder extends Component {
                 selectBox.options.add(new Option('No shipping', 0, false));
             }
         });
+        this.nextThing('getLocator');
     }
 
     transLateShippingFee = (shippingOption) => {
@@ -377,7 +381,8 @@ class CreateOrder extends Component {
         // }
     }
 
-    addOrderArray = (key) => (event) => {
+    addOrderArray = 
+    (key) => (event) => {
         if (event.target.value.replace(/\s/g, '') !== "") {
             let no = this.state.newOrder;
             let itemArray = no[key];
@@ -697,6 +702,7 @@ class CreateOrder extends Component {
         }else{
             no.discountApplied = false;
         }
+        no.recordLocator = this.state.recordLocator;
         this.submitOrder(no);
     }
 
@@ -712,7 +718,20 @@ class CreateOrder extends Component {
         fetch(fetchUrl, requestOptions)
       .then(response => response.text())
       .then(response => window.location.reload())
-      }
+    }
+
+    getLocator = () => {
+        let requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+          
+        fetch("http://localhost:8080/purchases/createLocator", requestOptions)
+            .then(response => response.text())
+            .then(result => this.setState({ recordLocator: result }))
+            // .then(result => setRecordLocator(result))
+            // .catch(error => console.log('error', error));
+    }
 
     render() { 
         const activeUsers = this.state.activeUsers;
@@ -745,6 +764,7 @@ class CreateOrder extends Component {
         const no = this.state.newOrder;
         const submitOrder = no.deliveryAddress1 && no.city && no.state && no.zip && no.orderStatus && no.lineItems && no.lineItems.length > 0 && no.shippingFee ? 'submitOrder' : 'hidden';
         const confirmSubmit = this.state.confirmSubmit ? 'confirmSubmit alertRedText' : 'hidden';
+        // const recordLocator = this.state.recordLocator;
 
         return (
             <div className='adminPage'>

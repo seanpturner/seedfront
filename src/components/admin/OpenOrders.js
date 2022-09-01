@@ -411,6 +411,9 @@ class OpenOrders extends Component {
         let so = this.state.selectedOrder;
         let users = this.state.activeUsers;
         let orderNotes = so.orderNotes;
+        if (!orderNotes || orderNotes === undefined) {
+          orderNotes = [];
+        }
         let currentUserName;
         let dateValue;
         let newOrderNote = {};
@@ -437,6 +440,7 @@ class OpenOrders extends Component {
         newOrderNote.userId = this.state.currentUser;
         newOrderNote.user = currentUserName;
         orderNotes.push(newOrderNote);
+        so.orderNotes = orderNotes;
         this.setState({ selectedOrder: so });
         document.getElementById(idToClear).value = '';
       }

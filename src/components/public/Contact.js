@@ -126,50 +126,54 @@ function Contact() {
             </div>
             <div className='pubContent'>
             {/* <p>{JSON.stringify(contactObject)}</p> */}
-                <div className={contactForm}>
-                    <span>Please share your questions or comments with us</span>
-                    <table className='topAlignTable'>
-                        <tr className='topAlignTableRow'>
-                            <td>Type</td>
-                            <td>
-                            <select autofocus className='contactFormInput' onChange={(e)=>{setContactType(e.target.value)}}>
-                                <option value='' selected >Select</option>
-                                <option value='seeds'>Seeds</option>
-                                <option value='ordering'>Ordering Issues</option>
-                                <option value='site'>Site Issues</option>
-                                <option value='other'>General/Other</option>
-                            </select></td>
-                            <td className={validateType}><span className='validationText'>Required</span></td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td>Subject</td>
-                            <td><input id='contactType' className='contactFormInput' type='text' onBlur={(e)=>{setContactSubject(e.target.value)}}/></td>
-                            <td className={validateSubject}><span className='validationText'>Required</span></td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td>Message</td>
-                            <td><textarea id='messageBody' className='contactFormInput' type='text' rows='5' onChange={(e)=>{setContactMessage(e.target.value)}}/></td>
-                            <td className={validateMessage}><span className='validationText'>Required</span></td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td>Name</td>
-                            <td><input id='contactName' className='contactFormInput' type='text' onBlur={(e)=>{setContactName(e.target.value)}}/></td>
-                            <td className={validateName}><span className='validationText'>Required</span></td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td>Email</td>
-                            <td><input id='contactEmail' className='contactFormInput' type='text' onBlur={(e)=>{setContactEmail(e.target.value)}}/></td>
-                            <td className={validateEmail}><span className='validationText'>Must be a valid email address</span></td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td/>
-                            <td><Link to='' onClick={()=>validateFormInputs()}>Send</Link>{' '}<Link to='' onClick={()=>clearFormInputs()}>Clear</Link></td>
-                            <td/>
-                        </tr>
-                    </table>
-                </div>
-                <div className={submitSuccess}>
-                    <h3>Your form was submitted successfully</h3>
+                <div className='centeredDiv'>
+                    <div className={contactForm}>
+                        <span>Please share your questions or comments with us</span>
+                        <table className='topAlignTable'>
+                            <tr className='topAlignTableRow'>
+                                <td>Type</td>
+                                <td>
+                                <select autofocus className='contactFormInput' onChange={(e)=>{setContactType(e.target.value)}}>
+                                    <option value='' selected >Select</option>
+                                    <option value='seeds'>Seeds</option>
+                                    <option value='ordering'>Ordering Issues</option>
+                                    <option value='site'>Site Issues/Bugs</option>
+                                    <option value='businessPricing'>Business Pricing</option>
+                                    <option value='customerPricing'>Customer Pricing</option>
+                                    <option value='other'>General/Other</option>
+                                </select></td>
+                                <td className={validateType}><span className='validationText'>Required</span></td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td>Subject</td>
+                                <td><input id='contactType' className='contactFormInput' type='text' onBlur={(e)=>{setContactSubject(e.target.value)}}/></td>
+                                <td className={validateSubject}><span className='validationText'>Required</span></td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td>Message</td>
+                                <td><textarea id='messageBody' className='contactFormInput contactTextArea' type='text' rows='5' onChange={(e)=>{setContactMessage(e.target.value)}}/></td>
+                                <td className={validateMessage}><span className='validationText'>Required</span></td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td>Name</td>
+                                <td><input id='contactName' className='contactFormInput' type='text' onBlur={(e)=>{setContactName(e.target.value)}}/></td>
+                                <td className={validateName}><span className='validationText'>Required</span></td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td>Email</td>
+                                <td><input id='contactEmail' className='contactFormInput' type='text' onBlur={(e)=>{setContactEmail(e.target.value)}}/></td>
+                                <td className={validateEmail}><span className='validationText'>Must be a valid email address</span></td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td/>
+                                <td><Link to='' onClick={()=>validateFormInputs()}>Send</Link>{' '}<Link to='' onClick={()=>clearFormInputs()}>Clear</Link></td>
+                                <td/>
+                            </tr>
+                        </table>
+                    </div>
+                    <div className={submitSuccess}>
+                        <h3>Your form was submitted successfully</h3>
+                    </div>
                 </div>
             </div>
         </div>

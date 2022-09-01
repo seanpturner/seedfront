@@ -331,7 +331,7 @@ function Messaging(props) {
                                     <td className='messagePadding'>{message.timestampSent.substring(0,10)}</td>
                                         {filter === 'sent' ? <td className='messagePadding'>{maxLength(crossReference(nameHash, 'userId', message.receiverId, 'userName'),10)}</td> : <td className='messagePadding'>{!message.senderId ? '[user]' : maxLength(crossReference(nameHash, 'userId', message.senderId, 'userName'),10)}
                                     </td>}
-                                    <td className='messagePadding'>{maxLength(message.messageSubject, 30)}</td>
+                                    <td className='messagePadding trunc'>{maxLength(message.messageSubject, 25)}</td>
                                     <td className='messagePadding'>{maxLength(message.messageBody, 40)}</td>
                                     <td className='messagePadding'>
                                         {message.read || filter === 'sent' ? '' : <Link to='' onClick={()=>{updateRead(message); window.location.replace('/messaging/' + filter)}}>+Read</Link>}{' '}

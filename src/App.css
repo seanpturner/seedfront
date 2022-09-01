@@ -21,6 +21,60 @@ textarea {
   width: 99vw;
 }
 
+.detailText {
+  font-size: small;
+}
+
+.leftAlignColumn {
+  text-align: left;
+}
+
+.col70px {
+  width: 70px;
+}
+
+.col5vw {
+  width: 5vw;
+}
+
+.col20vw {
+  width: 20vw;
+}
+
+.col6vw {
+  width: 6vw;
+  padding-bottom: 8px;
+}
+
+.col8vw {
+  width: 8vw;
+}
+.singleModal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  background-color: rgb(255, 255, 255, 1);
+  border-radius: 20px;
+  border: solid green 1px;
+  z-index: 2;
+  padding: 2vh 1vw 3vh 1vw;
+}
+
+.itemAdded {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%);
+  /* width: 80vw; */
+  background-color: rgb(255, 255, 255, 1);
+  border-radius: 20px;
+  border: solid red 1px;
+  z-index: 3;
+  padding: 2vh 1vw 3vh 1vw;
+}
+
 textarea, .inputDeliveryNotes {
   display: block;
   overflow: hidden;
@@ -77,17 +131,28 @@ textarea, .messageBody {
   height: 25px;
 }
 
-.adminRow:nth-child(even) {
-   background-color: rgb(208, 211, 211);
+.topAlignItemTableRow {
+  vertical-align: top;
 }
 
-.adminRow:nth-child(odd) {
-  background-color: rgb(229, 226, 226);
+.publicPriceText {
+  color: rgb(95, 93, 93);
+  font-weight: 500;
+  font-size: large;
 }
 
-.adminRow:nth-child(1) {
-  background-color: transparent;
+.publicSeedName {
+  /* color: rgb(95, 93, 93);
+  font-weight: 500; */
+  font-size: large;
 }
+
+
+.bottomAlignTableRow {
+  vertical-align: bottom;
+}
+
+
 
 .adminSubRow:nth-child(even) {
   color: darkgreen;
@@ -305,9 +370,56 @@ textarea, .messageBody {
   width: 100%;
 }
 
+.itemThumb {
+  max-width: 70px;
+  border: solid green 1px;
+  border-radius: 5px;
+}
+
+.itemImage {
+  max-width: 150px;
+}
 
 .centerText {
   text-align: center;
+}
+
+.leftText {
+  text-align: left;
+}
+
+.publicColumnHeading {
+  font-size: larger;
+}
+
+.adminRow:nth-child(even) {
+   background-color: rgb(208, 211, 211);
+}
+
+.adminRow:nth-child(odd) {
+  background-color: rgb(229, 226, 226);
+}
+
+.adminRow:nth-child(1) {
+  background-color: transparent;
+}
+
+.itemRow, tr {
+  border-collapse: collapse;
+  /* border-top: solid black 1px;
+  border-bottom: solid transparent 1px; */
+}
+.itemRow:nth-child(even) {
+  background-color: rgb(208, 211, 211);
+  
+}
+
+.itemRow:nth-child(odd) {
+ background-color: rgb(229, 226, 226);
+}
+
+.centerInput {
+  margin: auto;
 }
 
 .padCell {
@@ -378,6 +490,51 @@ textarea, .messageBody {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.centeredDiv {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  border: solid green 1px;
+  border-radius: 20px;
+  padding: 2vh 1vw 3vh 1vw;
+  background-color: rgba(211, 211, 211, 0.404);
+}
+
+.topCenteredDiv {
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  transform: translate(-50%, 0%);
+  border: solid green 1px;
+  border-radius: 20px;
+  padding: 0vh 1vw 1vh 1vw;
+  background-color: rgba(211, 211, 211, 0.404);
+}
+
+.itemsDiv {
+  position: absolute;
+  left: 50%;
+  top: 20vh;
+  transform: translate(-50%, 0%);
+  border: solid green 1px;
+  border-radius: 20px;
+  padding: 2vh 1vw 3vh 1vw;
+  background-color: rgba(211, 211, 211, 0.404);
+  z-index: 1;
+}
+
+.wideDiv {
+  min-width: 70%;
+  max-width: 90%;
+}
+
+.homePromo {
+  max-width: 50%;
+  max-height: 80%;
+  background-color: rgb(231, 229, 229);
 }
 
 .createAccount {
@@ -512,8 +669,12 @@ textarea, .messageBody {
 }
 
 .itemPadding {
-  padding-left: 7px;
-  padding-right: 7px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.contactTextArea {
+  width: 20vw;
 }
 
 /* .contactFormItem {
@@ -534,15 +695,15 @@ textarea, .messageBody {
 
   .navLogoDiv {
     display: flex;
-    padding-left: 5vw;
-    padding-right: 3vw;;
+    padding-left: 3vw;
+    padding-right: 2vw;;
   }
 
   .linkDivLandscape {
     line-height: 70px;
     font-size: calc(18px + .5vh);
-    padding-right: 1.25vw;
-    padding-left: 1.25vw;
+    padding-right: .75vw;
+    padding-left: .75vw;
   }
 
   .navLinksDivLandscape {

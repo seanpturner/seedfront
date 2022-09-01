@@ -115,7 +115,7 @@ class Shipper extends Component {
                         )
                     })}
                     <br/>
-                    <h2>{selectedOrder.extras === null ? '' : 'Extras'}</h2>
+                    <h2>{selectedOrder.extras && selectedOrder.extras.length > 0 ? 'Extras' : ''}</h2>
                     
                     {selectedOrder.extras?.map((extra)=>{
                         return (
@@ -176,7 +176,7 @@ class Shipper extends Component {
                     </tr>
                 </table>
                 <div className='shipperLogo'>
-                    <img src={Logo} alt='Logo' width='500px'/>
+                    <img src={Logo} alt='Logo' width='400px'/>
                 </div>
 
             </div>

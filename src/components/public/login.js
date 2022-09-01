@@ -130,9 +130,11 @@ function Login() {
         nu.dateCreated = todaysDate();
         nu[e.target.name] = e.target.value;
         if (e.target.name === 'newPassword1' || e.target.name === 'newPassword2') {
-            let md5 = require('md5');
+            // let md5 = require('md5');
             if (nu.newPassword1 === nu.newPassword2) {
-                nu.password = md5(nu.newPassword1);
+                // nu.password = md5(nu.newPassword1);
+                nu.password = nu.newPassword1;
+
                 let i = inputs;
                 i.password = nu.password;
                 setInputs(i);
@@ -284,7 +286,7 @@ function Login() {
     }
 
     const [viewDiv, setViewDiv] = useState('login');
-    const loginInputs = viewDiv === 'login' ? 'loginInputs' : 'hidden';
+    const loginInputs = viewDiv === 'login' ? 'centeredDiv' : 'hidden';
     const createAccount = viewDiv === 'createAccount' ? 'createAccount' : 'hidden';
     const loader = viewDiv === 'loader' ? 'loader' : 'hidden';
 

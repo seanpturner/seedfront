@@ -35,6 +35,7 @@ import ReceiveProps from './components/public/ReceiveProps';
 import PaymentSuccess from './components/public/PaymentSuccess';
 import OrderSuccess from './components/public/OrderSuccess';
 import Messaging from './components/public/Messaging';
+import Payment from './components/public/Payment';
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
         <Route path='/orderSuccess/:locator' element={<OrderSuccess/>}/>
         <Route path='/messaging/:firstFilter' element={<Messaging/>}/>
         <Route path='/messaging' element={<Messaging/>}/>
+        <Route path='/payment' element={<Payment/>}/>
 
       </Routes>
     </Router>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
-import PayPal from './PayPal';
+// import PayPal from './PayPal';
 
 function ShoppingCart() {
     // const baseUrl = 'http://localhost:8080/';
@@ -454,7 +454,7 @@ function ShoppingCart() {
             && state.length >= 2
             && zip.length === 5
         ) {
-            // setShowModal('selectPayment');
+            setShowModal('submitOrder');
             setShippingVerified(true);
         }
     }
@@ -491,7 +491,7 @@ function ShoppingCart() {
             .then(response => response.text())
             .then(result => setRecordLocator(result))
             // .catch(error => console.log('error', error));
-        }
+    }
 
     useEffect(() => {
         fetchSeeds();
@@ -524,7 +524,7 @@ function ShoppingCart() {
 
     useEffect(() => {
         let t = preTax - discountAmount + tax + shippingFee;
-        setTotal(t);
+        setTotal(t.toFixed(2));
         //eslint-disable-next-line
     },[preTax, discountAmount, shippingFee])
 
@@ -541,254 +541,261 @@ function ShoppingCart() {
             {/* <br/>{selectedShipping}<br/> */}
             {/* <br/>{validateFields.toString()}<br/> */}
         </div>
-        <div className='pubContent'>
-            <p>
-                <table className='adminTable'>
-                    <tr className='adminRow'>
-                        <td/>
-                        <td className='padCell'>Seed</td>
-                        <td className='padCell'>Quantity</td>
-                        <td className='padCell'>Price</td>
-                        <td className='padCell'>Ext.</td>
-                    </tr>
-                        {lineItems.map((lineItem)=>{
-                            return (
-                                <tr className='adminRow'>
-                                    <td className='separateLinkRight'><Link to='' onClick={()=>updateQuantity(lineItem.itemId, (-1 * lineItem.quantity))}>Remove</Link></td>
-                                    <td className='seedCol'>{seeds.length ===0 ? '' : crossReference(seeds, 'id', lineItem.itemId, 'name')}</td>
-                                    <td className='centerText'>
-                                        <Link className='miniText' to='' onClick={()=>updateQuantity(lineItem.itemId, -1)}>{'<'}</Link>&nbsp;&nbsp;
-                                        {lineItem.quantity}&nbsp;&nbsp;
-                                        <Link className='miniText' to='' onClick={()=>updateQuantity(lineItem.itemId, 1)}>{'>'}</Link>
-                                    </td>
-                                    <td>{seeds.length ===0 ? '' : showAsCurrency(crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount))}</td>
-                                    <td>{seeds.length ===0 ? '' : showAsCurrency(lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount))}</td>
-                                </tr>
-                            )})}
-                    <tr className={showPricingDiscountRow}>
-                        <td/>
-                        <td className='hlRed'>{alertDiscountedPrice}</td>
-                        <td/>
-                        <td/>
-                        <td className='strikeThrough'>{showAsCurrency(totalWithoutPricingDiscount)}</td>
-                    </tr>
-                    <tr>
-                        <td/>
-                        <td>Subtotal</td>
-                        <td/>
-                        <td/>
-                        <td className='preTax'>{showAsCurrency(preTax)}</td>
-                    </tr>
-                    <tr className={showDiscountRow}>
-                        <td/>
-                        <td className={hlDiscountCode}>Discount Code: {discountCode}</td>
-                        {/* <td>Discount Code: <span className='alertRedText'>{discountCode}</span> </td> */}
-                        <td/>
-                        <td/>
-                        <td className={hlDiscountCode + ' preTax'}>{showAsCurrency(-1 * discountAmount)}</td>
-                    </tr>
-                    <tr>
-                        <td/>
-                        <td>{applySalesTax ? 'Tax' : ''}</td>
-                        <td/>
-                        <td/>
-                        <td >{applySalesTax ? showAsCurrency(tax) : ''}</td>
-                    </tr>
-                    <tr className={shippingRow}>
-                        <td/>
-                        <td className={hlShipping}>Standard shipping</td>
-                        <td/>
-                        <td/>
-                        <td className={hlShipping}>{showAsCurrency(shippingFee)}</td>
-                    </tr>
-                    <tr>
-                        <td/>
-                        <td>Total</td>
-                        <td/>
-                        <td/>
-                        <td>{showAsCurrency(total)}</td>
-                    </tr>
-                </table>
-            </p>
-            <div className={completeOrder}>
-                {/* <p className='alertRedText'>What would you like to do next?</p> */}
-                <Link to='/findseeds'>Add more seeds</Link> or <Link to='' onClick={()=>setShowModal('toAddDiscountCode')}>Wrap up my order</Link><br/>
-            </div>
-            <div className={toAddDiscountCode}>
-                <p className='alertRedText'>Do you have a discount code?</p>
-                <Link to='' onClick={()=>setShowModal('addDiscountCode')}>Yes</Link> or <Link to='' onClick={()=>setShowModal('toChooseShipping')}>No</Link>
-            </div>
-            <div className={addDiscountCode}>
-                <p className='alertRedText'>Enter your discount code</p>
-                <input id='inputDiscountCode' type='text' onBlur={(e)=>setDiscountCode(e.target.value)}/><br/>
-                <Link to='' onClick={()=>{checkCouponCode()}}> Try this code</Link> or <Link to='' onClick={()=>{setShowModal('toChooseShipping'); setDiscountCode(null); setDiscountAmount(0); setDiscountCodeValid(false); document.getElementById('inputDiscountCode').value=''}}>Continue without a discount code</Link><br/>
-                    <span className={showBadCode}>{badCodeText}</span>
-                <br/>
-                <span className={showChooseShippingLink}><Link className='nextText' to = '' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')} >Back: My order</Link></span>
-            </div>
-            <div className={toChooseShipping}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')}>Back: Discount code</Link>
-            </div>
-            <div className={chooseShipping}>
-                <p className='alertRedText'>Select a shipping method</p>
-                <Link to='' onClick={()=>{setSelectedShipping('Standard'); setShippingFee(standardShipping)}}>Standard shipping: {showAsCurrency(standardShipping)}</Link> or <Link to='' onClick={()=>{setSelectedShipping('Expedited'); setShippingFee(expeditedShipping)}}>Expedited shipping: {showAsCurrency(expeditedShipping)}</Link><br/><br/>
-                <span className={showVerifyAddressLink}>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')} >Back: My order</Link>
-                </span>
-            </div>
-            <div className={toVerifyAddress}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')}>Back: Choose shipping</Link>
-            </div>
-            <div className={verifyAddress}>
-                <p className='alertRedText'>Verify or edit the shipping information to select your payment option</p>
-                <p>
-                    <table>
-                        <tr>
-                            <td>Name:</td>
-                            <td><input type='text' defaultValue={orderUser} onChange={(e)=>{setOrderUser(e.target.value); setFieldsToValidate('orderUser')}} onBlur={(e)=>{setOrderUser(e.target.value); setFieldsToValidate('orderUser')}}/></td>
-                            
-                        </tr>
-                        <tr className={vOrderUser === '' ? 'hidden' : 'validationText'}>
+        <div className='topCenteredDiv'>
+            <div className='pubContent'>
+                {/* <p> */}
+                    <table className='adminTable'>
+                        <tr className='adminRow'>
                             <td/>
-                            <td>{vOrderUser}</td>
+                            <td className='padCell'>Seed</td>
+                            <td className='padCell'>Quantity</td>
+                            <td className='padCell'>Price</td>
+                            <td className='padCell'>Ext.</td>
                         </tr>
-                        <tr>
-                            <td>Address:</td>
-                            <td><input type='text' defaultValue={deliveryAddress1} onChange={(e)=>{setDeliveryAddress1(e.target.value); setFieldsToValidate('address1')}} onBlur={(e)=>{setDeliveryAddress1(e.target.value); setFieldsToValidate('address1')}}/></td>
+                            {lineItems.map((lineItem)=>{
+                                return (
+                                    <tr className='adminRow'>
+                                        <td className='separateLinkRight'><Link to='' onClick={()=>updateQuantity(lineItem.itemId, (-1 * lineItem.quantity))}>Remove</Link></td>
+                                        <td className='seedCol'>{seeds.length ===0 ? '' : crossReference(seeds, 'id', lineItem.itemId, 'name')}</td>
+                                        <td className='centerText'>
+                                            <Link className='miniText' to='' onClick={()=>updateQuantity(lineItem.itemId, -1)}>{'<'}</Link>&nbsp;&nbsp;
+                                            {lineItem.quantity}&nbsp;&nbsp;
+                                            <Link className='miniText' to='' onClick={()=>updateQuantity(lineItem.itemId, 1)}>{'>'}</Link>
+                                        </td>
+                                        <td>{seeds.length ===0 ? '' : showAsCurrency(crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount))}</td>
+                                        <td>{seeds.length ===0 ? '' : showAsCurrency(lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount))}</td>
+                                    </tr>
+                                )})}
+                        <tr className={showPricingDiscountRow}>
+                            <td/>
+                            <td className='hlRed'>{alertDiscountedPrice}</td>
+                            <td/>
+                            <td/>
+                            <td className='strikeThrough'>{showAsCurrency(totalWithoutPricingDiscount)}</td>
                         </tr>
                         <tr>
                             <td/>
-                            <td><input type='text' defaultValue={deliveryAddress2} onBlur={(e)=>{setDeliveryAddress2(e.target.value)}}/></td>
-                        </tr>
-                        <tr className={vAddress1 === '' ? 'hidden' : 'validationText'}>
+                            <td>Subtotal</td>
                             <td/>
-                            <td>{vAddress1}</td>
+                            <td/>
+                            <td className='preTax'>{showAsCurrency(preTax)}</td>
+                        </tr>
+                        <tr className={showDiscountRow}>
+                            <td/>
+                            <td className={hlDiscountCode}>Discount Code: {discountCode}</td>
+                            {/* <td>Discount Code: <span className='alertRedText'>{discountCode}</span> </td> */}
+                            <td/>
+                            <td/>
+                            <td className={hlDiscountCode + ' preTax'}>{showAsCurrency(-1 * discountAmount)}</td>
                         </tr>
                         <tr>
-                            <td>City:</td>
-                            <td><input type='text' defaultValue={city} onChange={(e)=>{setCity(e.target.value); setFieldsToValidate('city')}} onBlur={(e)=>{setCity(e.target.value); setFieldsToValidate('city')}}/></td>
-                        </tr>
-                        <tr className={vCity === '' ? 'hidden' : 'validationText'}>
                             <td/>
-                            <td>{vCity}</td>
+                            <td>{applySalesTax ? 'Tax' : ''}</td>
+                            <td/>
+                            <td/>
+                            <td >{applySalesTax ? showAsCurrency(tax) : ''}</td>
+                        </tr>
+                        <tr className={shippingRow}>
+                            <td/>
+                            <td className={hlShipping}>Standard shipping</td>
+                            <td/>
+                            <td/>
+                            <td className={hlShipping}>{showAsCurrency(shippingFee)}</td>
                         </tr>
                         <tr>
-                            <td>State:</td>
-                            <input list='stateList' id='selectState' defaultValue={state} onChange={(e)=>{setState(e.target.value); setFieldsToValidate('state')}} onBlur={(e)=>{setState(e.target.value); setFieldsToValidate('state')}}/>
-                                        <datalist id='stateList'>
-                                        <option value = 'NM'/>
-                                        <option value = 'AK'/>
-                                        <option value = 'AL'/>
-                                        <option value = 'AR'/>
-                                        <option value = 'AZ'/>
-                                        <option value = 'CA'/>
-                                        <option value = 'CO'/>
-                                        <option value = 'CT'/>
-                                        <option value = 'DE'/>
-                                        <option value = 'FL'/>
-                                        <option value = 'GA'/>
-                                        <option value = 'HI'/>
-                                        <option value = 'IA'/>
-                                        <option value = 'ID'/>
-                                        <option value = 'IL'/>
-                                        <option value = 'IN'/>
-                                        <option value = 'KS'/>
-                                        <option value = 'KY'/>
-                                        <option value = 'LA'/>
-                                        <option value = 'MA'/>
-                                        <option value = 'MD'/>
-                                        <option value = 'ME'/>
-                                        <option value = 'MI'/>
-                                        <option value = 'MN'/>
-                                        <option value = 'MO'/>
-                                        <option value = 'MS'/>
-                                        <option value = 'MT'/>
-                                        <option value = 'NC'/>
-                                        <option value = 'ND'/>
-                                        <option value = 'NE'/>
-                                        <option value = 'NH'/>
-                                        <option value = 'NJ'/>
-                                        <option value = 'NM'/>
-                                        <option value = 'NV'/>
-                                        <option value = 'NY'/>
-                                        <option value = 'OH'/>
-                                        <option value = 'OK'/>
-                                        <option value = 'OR'/>
-                                        <option value = 'PA'/>
-                                        <option value = 'RI'/>
-                                        <option value = 'SC'/>
-                                        <option value = 'SD'/>
-                                        <option value = 'TN'/>
-                                        <option value = 'TX'/>
-                                        <option value = 'UT'/>
-                                        <option value = 'VA'/>
-                                        <option value = 'VT'/>
-                                        <option value = 'WA'/>
-                                        <option value = 'WI'/>
-                                        <option value = 'WV'/>
-                                        <option value = 'WY'/>
-                                        </datalist>
-                            {/* <td><input type='text' defaultValue={state} onBlur={(e)=>{setState(e.target.value)}}/></td> */}
-                        </tr>
-                        <tr className={vState === '' ? 'hidden' : 'validationText'}>
                             <td/>
-                            <td>{vState}</td>
-                        </tr>
-                        <tr>
-                            <td>ZIP:</td>
-                            <td><input id='inputZip' type='text' defaultValue={zip} onChange={(e)=>{validateZipInput(e.target.value); setFieldsToValidate('zip')}} onBlur={(e)=>{validateZipInput(e.target.value); setFieldsToValidate('zip')}}/></td>
-                        </tr>
-                        <tr className={vZip === '' ? 'hidden' : 'validationText'}>
+                            <td>Total</td>
                             <td/>
-                            <td>{vZip}</td>
-                        </tr>
-                        <tr className='topAlignTableRow'>
-                            <td>Delivery Notes:</td>
-                            <td><textarea id='inputDeliveryNotes' type='text' rows='3' defaultValue={deliveryNotes} onChange={(e)=>{validateDeliveryNotes(e.target.value)}}/></td>
-                            <td className={deliveryNotes === '' || deliveryNotes === undefined ? 'hidden' : 'validationText'}>{deliveryNotes && deliveryNotes !== undefined ? dnLength + '/80' : ''}</td>
-                        </tr>
-                        {/* <tr className={deliveryNotes === '' || deliveryNotes == undefined ? 'hidden' : 'validationText'}>
                             <td/>
-                            <td>
-                                {deliveryNotes}
-                            </td>
-                        </tr> */}
+                            <td>{showAsCurrency(total)}</td>
+                        </tr>
                     </table>
-                </p>
-                <Link to='' onClick={()=>validateShipping()}>This shipping information is correct</Link>
-                {/* 'selectPayment' */}
-                <span className={showSelectPaymentLink}><br/>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Select payment and submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back: My order</Link>
-                </span>
-            </div>
-            <div className={toSelectPayment}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back: Verify address</Link>
-            </div>
-            {/* <div className={selectPayment}>
-                <span className='alertRedText'>Choose a payment option to be able to submit your order</span><br/>
-                <ul>
-                    <li><Link to='' onClick={()=>setPaymentOption('venmo')}>Pay with Venmo</Link><br/></li>
-                    <li><Link to='' onClick={()=>setPaymentOption('cashApp')}>Pay with Cash App</Link><br/></li>
-                    <li><Link to='' onClick={()=>setPaymentOption('card')}>Pay securely online with a credit or debit card</Link><br/></li>
-                </ul>
-                <div className='paymentInstructions'>
-                    <div className='paymentOptionDetails'>{paymentOption === 'venmo' ? <p><b>Venmo</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'venmo' ? 'You will have 2 days to send ' + total + ' via Venmo to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
-                    <div className='paymentOptionDetails'>{paymentOption === 'cashApp' ? <p><b>Cash App</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'cashApp' ? 'You will have 2 days to send ' + total + ' via Cash App to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
-                    <div className='paymentOptionDetails'>{paymentOption === 'card' ? <p><b>Credit/Debit Card</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'card' ? 'You will be connected to the Stripe credit/debit card processing system when you submit your order. We will be notified immediately when payment is successfully processed, and you will receive an order confirmation at the email you provided.' : ''}</span></div>
+                {/* </p> */}
+                <div className={completeOrder}>
+                    {/* <p className='alertRedText'>What would you like to do next?</p> */}
+                    <Link to='/findseeds'>Add more seeds</Link> or <Link to='' onClick={()=>setShowModal('toAddDiscountCode')}>Wrap up my order</Link><br/>
                 </div>
-                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back: My order</Link>
-            </div> */}
-            <div className={toSubmitOrder}>
-                <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back: Verify address</Link>
-            </div>
-            <div className={submitOrder}>
-                {/* Submit Order<br/> */}
-                {/* <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link> */}
-                <div className='payPalButtonDiv'>
-                    <PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/><br/>
-                    <Link className='nextText' to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
+                <div className={toAddDiscountCode}>
+                    <p className='alertRedText'>Do you have a discount code?</p>
+                    <Link to='' onClick={()=>setShowModal('addDiscountCode')}>Yes</Link> or <Link to='' onClick={()=>setShowModal('toChooseShipping')}>No</Link>
                 </div>
-                
+                <div className={addDiscountCode}>
+                    <p className='alertRedText'>Enter your discount code</p>
+                    <input id='inputDiscountCode' type='text' onBlur={(e)=>setDiscountCode(e.target.value)}/><br/>
+                    <Link to='' onClick={()=>{checkCouponCode()}}> Try this code</Link> or <Link to='' onClick={()=>{setShowModal('toChooseShipping'); setDiscountCode(null); setDiscountAmount(0); setDiscountCodeValid(false); document.getElementById('inputDiscountCode').value=''}}>Continue without a discount code</Link><br/>
+                        <span className={showBadCode}>{badCodeText}</span>
+                    <br/>
+                    <span className={showChooseShippingLink}><Link className='nextText' to = '' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')} >Back: My order</Link></span>
+                </div>
+                <div className={toChooseShipping}>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('chooseShipping')}>Next: Choose shipping</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toAddDiscountCode')}>Back: Discount code</Link>
+                </div>
+                <div className={chooseShipping}>
+                    <p className='alertRedText'>Select a shipping method</p>
+                    <Link to='' onClick={()=>{setSelectedShipping('Standard'); setShippingFee(standardShipping)}}>Standard shipping: {showAsCurrency(standardShipping)}</Link> or <Link to='' onClick={()=>{setSelectedShipping('Expedited'); setShippingFee(expeditedShipping)}}>Expedited shipping: {showAsCurrency(expeditedShipping)}</Link><br/><br/>
+                    <span className={showVerifyAddressLink}>
+                        <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify Address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')} >Back: My order</Link>
+                    </span>
+                </div>
+                <div className={toVerifyAddress}>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('verifyAddress')}>Next: Verify address</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toChooseShipping')}>Back: Choose shipping</Link>
+                </div>
+                <div className={verifyAddress}>
+                    <p className='alertRedText'>Verify or edit the shipping information to select your payment option</p>
+                    <p>
+                        <table>
+                            <tr>
+                                <td>Name:</td>
+                                <td><input type='text' defaultValue={orderUser} onChange={(e)=>{setOrderUser(e.target.value); setFieldsToValidate('orderUser')}} onBlur={(e)=>{setOrderUser(e.target.value); setFieldsToValidate('orderUser')}}/></td>
+                                
+                            </tr>
+                            <tr className={vOrderUser === '' ? 'hidden' : 'validationText'}>
+                                <td/>
+                                <td>{vOrderUser}</td>
+                            </tr>
+                            <tr>
+                                <td>Address:</td>
+                                <td><input type='text' defaultValue={deliveryAddress1} onChange={(e)=>{setDeliveryAddress1(e.target.value); setFieldsToValidate('address1')}} onBlur={(e)=>{setDeliveryAddress1(e.target.value); setFieldsToValidate('address1')}}/></td>
+                            </tr>
+                            <tr>
+                                <td/>
+                                <td><input type='text' defaultValue={deliveryAddress2} onBlur={(e)=>{setDeliveryAddress2(e.target.value)}}/></td>
+                            </tr>
+                            <tr className={vAddress1 === '' ? 'hidden' : 'validationText'}>
+                                <td/>
+                                <td>{vAddress1}</td>
+                            </tr>
+                            <tr>
+                                <td>City:</td>
+                                <td><input type='text' defaultValue={city} onChange={(e)=>{setCity(e.target.value); setFieldsToValidate('city')}} onBlur={(e)=>{setCity(e.target.value); setFieldsToValidate('city')}}/></td>
+                            </tr>
+                            <tr className={vCity === '' ? 'hidden' : 'validationText'}>
+                                <td/>
+                                <td>{vCity}</td>
+                            </tr>
+                            <tr>
+                                <td>State:</td>
+                                <input list='stateList' id='selectState' defaultValue={state} onChange={(e)=>{setState(e.target.value); setFieldsToValidate('state')}} onBlur={(e)=>{setState(e.target.value); setFieldsToValidate('state')}}/>
+                                            <datalist id='stateList'>
+                                            <option value = 'NM'/>
+                                            <option value = 'AK'/>
+                                            <option value = 'AL'/>
+                                            <option value = 'AR'/>
+                                            <option value = 'AZ'/>
+                                            <option value = 'CA'/>
+                                            <option value = 'CO'/>
+                                            <option value = 'CT'/>
+                                            <option value = 'DE'/>
+                                            <option value = 'FL'/>
+                                            <option value = 'GA'/>
+                                            <option value = 'HI'/>
+                                            <option value = 'IA'/>
+                                            <option value = 'ID'/>
+                                            <option value = 'IL'/>
+                                            <option value = 'IN'/>
+                                            <option value = 'KS'/>
+                                            <option value = 'KY'/>
+                                            <option value = 'LA'/>
+                                            <option value = 'MA'/>
+                                            <option value = 'MD'/>
+                                            <option value = 'ME'/>
+                                            <option value = 'MI'/>
+                                            <option value = 'MN'/>
+                                            <option value = 'MO'/>
+                                            <option value = 'MS'/>
+                                            <option value = 'MT'/>
+                                            <option value = 'NC'/>
+                                            <option value = 'ND'/>
+                                            <option value = 'NE'/>
+                                            <option value = 'NH'/>
+                                            <option value = 'NJ'/>
+                                            <option value = 'NM'/>
+                                            <option value = 'NV'/>
+                                            <option value = 'NY'/>
+                                            <option value = 'OH'/>
+                                            <option value = 'OK'/>
+                                            <option value = 'OR'/>
+                                            <option value = 'PA'/>
+                                            <option value = 'RI'/>
+                                            <option value = 'SC'/>
+                                            <option value = 'SD'/>
+                                            <option value = 'TN'/>
+                                            <option value = 'TX'/>
+                                            <option value = 'UT'/>
+                                            <option value = 'VA'/>
+                                            <option value = 'VT'/>
+                                            <option value = 'WA'/>
+                                            <option value = 'WI'/>
+                                            <option value = 'WV'/>
+                                            <option value = 'WY'/>
+                                            </datalist>
+                                {/* <td><input type='text' defaultValue={state} onBlur={(e)=>{setState(e.target.value)}}/></td> */}
+                            </tr>
+                            <tr className={vState === '' ? 'hidden' : 'validationText'}>
+                                <td/>
+                                <td>{vState}</td>
+                            </tr>
+                            <tr>
+                                <td>ZIP:</td>
+                                <td><input id='inputZip' type='text' defaultValue={zip} onChange={(e)=>{validateZipInput(e.target.value); setFieldsToValidate('zip')}} onBlur={(e)=>{validateZipInput(e.target.value); setFieldsToValidate('zip')}}/></td>
+                            </tr>
+                            <tr className={vZip === '' ? 'hidden' : 'validationText'}>
+                                <td/>
+                                <td>{vZip}</td>
+                            </tr>
+                            <tr className='topAlignTableRow'>
+                                <td>Delivery Notes:</td>
+                                <td><textarea id='inputDeliveryNotes' type='text' rows='2' defaultValue={deliveryNotes} onChange={(e)=>{validateDeliveryNotes(e.target.value)}}/></td>
+                                <td className={deliveryNotes === '' || deliveryNotes === undefined ? 'hidden' : 'validationText'}>{deliveryNotes && deliveryNotes !== undefined ? dnLength + '/80' : ''}</td>
+                            </tr>
+                            {/* <tr className={deliveryNotes === '' || deliveryNotes == undefined ? 'hidden' : 'validationText'}>
+                                <td/>
+                                <td>
+                                    {deliveryNotes}
+                                </td>
+                            </tr> */}
+                        </table>
+                    </p>
+                    <Link to='' onClick={()=>validateShipping()}>This shipping information is correct</Link>
+                    {/* 'selectPayment' */}
+                    <span className={showSelectPaymentLink}><br/>
+                        <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Select payment and submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')} >Back: My order</Link>
+                    </span>
+                </div>
+                <div className={toSelectPayment}>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('selectPayment')}>Next: Select payment</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toVerifyAddress')}>Back: Verify address</Link>
+                </div>
+                {/* <div className={selectPayment}>
+                    <span className='alertRedText'>Choose a payment option to be able to submit your order</span><br/>
+                    <ul>
+                        <li><Link to='' onClick={()=>setPaymentOption('venmo')}>Pay with Venmo</Link><br/></li>
+                        <li><Link to='' onClick={()=>setPaymentOption('cashApp')}>Pay with Cash App</Link><br/></li>
+                        <li><Link to='' onClick={()=>setPaymentOption('card')}>Pay securely online with a credit or debit card</Link><br/></li>
+                    </ul>
+                    <div className='paymentInstructions'>
+                        <div className='paymentOptionDetails'>{paymentOption === 'venmo' ? <p><b>Venmo</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'venmo' ? 'You will have 2 days to send ' + total + ' via Venmo to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
+                        <div className='paymentOptionDetails'>{paymentOption === 'cashApp' ? <p><b>Cash App</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'cashApp' ? 'You will have 2 days to send ' + total + ' via Cash App to XXXXXXX or your order will be cancelled. You must reference "' + deliveryAddress1.substring(0,7) + '" or your order is likely to be delayed. No orders will be shipped until payment is received in full. You will then receive an order confirmation at the email you provided.' : ''}</span></div>
+                        <div className='paymentOptionDetails'>{paymentOption === 'card' ? <p><b>Credit/Debit Card</b></p> : ''}<span className='paymentOptionSpan'>{paymentOption === 'card' ? 'You will be connected to the Stripe credit/debit card processing system when you submit your order. We will be notified immediately when payment is successfully processed, and you will receive an order confirmation at the email you provided.' : ''}</span></div>
+                    </div>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')} >Back: My order</Link>
+                </div> */}
+                <div className={toSubmitOrder}>
+                    <Link className='nextText' to='' onClick={()=>setShowModal('submitOrder')}>Next: Submit order</Link> or <Link className='nextText' to='' onClick={()=>setShowModal('toSelectPayment')}>Back: Verify address</Link>
+                </div>
+                <div className={submitOrder}>
+                    {/* Submit Order<br/> */}
+                    {/* <Link to='' onClick={()=>placeOrder()}>Submit</Link> or <Link to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link> */}
+                    <div className='payPalButtonDiv'>
+                        {/* <PayPal totalCost={total} orderRef={recordLocator} purchase={JSON.stringify(order)}/><br/> */}
+                        <p className='alertRedText'>If everything is correct, proceed below.</p>
+                        <Link to='/payment' onClick={()=>{
+                            sessionStorage.setItem('tempO', JSON.stringify(order));
+                            // window.location.replace('/payment');
+                        }}>Submit order and go to payment</Link><br/>
+                        <Link className='nextText' to='' onClick={()=>setShowModal('toSubmitOrder')} >Back: My order</Link>
+                    </div>
+                    
+                </div>
             </div>
         </div>
     </div>

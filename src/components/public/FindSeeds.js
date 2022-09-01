@@ -12,6 +12,12 @@ function FindSeeds() {
     const hasCartItems = orderItems && orderItems.length > 0 ? true : false;
     const alertLogIn = notifyLogIn && hasCartItems ? 'alertLogIn' : 'hidden';
     const viewCart = !notifyLogIn && hasCartItems ? 'viewCart' : 'hidden';
+    const [allPlants, setAllPlants] = useState([]);
+    const listPlants = allPlants && allPlants !== undefined && allPlants.length > 0 ? true : false;
+    const [selectedSeed, setSelectedSeed] = useState(null);
+    const singleModal = selectedSeed ? 'singleModal' : 'hidden';
+    const [itemAdded, setItemAdded] = useState('hidden');
+    const [toastInfo, setToastInfo] = useState({});
 
     const getAllSeeds = () => {
         let requestOptions = {
@@ -23,6 +29,21 @@ function FindSeeds() {
             .then(response => response.json())
             .then(result => {
                 filterSeeds(result);
+            })
+            // .then(result => console.log(result))
+            // .catch(error => console.log('error', error));
+    }
+
+    const getAllPlants = () => {
+        let requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+          
+          fetch(baseUrl + 'plants', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                setAllPlants(result);
             })
             // .then(result => console.log(result))
             // .catch(error => console.log('error', error));
@@ -130,9 +151,21 @@ function FindSeeds() {
             }
             currentOrder.push(newItem);
         }
+        toastAdded(id);
         setOrderItems(currentOrder);
         sessionStorage.setItem('userOrder', JSON.stringify(currentOrder));
-    } 
+    }
+
+    const toastAdded = (id) => {
+        setToastInfo({
+            item: crossReference(availableSeeds, 'id', id, 'name'),
+            quantity: crossReference(quantities, 'itemId', id, 'quantity')
+        })
+        setItemAdded('itemAdded');
+        setTimeout(() => {
+            setItemAdded('hidden');
+        }, 1000);
+    }
 
     const crossReference = (list, sentKey, sentValue, returnKey) => {
         let returnItem;
@@ -176,6 +209,7 @@ function FindSeeds() {
 
     useEffect(() => {
         getAllSeeds();
+        getAllPlants();
         checkLoggedIn();
         checkForOrder();
     }, [])
@@ -186,28 +220,116 @@ function FindSeeds() {
                 <NavBar/>
             </div>
             <div className='pubContent'>
-            {/* <p>{JSON.stringify(availableSeeds)}</p> */}
-            {/* <p>{JSON.stringify(quantities)}</p> */}
-            {/* <p>{listSeeds.toString()}</p> */}
-            <p className={alertLogIn}><Link to='/login'>Log in or create an account (it's easy) to view your cart.</Link></p>
-            <p className={viewCart}><Link to='/shoppingcart'>View your cart</Link></p>
-                <table>
-                    {listSeeds ? availableSeeds.map((seed) => {
-                        return (
-                            <tr>
-                                <td className='itemPadding'>[image]</td>
-                                <td className='itemPadding'>{seed ? seed.name : ''}</td>
-                                <td className='itemPadding'>{seed.price ? showAsCurrency(seed.price) : ''}</td>
-                                <td className='itemPadding'><Link to='' onClick={()=>updateQuantity(seed.id, -1)}>-</Link>
-                                    <input id={'qty' + seed.id} className='qtyInput' 
-                                        defaultValue={crossReference(quantities, 'itemId', seed.id, 'quantity')}
-                                        onChange={(e)=>{updateByEntry(seed.id, e.target.value)}}/>
-                                    <Link to='' onClick={()=>updateQuantity(seed.id, 1)}>+</Link></td>
-                                <td><Link to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link></td>
-                            </tr>
-                        )
-                    }): ''}
-                </table>
+                {/* <p>{JSON.stringify(availableSeeds)}</p> */}
+                {/* <p>{JSON.stringify(quantities)}</p> */}
+                {/* <p>{listSeeds.toString()}</p> */}
+                <div className='itemsDiv'>
+                    <p className={alertLogIn}><Link to='/login'>Log in or create an account (it's easy) to view your cart.</Link></p>
+                    <p className={viewCart}><Link to='/shoppingcart'>View your cart</Link></p>
+                    <table className='detailText'>
+                        <tr className='boldText grayText centerText publicColumnHeading'>
+                            <td>Seed</td>
+                            <td className='itemPadding'>Mother</td>
+                            <td/>
+                            <td className='itemPadding'>Father</td>
+                        </tr>
+                        {listSeeds && listPlants ? availableSeeds.map((seed) => {
+                            return (
+                                <tr className='itemRow'>
+                                    {/* seed */}
+                                    <td className='itemPadding topAlignItemTableRow centerText'>
+                                        <Link to='' onClick={()=>{setSelectedSeed(seed)}}><p className='publicSeedName'>{seed ? seed.name : ''}</p></Link>
+                                        <p className='publicPriceText'>{seed.price ? showAsCurrency(seed.price) : ''}</p>
+                                        <Link to='' onClick={()=>updateQuantity(seed.id, -1)}>- </Link>
+                                        <input id={'qty' + seed.id} className='qtyInput' 
+                                            defaultValue={crossReference(quantities, 'itemId', seed.id, 'quantity')}
+                                            onChange={(e)=>{updateByEntry(seed.id, e.target.value)}}/>
+                                        <Link to='' onClick={()=>updateQuantity(seed.id, 1)}> +</Link><br/>
+                                        <Link to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link>
+                                    </td>
+                                    {/* mother */}
+                                    <td className='itemPadding leftAlignColumn topAlignItemTableRow'>
+                                        <tr>
+                                            <td className='leftAlignColumn centerText'>{crossReference(allPlants, 'id', seed.mother, 'name')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className='leftAlignColumn'>
+                                                <Link to='' onClick={()=>{setSelectedSeed(seed)}}>
+                                                    <img className='itemThumb' src={(crossReference(allPlants, 'id', seed.mother, 'image'))}/>
+                                                </Link><br/>
+                                            </td>
+                                        </tr>
+                                    </td>
+                                    {/* <td className='itemPadding'><span>Mother:</span><br/>{crossReference(allPlants, 'id', seed.mother, 'name')}</td> */}
+                                    <td className='itemPadding col6vw'>{crossReference(allPlants, 'id', seed.mother, 'notes').toString().replaceAll(',', ', ')}</td>
+                                    {/* father */}
+                                    <td className='itemPadding leftAlignColumn'>
+                                        <tr>
+                                            <td className='leftAlignColumn centerText'>{crossReference(allPlants, 'id', seed.father, 'name')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className='leftAlignColumn'>
+                                                <Link to='' onClick={()=>{setSelectedSeed(seed)}}>
+                                                    <img className='itemThumb' src={(crossReference(allPlants, 'id', seed.father, 'image'))}/>
+                                                </Link><br/>
+                                            </td>
+                                        </tr>
+                                    </td>
+                                    <td className='itemPadding col6vw'>{crossReference(allPlants, 'id', seed.father, 'notes').toString().replaceAll(',', ', ')}</td>
+                                    {/* <td className='itemPadding'>{crossReference(allPlants, 'id', seed.father, 'notes').toString()}</td> */}
+                                    {/* <td className='itemPadding'><Link to='' onClick={()=>{setSelectedSeed(seed)}}><h2>{seed ? seed.name : ''}</h2></Link></td> */}
+                                    {/* <td className='itemPadding'><h2 className='grayText'>{seed.price ? showAsCurrency(seed.price) : ''}</h2></td> */}
+                                    {/* <td className='itemPadding centerText'>
+                                        <h2 className='grayText'>{seed.price ? showAsCurrency(seed.price) : ''}</h2>
+                                        <Link to='' onClick={()=>updateQuantity(seed.id, -1)}>- </Link>
+                                        <input id={'qty' + seed.id} className='qtyInput' 
+                                            defaultValue={crossReference(quantities, 'itemId', seed.id, 'quantity')}
+                                            onChange={(e)=>{updateByEntry(seed.id, e.target.value)}}/>
+                                        <Link to='' onClick={()=>updateQuantity(seed.id, 1)}> +</Link><br/>
+                                        <Link to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link>
+                                    </td> */}
+                                </tr>
+                            )
+                        }): ''}
+                    </table>
+                </div>
+                <div className={singleModal}>
+                    <p className='publicSeedName centerText'>{selectedSeed?.name}</p>
+                    {!selectedSeed || selectedSeed === undefined ? <br/> : (
+                    <table>
+                        <tr className='topAlignTableRow'>
+                        <td className='itemPadding'>
+                            <img className='itemImage' src={(crossReference(allPlants, 'id', selectedSeed.mother, 'image'))}/><br/>
+                            Mother:<br/>
+                            {(crossReference(allPlants, 'id', selectedSeed.mother, 'name'))}
+                        </td>
+                        <td className='itemPadding'>
+                            <img className='itemImage' src={(crossReference(allPlants, 'id', selectedSeed.father, 'image'))}/><br/>
+                            Father:<br/>
+                            {(crossReference(allPlants, 'id', selectedSeed.father, 'name'))}
+                        </td>
+                        <td className='itemPadding col20vw'>
+                            <p>{crossReference(allPlants, 'id', selectedSeed.mother, 'name') + ':'}</p>
+                            <p>{crossReference(allPlants, 'id', selectedSeed.mother, 'notes').toString().replaceAll(',', ', ')}</p>
+                        </td>
+                        <td className='itemPadding col20vw'>
+                        <p>{crossReference(allPlants, 'id', selectedSeed.father, 'name') + ':'}</p>
+                            <p>{crossReference(allPlants, 'id', selectedSeed.father, 'notes').toString().replaceAll(',', ', ')}</p>
+                        </td>
+                        </tr>
+                    </table>)
+                    }
+                    {/* <Link to='' onClick={()=>updateQuantity(selectedSeed.id, -1)}>- </Link>
+                                        <input id={'qty' + selectedSeed.id + 2} className='qtyInput' 
+                                            defaultValue={1}
+                                            onChange={(e)=>{updateByEntry(selectedSeed.id, e.target.value)}}/>
+                                        <Link to='' onClick={()=>updateQuantity(selectedSeed.id, 1)}> +</Link><br/>
+                                        <Link to='' onClick={()=>{addItem(selectedSeed.id)}}>Add to Cart</Link> */}
+                    <p><Link to='' onClick={()=>setSelectedSeed(null)}>Close</Link> </p>
+                </div>
+            </div>
+            <div className={itemAdded}>
+                <span>{toastInfo.quantity && toastInfo.item ? toastInfo.quantity + ' x ' + toastInfo.item + ' added to your cart' : ''}</span>
             </div>
         </div>
     )

@@ -48,8 +48,8 @@ class Plants extends Component {
     if (!np.notes) {
       np.notes = [];
     }
-    if (!np.imageList) {
-      np.imageList = [];
+    if (!np.image) {
+      np.image = null;
     }
     if (!np.mother) {
       np.mother = null;
@@ -485,7 +485,7 @@ class Plants extends Component {
               <td>Paternal Line</td>
               <td>Sex</td>
               <td>Clone</td>
-              <td>imageList</td>
+              <td>Image</td>
             </tr>
             <tr className='adminRow'>
               <td>{selectedPlant.name}</td>
@@ -500,11 +500,7 @@ class Plants extends Component {
                 <td>{selectedPlant.paternalLine}</td>
                 <td>{selectedPlant.sex}</td>
                 <td>{selectedPlant.clone?.toString()}</td>
-                <td>{selectedPlant.imageList?.map((img) => {
-                  return (
-                    <tr className='adminSubRow'>{img}</tr>
-                  )
-                })}</td>
+                <td>{selectedPlant.image}</td>
             </tr>
           </table>
           <br/><br/>
@@ -541,7 +537,7 @@ class Plants extends Component {
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "paternalLine")}}>Paternal Line</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "sex")}}>Sex</Link></td>
               <td><Link to="" onClick={()=>{this.sortList(this.state.allPlants, "clone")}}>Clone</Link></td>
-              <td><Link to="">Image List</Link></td>
+              <td><Link to="">Image</Link></td>
             </tr>
             {sortedList.map((plant) =>{
               return (
@@ -565,11 +561,7 @@ class Plants extends Component {
                   <td>{plant.paternalLine} {this.getLineNameById(plant.paternalLine)}</td>
                   <td>{plant.sex}</td>
                   <td>{plant.clone === true ? "Yes" : "No"}</td>
-                  <td>{plant.imageList?.map((img) => {
-                    return (
-                      <tr className='adminSubRow'>{img}</tr>
-                    )
-                  })}</td>
+                  <td>{plant.image}</td>
                 </tr>
               )
             })}
@@ -583,7 +575,7 @@ class Plants extends Component {
             <tr><td></td></tr>
             <tr className='adminRow topAlignTable'>
               <td>Plant Name</td>
-              <td><input type="text" name = "name" defaultValue={selectedPlant.name}/></td>
+              <td><input type="text" name = "name" defaultValue={selectedPlant.name} onChange={this.buildNewPlant("name")}/></td>
             </tr>
             <tr className='adminRow topAlignTable'>
             <td>Notes</td>
@@ -604,20 +596,9 @@ class Plants extends Component {
             </td>
             </tr>
             <tr className='adminRow topAlignTable'>
-            <td>Images</td>
-            <td><input id="updateImageList" type="text" name="imageList" onBlur={this.buildPlantArray("imageList", "updateImageList")}/>
+            <td>Image</td>
+            <td><input id="updateImage" type="text" name="image" onChange={this.buildNewPlant("image")}/>
               <tr className='adminRow topAlignTable'>
-                <td id="imageListUpdateArray">
-                {newPlant.imageList?.map((image) => {
-                  return (
-                    <tr className='adminSubRow'>
-                      <td>
-                        <Link to="" onClick={()=>this.removeFromUpdateArray("imageList", image)}> X </Link>
-                        {image}</td>
-                    </tr>
-                  )
-                })}
-                </td>
               </tr>
             </td>
             </tr>
@@ -756,27 +737,20 @@ class Plants extends Component {
               </td>
               </tr>
               <tr>
-              <td className='topAlignTable'>imageList</td>
+              <td className='topAlignTable'>image</td>
               <td className='topAlignTable'>
-                <input className='clearField' id="addImageList" type="text" name="imageList" onBlur={this.buildPlantArray("imageList", "addImageList")}/>
-              </td>
-              <td>
-              {newPlant.imageList?.map((image) => {
-                  return (
-                    <tr className='adminSubRow'>{image}</tr>
-                  )
-                })}
+                <input className='clearField' id="addImage" type="text" name="image" onChange={this.buildNewPlant("image")}/>
               </td>
             </tr>
           </table>
           <div className={okToSubmit}>
           <p><Link to="" onClick={()=>this.setState({lastCheck: true})}>Add this Plant</Link></p>
-          <div className={lastCheck}>
-            <span className='alertRedText'>
-              Are you sure you want to add this plant? 
-            </span>&nbsp;
-          <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("POST")}>Yes</Link>
-        </div>
+            <div className={lastCheck}>
+              <span className='alertRedText'>
+                Are you sure you want to add this plant? 
+              </span>&nbsp;
+              <Link to="" onClick={()=>this.setState({lastCheck: false})}>No</Link> <Link to="" onClick={()=>this.postPutFetch("POST")}>Yes</Link>
+            </div>
           </div>
         </div>
       </div>

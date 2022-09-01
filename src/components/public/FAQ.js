@@ -3,23 +3,23 @@ import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 
 function FAQ() {
-    useEffect(() => {
-        let usrI = [
-            {
-                itemId: 1,
-                quantity: 2
-            },
-            {
-                itemId: 2,
-                quantity: 4
-            },
-            {
-                itemId: 3,
-                quantity: 6
-            }
-        ];
-        sessionStorage.setItem('userOrder', JSON.stringify(usrI))
-    });
+    // useEffect(() => {
+    //     let usrI = [
+    //         {
+    //             itemId: 1,
+    //             quantity: 2
+    //         },
+    //         {
+    //             itemId: 2,
+    //             quantity: 4
+    //         },
+    //         {
+    //             itemId: 3,
+    //             quantity: 6
+    //         }
+    //     ];
+    //     sessionStorage.setItem('userOrder', JSON.stringify(usrI))
+    // });
   return (
     <div className='pubPage'>
         <div className='navBar'>
@@ -51,13 +51,13 @@ function FAQ() {
                     <td className='question'>How long have you been growing cannabis?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>I honestly don't remember when I first started growing, but I can tell you it's been a long time. I've been growing cannabis for seeds for about 20 years. In some circles, I'm known as the seed guy.</td>
+                    <td className='answer'>I honestly don't remember when I first started growing, but I can tell you it's been a long time. I've been growing cannabis for seeds for about 20 years. In some circles, I'm just known as the seed guy.</td>
                 </tr>
                 <tr>
                     <td className='question'>What is Boutique Seeds about?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>I just really enjoy growing weed and I want others to be able to do the same. I produce the cannabis seed version of small-batch, artisinal microbrew. Now that the law allows me to grow larger crops than before, I have been able to expand to the point that I've even sold my seeds to cannabis farms in 3 states.</td>
+                    <td className='answer'>I just really enjoy growing weed and I want others to be able to do the same. I produce the cannabis seed version of small-batch, artisinal microbrew. Now that the law allows me to grow larger crops than before, I have been able to expand to the point that I've even sold my seeds to cannabis farms in 3 states. Read more on our <Link to='about'>about page</Link>.</td>
                 </tr>
                 <tr>
                     <td className='question'>How quickly do orders ship and how much is shipping?</td>
@@ -93,7 +93,7 @@ function FAQ() {
                     <td className='question'>How do you accept payment?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>It's easiest if you pay with a credit card when you place your order, but if you prefer, you can select Venmo as an option at checkout and then send the payment that way. You must reference your order number with the payment or shipping will likely be delayed. Orders that are not paid or are partially paid will not be sent until payment is received in full.</td>
+                    <td className='answer'>You can pay with your PayPal account or with a credit or debit card, also processed through PayPal.</td>
                 </tr>
                 <tr>
                     <td className='question'>Does this site use cookies?</td>
@@ -105,7 +105,7 @@ function FAQ() {
                     <td className='question'>Do you grow indoors or outdoors?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>Most of my plants go into raised beds outside, but depending on the time of year and other factors, I grow inside as well. I prefer outside and tend to have the best luck that way.</td>
+                    <td className='answer'>Most of my plants go into raised beds outside, but depending on the time of year and other factors, I grow inside as well. I prefer outside and tend to have the best luck that way. I deliberately breed plants that are heat-tolerant and grow well outside in the Southwest heat.</td>
                 </tr>
             </table>
         </div>
