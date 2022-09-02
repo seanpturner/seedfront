@@ -70,7 +70,7 @@ function App() {
         <Route path='/shoppingcart' element={<ShoppingCart/>}/>
         <Route path='/sendprops' element={<SendProps/>}/>
         <Route path='/receiveprops/:id/:otherid' element={<ReceiveProps/>}/>
-        <Route path='/paymentSuccess/:purchase' element={<PaymentSuccess/>}/>
+        <Route path='/paymentSuccess/' element={<PaymentSuccess/>}/>
         <Route path='/orderSuccess/:locator' element={<OrderSuccess/>}/>
         <Route path='/messaging/:firstFilter' element={<Messaging/>}/>
         <Route path='/messaging' element={<Messaging/>}/>

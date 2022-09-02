@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 
 export default function PaymentSuccess() {
     console.log('pms');
     const { purchase } = useParams();
-    const order = JSON.parse(sessionStorage.getItem('paidPurchase'));
+    const location = useLocation();
+    console.log(location.state);
+    const order = JSON.parse(location.state.purchase);
+    // const order = JSON.parse(sessionStorage.getItem('paidPurchase'));
     // const order = JSON.parse(purchase);
     const baseUrl = 'http://localhost:8080/';
     // const [fetchCount, setFetchCount] = (0);
@@ -104,7 +107,7 @@ export default function PaymentSuccess() {
             if (updPurchase.recordLocator) {
                 console.log(updPurchase.recordLocator);
                 placeOrder();
-                sessionStorage.removeItem('paidPurchase');
+                // sessionStorage.removeItem('paidPurchase');
             }
             // else{
             //     alert('no order');

@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // export default function 
 
 function PayPal (props) {
     // alert(props.purchase);
     const paypal = useRef();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (props.totalCost && props.totalCost !== undefined && props.purchase && props.orderRef) {
@@ -33,7 +35,8 @@ function PayPal (props) {
                     const order = await actions.order.capture();
                     // console.log(order);
                     sessionStorage.setItem('paidPurchase', props.purchase);
-                    window.location.href = './PaymentSuccess/' + props.purchase;
+                    // window.location.href = './PaymentSuccess/' + props.purchase;
+                    navigate('/paymentSuccess',{state:{purchase: props.purchase}});
                 },
                 onError: (err) => {
                     console.log(err);
