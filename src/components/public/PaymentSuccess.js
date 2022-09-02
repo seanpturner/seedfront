@@ -5,7 +5,8 @@ import NavBar from '../common/NavBar';
 export default function PaymentSuccess() {
     console.log('pms');
     const { purchase } = useParams();
-    const order = JSON.parse(purchase);
+    const order = JSON.parse(sessionStorage.getItem('paidPurchase'));
+    // const order = JSON.parse(purchase);
     const baseUrl = 'http://localhost:8080/';
     // const [fetchCount, setFetchCount] = (0);
     const getDateTime = () => {
@@ -83,7 +84,10 @@ export default function PaymentSuccess() {
             fetch(baseUrl + 'purchases', requestOptions)
             .then(response => response.text())
             // .then(result => window.location.href = '/orderSuccess/' + updPurchase.recordLocator)
-            .then(result => window.location.replace('/orderSuccess/' + updPurchase.recordLocator))
+            .then(result => {
+                // sessionStorage.removeItem('paidPurchase');
+                window.location.replace('/orderSuccess/' + updPurchase.recordLocator);
+            })
             // .catch(error => console.log('error', error));
         // }
     }
@@ -94,18 +98,22 @@ export default function PaymentSuccess() {
 
     useEffect(() => {
         // if (updPurchase.userId) {
+            // console.log(order);
+            // alert(JSON.stringify(order));
             sessionStorage.removeItem('userOrder');
             if (updPurchase.recordLocator) {
                 console.log(updPurchase.recordLocator);
                 placeOrder();
-            }else{
-                alert('no order');
+                sessionStorage.removeItem('paidPurchase');
             }
+            // else{
+            //     alert('no order');
+            // }
             
             
         // }
         // eslint-disable-next-line
-    }, [updPurchase.recordLocator])
+    }, [updPurchase])
 
   return (
     <div className='pubPage'>

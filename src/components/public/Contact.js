@@ -136,8 +136,6 @@ function Contact() {
                                 <select autofocus className='contactFormInput' onChange={(e)=>{setContactType(e.target.value)}}>
                                     <option value='' selected >Select</option>
                                     <option value='seeds'>Seeds</option>
-                                    <option value='ordering'>Ordering Issues</option>
-                                    <option value='site'>Site Issues/Bugs</option>
                                     <option value='businessPricing'>Business Pricing</option>
                                     <option value='customerPricing'>Customer Pricing</option>
                                     <option value='other'>General/Other</option>

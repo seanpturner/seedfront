@@ -60,7 +60,7 @@ function NavBar() {
         <div className='nav'>
             <div className='greenBar'>
                 <span className='liu'>{userName ? userName.charAt(0).toUpperCase() + userName.slice(1) : ''}</span>
-                <span className='questions'><Link to='/faq' className='whiteLink'>Have questions?</Link></span>
+                <span className='questions'><Link to='/faq' className='whiteLink'>Have questions? - FAQ's</Link></span>
             </div>
             <div className='logoLinks'>
                 <div className='navLogoDiv'>

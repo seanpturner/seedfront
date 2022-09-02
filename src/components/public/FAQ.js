@@ -3,23 +3,18 @@ import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 
 function FAQ() {
+    // const [loggedIn, setLoggedIn] = useState(false);
+
+    // const checkLoggedIn = () => {
+    //     let un = localStorage.getItem('userName');
+    //     if (un && un !== undefined && un !== '') {
+    //         setLoggedIn(true);
+    //     }
+    // }
+
     // useEffect(() => {
-    //     let usrI = [
-    //         {
-    //             itemId: 1,
-    //             quantity: 2
-    //         },
-    //         {
-    //             itemId: 2,
-    //             quantity: 4
-    //         },
-    //         {
-    //             itemId: 3,
-    //             quantity: 6
-    //         }
-    //     ];
-    //     sessionStorage.setItem('userOrder', JSON.stringify(usrI))
-    // });
+    //     checkLoggedIn();
+    // }, [])
   return (
     <div className='pubPage'>
         <div className='navBar'>

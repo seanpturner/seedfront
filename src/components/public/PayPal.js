@@ -32,6 +32,7 @@ function PayPal (props) {
                     // eslint-disable-next-line
                     const order = await actions.order.capture();
                     // console.log(order);
+                    sessionStorage.setItem('paidPurchase', props.purchase);
                     window.location.href = './PaymentSuccess/' + props.purchase;
                 },
                 onError: (err) => {

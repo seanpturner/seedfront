@@ -604,6 +604,7 @@ textarea, .messageBody {
 
 .answer {
   padding-bottom: 12px;
+  font-size: small;
 }
 
 .faqTable {
