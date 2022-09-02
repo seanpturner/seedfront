@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 
 function FAQ() {
-    // const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
 
-    // const checkLoggedIn = () => {
-    //     let un = localStorage.getItem('userName');
-    //     if (un && un !== undefined && un !== '') {
-    //         setLoggedIn(true);
-    //     }
-    // }
+    const checkLoggedIn = () => {
+        let un = localStorage.getItem('userName');
+        if (un && un !== undefined && un !== '') {
+            setLoggedIn(true);
+        }
+    }
 
-    // useEffect(() => {
-    //     checkLoggedIn();
-    // }, [])
+    useEffect(() => {
+        checkLoggedIn();
+    }, [])
   return (
     <div className='pubPage'>
         <div className='navBar'>
@@ -22,6 +22,18 @@ function FAQ() {
         </div>
         <div className='pubContent'>
             <table className='faqTable'>
+                <tr>
+                    <td className='question'>Do you have to be 18 to buy seeds.</td>
+                </tr>
+                <tr>
+                    <td className='answer'>Legally, no. But, if you want to buy from me, yes.</td>
+                </tr>
+                <tr>
+                    <td className='question'>Are seeds legal to buy and possess?</td>
+                </tr>
+                <tr>
+                    <td className='answer'>I don't know about every state, but here in New Mexico they are.</td>
+                </tr>
                 <tr>
                     <td className='question'>Do you guarantee your seeds will grow?</td>
                 </tr>
@@ -64,25 +76,17 @@ function FAQ() {
                     <td className='question'>How quickly do orders ship and how much is shipping?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>Typically, orders ship within 3 business days after you place and pay for the order, but I guarantee that they will ship within 5 business days after. If you are in a rush, expedited shipping is also available. The shipping cost depends on how much you buy and if you've set up an account. If your order is over $50 and you have an account with me, then shipping is free. Business pricing is structured differently. If you are interested in business or bulk pricing, please <Link to='/contact'>contact</Link> me.</td>
-                </tr>
-                <tr>
-                    <td className='question'>Are seeds legal to buy and possess?</td>
-                </tr>
-                <tr>
-                    <td className='answer'>I don't know about every state, but here in New Mexico they are.</td>
-                </tr>
-                <tr>
-                    <td className='question'>Do you have to be 18 to buy seeds.</td>
-                </tr>
-                <tr>
-                    <td className='answer'>Legally, no. But, if you want to buy from me, yes.</td>
+                    {loggedIn ? <td className='answer'>
+                    Typically, orders ship within 3 business days after you place and pay for the order, but I guarantee that they will ship within 5 business days after. If you are in a rush, expedited shipping is also available. The shipping cost depends on how much you buy and if you've set up an account. If your order is over $50 and you have an account with me, then shipping is free. Business pricing is structured differently. If you are interested in business or bulk pricing, please <Link to='/messaging'>message</Link> me.
+                    </td> : <td className='answer'>Typically, orders ship within 3 business days after you place and pay for the order, but I guarantee that they will ship within 5 business days after. If you are in a rush, expedited shipping is also available. The shipping cost depends on how much you buy and if you've set up an account. If your order is over $50 and you have an account with me, then shipping is free. Business pricing is structured differently. If you are interested in business or bulk pricing, please <Link to='/contact'>contact</Link> me.</td>}
                 </tr>
                 <tr>
                     <td className='question'>Do you ever trade seeds?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>I have a few times. If you have seeds that you're interested in trading, please <Link to='/contact'>contact</Link> me.</td>
+                    {loggedIn ? <td className='answer'>I have a few times. If you have seeds that you're interested in trading, please <Link to='/message'>message</Link> me.</td>
+                    :
+                    <td className='answer'>I have a few times. If you have seeds that you're interested in trading, please <Link to='/contact'>contact</Link> me.</td>}
                 </tr>
                 <tr>
                     <td className='question'>Why do I have to enter my personal information such as my address, to create an account?</td>

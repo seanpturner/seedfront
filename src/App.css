@@ -63,16 +63,17 @@ textarea {
 }
 
 .itemAdded {
-  position: absolute;
+  position: sticky;
   left: 50%;
   top: 20%;
   transform: translate(-50%, -50%);
-  /* width: 80vw; */
+  max-width: 20vw;
   background-color: rgb(255, 255, 255, 1);
   border-radius: 20px;
   border: solid red 1px;
   z-index: 3;
   padding: 2vh 1vw 3vh 1vw;
+  text-align: center;
 }
 
 textarea, .inputDeliveryNotes {
@@ -503,6 +504,17 @@ textarea, .messageBody {
   background-color: rgba(211, 211, 211, 0.404);
 }
 
+.messagesTable {
+  position: relative;
+  left: 50%;
+  /* top: 40%; */
+  transform: translate(-50%, 00%);
+  /* border: solid green 1px;
+  border-radius: 20px;
+  padding: 1vh 1vw 1vh 1vw;
+  background-color: rgba(211, 211, 211, 0.404); */
+}
+
 .topCenteredDiv {
   position: absolute;
   left: 50%;
@@ -512,6 +524,16 @@ textarea, .messageBody {
   border-radius: 20px;
   padding: 0vh 1vw 1vh 1vw;
   background-color: rgba(211, 211, 211, 0.404);
+}
+
+.messageTable {
+  width: 50vw;
+  max-width: 80vw;
+  position: relative;
+  /* margin: auto; */
+  /* background-color: pink; */
+  /* left: 50%;
+  transform: translate(-50%, 0%); */
 }
 
 .itemsDiv {

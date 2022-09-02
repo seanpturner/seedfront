@@ -136,24 +136,35 @@ function FindSeeds() {
     const addItem = (id) => {
         let currentOrder = getOrder();
         let itemAdded = false;
+        let nonZero = false;
         currentOrder.forEach(item => {
             if (id === item.itemId) {
                 let additional = crossReference(quantities, 'itemId', item.itemId, 'quantity');
-                item.quantity = item.quantity + additional;
-                itemAdded = true;
+                if (additional > 0) {
+                    nonZero = true;
+                    item.quantity = item.quantity + additional;
+                    itemAdded = true;
+                }
             }
         });
         if (!itemAdded) {
             let newQuantity = crossReference(quantities, 'itemId', id, 'quantity');
-            let newItem = {
+            if (newQuantity > 0) {
+                nonZero = true;
+                let newItem = {
                 itemId: id,
                 quantity: newQuantity
+                }
+                currentOrder.push(newItem);
             }
-            currentOrder.push(newItem);
+            
         }
-        toastAdded(id);
-        setOrderItems(currentOrder);
-        sessionStorage.setItem('userOrder', JSON.stringify(currentOrder));
+        if (nonZero) {
+            toastAdded(id);
+            setOrderItems(currentOrder);
+            sessionStorage.setItem('userOrder', JSON.stringify(currentOrder));
+        }
+        
     }
 
     const toastAdded = (id) => {

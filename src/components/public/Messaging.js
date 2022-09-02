@@ -307,16 +307,19 @@ function Messaging(props) {
             <div className='pubContent'>
                 <div className='topCenteredDiv'>
                     <div className={messageTable}>
-                        <p>
-                            <span>Show: </span>
+                        <p className='centerText'>
+                            <span>Incoming: </span>
                             <span className={showUnread}><Link to='' onClick={()=>{setFilter('unread')}}>Unread</Link></span>{' '}
                             <span className={showUnarchived}><Link to='' onClick={()=>{setFilter('unarchived')}}>Unarchived</Link></span>{' '}
                             <span className={showAll}><Link to='' onClick={()=>{setFilter('all')}}>All</Link></span>{' '}
+                        </p>
+                        <p className='centerText'>
+                            <span>Outgoing: </span>
                             <span className={showSent}><Link to='' onClick={()=>{setFilter('sent')}}>Sent</Link></span>{' '}
                             <span>|</span>{' '}
                             <span className={showSend}><Link to='' onClick={()=>{setShowDiv('sendMessage')}}>Send a message</Link></span>{' '}
                         </p>
-                        <table>
+                        <table className='messagesTable'>
                             <tr>
                                 <td className='messagePadding boldText'/>
                                 <td className='messagePadding boldText'>Date</td>
