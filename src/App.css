@@ -508,7 +508,7 @@ textarea, .messageBody {
   position: relative;
   left: 50%;
   /* top: 40%; */
-  transform: translate(-50%, 00%);
+  transform: translate(-50%, 0%);
   /* border: solid green 1px;
   border-radius: 20px;
   padding: 1vh 1vw 1vh 1vw;
@@ -524,6 +524,13 @@ textarea, .messageBody {
   border-radius: 20px;
   padding: 0vh 1vw 1vh 1vw;
   background-color: rgba(211, 211, 211, 0.404);
+}
+
+.faqTable {
+  width: 90vw;
+  position: relative;
+  margin: auto;
+  /* transform: translate(-50%, 0%); */
 }
 
 .messageTable {
@@ -579,6 +586,10 @@ textarea, .messageBody {
   overflow: hidden;
 }
 
+.noHorizontalScroll {
+  overflow-x: hidden;
+}
+
 .footerDiv {
   position: fixed;
   bottom: 0vh;
@@ -629,9 +640,7 @@ textarea, .messageBody {
   font-size: small;
 }
 
-.faqTable {
-  width: 90vw;
-}
+
 
 .seedCol {
   min-width: 150px;

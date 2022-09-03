@@ -65,7 +65,8 @@ export default function PaymentSuccess() {
         email: order.email,
         recordLocator: order.recordLocator,
         paymentDate: getDateTime(),
-        paymentType: 4
+        paymentType: 4,
+        orderNotes: []
     }
 
         const placeOrder = () => {

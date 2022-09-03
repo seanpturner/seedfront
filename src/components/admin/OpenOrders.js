@@ -432,12 +432,13 @@ class OpenOrders extends Component {
           dateValue =  year + dash1 + month + dash2 + day;
         users.forEach(user => {
           if (user.id === this.state.currentUser) {
-            currentUserName = '[' + user.fName + ' ' + user.lName + ']';
+            // currentUserName = '[' + user.fName + ' ' + user.lName + ']';
+            currentUserName = localStorage.getItem('userName');
           }
         });
         newOrderNote.date = dateValue;
         newOrderNote.note = event.target.value;
-        newOrderNote.userId = this.state.currentUser;
+        // newOrderNote.userId = this.state.currentUser;
         newOrderNote.user = currentUserName;
         orderNotes.push(newOrderNote);
         so.orderNotes = orderNotes;
@@ -607,7 +608,12 @@ class OpenOrders extends Component {
           if (orderNote.userId) {
             strippedOrderNote.userId = orderNote.userId;
           }else{
-            strippedOrderNote.useId = null;
+            strippedOrderNote.userId = null;
+          }
+          if (orderNote.user) {
+            strippedOrderNote.user= orderNote.user;
+          }else{
+            strippedOrderNote.user = null;
           }
           uoOrderNotes.push(strippedOrderNote);
         }
@@ -742,6 +748,7 @@ class OpenOrders extends Component {
           <h1 className='adminSectionTitle'>Open Orders</h1><br/>
           <Link to='/allorders'>Go to all orders</Link><br/>
           <Link to='/createorder'>Create an order</Link><br/>
+          <Link to='/bulkupdate' target='blank'>Bulk update orders</Link><br/>
           <span className='adminSortText'>Search&nbsp;</span><input id="searchInput" type="text" onChange = {this.searchFor("userName")} /><br/>
           <div className={searchResultsDiv}>
             <table>

@@ -36,6 +36,7 @@ import PaymentSuccess from './components/public/PaymentSuccess';
 import OrderSuccess from './components/public/OrderSuccess';
 import Messaging from './components/public/Messaging';
 import Payment from './components/public/Payment';
+import BulkUpdate from './components/admin/BulkUpdate';
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
         <Route path='/messaging/:firstFilter' element={<Messaging/>}/>
         <Route path='/messaging' element={<Messaging/>}/>
         <Route path='/payment' element={<Payment/>}/>
+        <Route path='/bulkupdate' element={<BulkUpdate/>}/>
 
       </Routes>
     </Router>

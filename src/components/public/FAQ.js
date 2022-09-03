@@ -16,7 +16,7 @@ function FAQ() {
         checkLoggedIn();
     }, [])
   return (
-    <div className='pubPage'>
+    <div className='pubPage noHorizontalScroll'>
         <div className='navBar'>
             <NavBar/>
         </div>

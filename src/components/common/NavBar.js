@@ -11,8 +11,8 @@ function NavBar() {
     const [menu, setMenu] = useState(false);
     const showMenu = menu ? 'showMenu' : 'hidden';
     const [hasOpenCart, setHasOpenCart] = useState(false);
-    const openCartL = hasOpenCart && userName && userName !== '' ? 'linkDivLandscape openCart' : 'hidden';
-    const openCartP = hasOpenCart && userName && userName !== '' ? 'portraitLinks openCart' : 'hidden';
+    // const openCartL = hasOpenCart && userName && userName !== '' ? 'linkDivLandscape openCart' : 'hidden';
+    // const openCartP = hasOpenCart && userName && userName !== '' ? 'portraitLinks openCart' : 'hidden';
     const [messageCount, setMessageCount] = useState(null);
     const showMessageCount = messageCount ? 'showMessageCount' : 'hidden';
     const checkLoggedIn = () => {
