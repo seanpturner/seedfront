@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import PayPal from './PayPal';
 
 function ShoppingCart() {
-    // const baseUrl = 'http://localhost:8080/';
     const taxRate = .0784;
     const [applySalesTax, setApplySalesTax] = useState(true);
     const [userId, setUserID] = useState(6);
@@ -12,7 +11,6 @@ function ShoppingCart() {
     const [seeds, setSeeds] = useState([]);
     const [discountCodeObject, setDiscountCodeObject] = useState({});
     const [preTax, setPreTax] = useState(0);
-    // const [shippingSelected] = useState(false);
     const [tax, setTax] = useState(0);
     const [purchaseDate, setPurchaseDate] = useState();
     const [shippingFee, setShippingFee] = useState(null);
@@ -31,7 +29,6 @@ function ShoppingCart() {
     const [orderUser, setOrderUser] = useState(null);
     const [email, setEmail] = useState(null);
     const [userPricing, setUserPricing] = useState({});
-    // const [lineItemsTotal, setLineItemsTotal] = useState(0);
     const [pricingStructureDiscount, setPricingStructureDiscount] = useState(0);
     const [totalWithoutPricingDiscount, setTotalWithoutPricingDiscount] = useState(0);
     const [alertDiscountedPrice, setAlertDiscountedPrice] = useState('');
@@ -46,12 +43,7 @@ function ShoppingCart() {
     const verifyAddress = showModal === 'verifyAddress' ? 'verifyAddress' : 'hidden';
     const toSubmitOrder = showModal === 'toSubmitOrder' ? 'toSubmitOrder' : 'hidden';
     const submitOrder = showModal === 'submitOrder' ? 'submitOrder' : 'hidden';
-    // const selectPayment = showModal === 'selectPayment' ? 'selectPayment' : 'hidden';
     const toSelectPayment = showModal === 'toSelectPayment' ? 'toSelectPayment' : 'hidden';
-    // const [paymentOption, setPaymentOption] = useState('');
-    // const venmo = paymentOption === 'venmo' ? 'venmo' : 'hidden';
-    // const cashApp = paymentOption === 'cashApp' ? 'cashApp' : 'hidden';
-    // const card = paymentOption === 'card' ? 'card' : 'hidden';
     const showDiscountRow = discountCodeValid && userPricing.allowDiscount ? 'showdiscountRow' : 'hidden';
     const standardShipping = userPricing.freeShipping === true ? 0 : 6;
     const expeditedShipping = userPricing.freeShipping === true ? 5: 12;
@@ -184,25 +176,13 @@ function ShoppingCart() {
                     'itemId': item.itemId,
                     'quantity': item.quantity,
                     'price': (parseFloat((crossReference(seeds, 'id', item.itemId, 'price')) * (1 - pricingStructureDiscount)).toFixed(2))
-                    // let price =      ((Item.quantity * crossReference(seeds, 'id', Item.itemId, 'price')) * (1 - pricingStructureDiscount));
                 })
                 totalWithoutPricingStructureDiscount += item.quantity * crossReference(seeds, 'id', item.itemId, 'price');
             });
             setLineItems(itemList);
             setTotalWithoutPricingDiscount(totalWithoutPricingStructureDiscount);
         }
-        // checkAlertDiscountedPrice();
     }
-
-    // const checkAlertDiscountedPrice = () => {
-    //     setTimeout(() => {
-    //         if (totalWithoutPricingDiscount > lineItemsTotal) {
-    //             setAlertDiscountedPrice('Discounted Price')
-    //         }else{
-    //             setAlertDiscountedPrice('');
-    //         }
-    //     }, 10);
-    // }
 
     const showAsCurrency = (amount) => {
         let formatter = new Intl.NumberFormat('en-US', {
@@ -235,7 +215,6 @@ function ShoppingCart() {
         let total = 0;
         li.forEach(lineItem => {
             let ext = lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount);
-            // let ext = lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price') * (1-pricingStructureDiscount);
             total += ext;
         });
         if (isNaN(total) || total === 0) {
@@ -302,7 +281,6 @@ function ShoppingCart() {
             setDiscountCodeObject(result);
             if (result.discountCode && result.discountCode === code) {
                 setDiscountCodeValid(true);
-                // setShowModal('chooseShipping');
                 setBadCode(false);
                 setChooseShippingLink(true);
             }
@@ -337,7 +315,6 @@ function ShoppingCart() {
                     setAlertDiscountedPrice('Discounted Pricing');
                 }
                 setPricingStructureDiscount(userPricing.discount / 100);
-                // refreshLineItems();
             }else{
                 setPricingStructureDiscount(0);
                 setAlertDiscountedPrice('');
@@ -399,7 +376,6 @@ function ShoppingCart() {
         if (li && li.length > 0) {
             li.forEach(lineItem => {
                 if (isNaN(lineItem.price)) {
-                    // let price = ((lineItem.quantity * crossReference(seeds, 'id', lineItem.itemId, 'price')) * (1 - pricingStructureDiscount));
                     let price = ((crossReference(seeds, 'id', lineItem.itemId, 'price')) * (1 - pricingStructureDiscount));
                     lineItem.price = price;
                 }
@@ -459,28 +435,6 @@ function ShoppingCart() {
         }
     }
 
-    // const placeOrder = () => {
-    //     let myHeaders = new Headers();
-    //     myHeaders.append("Content-Type", "application/json");
-
-    //     let raw = JSON.stringify(order);
-
-    //     var requestOptions = {
-    //         method: 'POST',
-    //         headers: myHeaders,
-    //         body: raw,
-    //         redirect: 'follow'
-    //     };
-
-    //     fetch(baseUrl + 'purchases', requestOptions)
-    //     .then(response => response.text())
-    //     .then(result => {
-    //         console.log(result);
-    //         window.location.replace('/home');
-    //     })
-    //     // .catch(error => console.log('error', error));
-    // }
-
     const getLocator = () => {
         let requestOptions = {
             method: 'GET',
@@ -490,7 +444,6 @@ function ShoppingCart() {
         fetch("http://localhost:8080/purchases/createLocator", requestOptions)
             .then(response => response.text())
             .then(result => setRecordLocator(result))
-            // .catch(error => console.log('error', error));
     }
 
     useEffect(() => {
@@ -512,7 +465,6 @@ function ShoppingCart() {
 
     useEffect(() => {
         applyDiscounts();
-    // }, [checkCouponCode, lineItems, lineItemsTotal, userId, userPricing, discountCodeObject])
     // eslint-disable-next-line
 }, [preTax, userId, userPricing, discountCodeObject])
 
@@ -613,7 +565,7 @@ function ShoppingCart() {
                 {/* </p> */}
                 <div className={completeOrder}>
                     {/* <p className='alertRedText'>What would you like to do next?</p> */}
-                    <Link to='/findseeds'>Add more seeds</Link> or <Link to='' onClick={()=>setShowModal('toAddDiscountCode')}>Wrap up my order</Link><br/>
+                    <Link to='/findseeds'>Add{lineItems.length > 0 ? ' more ' : ' '}seeds</Link>{lineItems.length > 0 ? ' or ' : ''}<Link className={lineItems.length > 0 ? 'wrapUp' : 'hidden'} to='' onClick={()=>setShowModal('toAddDiscountCode')}>Wrap up my order</Link><br/>
                 </div>
                 <div className={toAddDiscountCode}>
                     <p className='alertRedText'>Do you have a discount code?</p>

@@ -223,6 +223,7 @@ function FindSeeds() {
         getAllPlants();
         checkLoggedIn();
         checkForOrder();
+        // eslint-disable-next-line
     }, [])
 
     return (
@@ -239,10 +240,10 @@ function FindSeeds() {
                     <p className={viewCart}><Link to='/shoppingcart'>View your cart</Link></p>
                     <table className='detailText'>
                         <tr className='boldText grayText centerText publicColumnHeading'>
-                            <td>Seed</td>
-                            <td className='itemPadding'>Mother</td>
+                            <td className='itemPadding alertRedText'>Seed</td>
+                            <td className='itemPadding alertRedText'>Mother</td>
                             <td/>
-                            <td className='itemPadding'>Father</td>
+                            <td className='itemPadding alertRedText'>Father</td>
                         </tr>
                         {listSeeds && listPlants ? availableSeeds.map((seed) => {
                             return (
@@ -266,7 +267,7 @@ function FindSeeds() {
                                         <tr>
                                             <td className='leftAlignColumn'>
                                                 <Link to='' onClick={()=>{setSelectedSeed(seed)}}>
-                                                    <img className='itemThumb' src={(crossReference(allPlants, 'id', seed.mother, 'image'))}/>
+                                                    <img className='itemThumb' alt='Mother plant' src={(crossReference(allPlants, 'id', seed.mother, 'image'))}/>
                                                 </Link><br/>
                                             </td>
                                         </tr>
@@ -281,7 +282,7 @@ function FindSeeds() {
                                         <tr>
                                             <td className='leftAlignColumn'>
                                                 <Link to='' onClick={()=>{setSelectedSeed(seed)}}>
-                                                    <img className='itemThumb' src={(crossReference(allPlants, 'id', seed.father, 'image'))}/>
+                                                    <img className='itemThumb' alt='Father plant' src={(crossReference(allPlants, 'id', seed.father, 'image'))}/>
                                                 </Link><br/>
                                             </td>
                                         </tr>
@@ -310,12 +311,12 @@ function FindSeeds() {
                     <table>
                         <tr className='topAlignTableRow'>
                         <td className='itemPadding'>
-                            <img className='itemImage' src={(crossReference(allPlants, 'id', selectedSeed.mother, 'image'))}/><br/>
+                            <img className='itemImage' alt='Mother plant' src={(crossReference(allPlants, 'id', selectedSeed.mother, 'image'))}/><br/>
                             Mother:<br/>
                             {(crossReference(allPlants, 'id', selectedSeed.mother, 'name'))}
                         </td>
                         <td className='itemPadding'>
-                            <img className='itemImage' src={(crossReference(allPlants, 'id', selectedSeed.father, 'image'))}/><br/>
+                            <img className='itemImage' alt='Father plant' src={(crossReference(allPlants, 'id', selectedSeed.father, 'image'))}/><br/>
                             Father:<br/>
                             {(crossReference(allPlants, 'id', selectedSeed.father, 'name'))}
                         </td>
