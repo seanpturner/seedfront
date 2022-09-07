@@ -810,7 +810,7 @@ class CreateOrder extends Component {
                                     <td className='noteColumn nudgeRight4'>{newOrder.orderUser}</td>
                                 </tr>
                                 <tr>
-                                    <td>Purchaser (B2B)</td>
+                                    <td>Purchaser</td>
                                     <td><input id='purchaserName' type='text' onBlur={this.updateOrder('purchaserName')}/></td>
                                     <td className='noteColumn nudgeRight4'>{newOrder.purchaserName}</td>
                                 </tr>
