@@ -64,7 +64,9 @@ function NavBar() {
             </div>
             <div className='logoLinks'>
                 <div className='navLogoDiv'>
-                    <img className='navLogo' src={Logo} alt='Logo'/>
+                    <Link to='/home'>
+                        <img className='navLogo' src={Logo} alt='Logo'/>
+                    </Link>
                 </div>
                 <div className='navLinksWrapper'>
                     <div className='navLinksDivLandscape'>

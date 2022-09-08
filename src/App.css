@@ -181,6 +181,18 @@ textarea, .messageBody {
   font-weight: bold;
 }
 
+.addItem {
+  color: red;
+}
+
+.addItem:hover {
+  color: red;
+}
+
+.addItem:visited {
+  color: red;
+}
+
 .alertRedText{
   color: red;
   font-weight: bold;
@@ -535,7 +547,7 @@ textarea, .messageBody {
 }
 
 .messageTable {
-  width: 50vw;
+  width: 60vw;
   max-width: 80vw;
   position: relative;
   /* margin: auto; */

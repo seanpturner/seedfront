@@ -257,7 +257,7 @@ function FindSeeds() {
                                             defaultValue={crossReference(quantities, 'itemId', seed.id, 'quantity')}
                                             onChange={(e)=>{updateByEntry(seed.id, e.target.value)}}/>
                                         <Link to='' onClick={()=>updateQuantity(seed.id, 1)}> +</Link><br/>
-                                        <Link to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link>
+                                        <Link className='addItem' to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link>
                                     </td>
                                     {/* mother */}
                                     <td className='itemPadding leftAlignColumn topAlignItemTableRow'>

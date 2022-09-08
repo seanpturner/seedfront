@@ -90,15 +90,44 @@ export default function PaymentSuccess() {
             // .then(result => window.location.href = '/orderSuccess/' + updPurchase.recordLocator)
             .then(result => {
                 // sessionStorage.removeItem('paidPurchase');
-                window.location.replace('/orderSuccess/' + updPurchase.recordLocator);
+                //window.location.replace('/orderSuccess/' + updPurchase.recordLocator);
+                sendMessageConfirmation();
             })
             // .catch(error => console.log('error', error));
         // }
     }
 
-    // useEffect(() => {
-    //     sessionStorage.removeItem('userOrder');
-    // })
+    const sendMessageConfirmation = () => {
+        alert(JSON.stringify(updPurchase));
+        const confMessage = {
+            id: null,
+            senderId: 6,
+            receiverId: updPurchase.userId,
+            messageBody: 'Order ' + updPurchase.recordLocator + ' in the amount of $' + updPurchase.total + ' was placed on ' + updPurchase.purchaseDate + '.\n\nwww.boutiqueseedsnm.com/ordersuccess/' + updPurchase.recordLocator,
+            messageSubject: 'Order Confirmation: ' + updPurchase.recordLocator,
+            read: false,
+            archived: false
+        }
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(confMessage);
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        fetch("http://localhost:8080/messages", requestOptions)
+        .then(response => response.text())
+        .then(result => window.location.replace('/orderSuccess/' + updPurchase.recordLocator))
+        // .then(result => alert(result))
+        // .then(result => console.log(result))
+        // .catch(error => console.log('error', error));
+    }
 
     useEffect(() => {
         // if (updPurchase.userId) {
