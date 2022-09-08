@@ -98,7 +98,7 @@ export default function PaymentSuccess() {
     }
 
     const sendMessageConfirmation = () => {
-        alert(JSON.stringify(updPurchase));
+        // alert(JSON.stringify(updPurchase));
         const confMessage = {
             id: null,
             senderId: 6,
