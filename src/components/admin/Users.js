@@ -27,8 +27,7 @@ class Users extends Component {
     searchString: "",
     searchResults: [],
     updatePricing: false,
-    pricingList: [],
-    // updateUser: false
+    pricingList: []
   };
 
   componentDidMount = () => {
@@ -53,8 +52,6 @@ class Users extends Component {
     fetch(rq, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        // this.setState({ userList: result });
-        // this.sortList(result, "id");
         this.getPricing(result);
       });
     // .catch(error => console.log('error', error));
@@ -165,8 +162,6 @@ class Users extends Component {
 
   handlePassword = (pw) => (event) => {
     this.setState({[pw]: event.target.value});
-    // let md5 = require('md5');
-    // alert(md5(event.target.value))
   }
 
   savePassword = () => {
@@ -179,9 +174,7 @@ class Users extends Component {
       
       fetch(fetchUrl, requestOptions)
         .then(response => response.json())
-        .then(response => console.log(response))
         .then(window.location.reload())
-        // .catch(error => console.log('error', error));
   }
 
   searchFor = () => (event) => {
@@ -193,7 +186,6 @@ class Users extends Component {
       let searchString1 = element.userName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString2 = element.fName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString3 = element.lName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      console.log(searchString1);
       if (noSpace === searchString1 || noSpace === searchString2 || noSpace === searchString3) {
         let addUser = {"id": element.id, "userName": element.userName, "fName": element.fName, "lName": element.lName};
         if (!returnArray.includes(addUser)) {
@@ -210,7 +202,6 @@ class Users extends Component {
       if (element.id === id) {
         this.setState({
           selectedUser: element,
-          // newPlant: element,
           searchResults: []
           });
           document.getElementById("searchInput").value = "";
@@ -301,7 +292,6 @@ class Users extends Component {
       <div className="adminPage">
         <div className="adminNavDiv">
           <AdminNav />
-          <br/>{JSON.stringify(selectedUser)}<br/>
         </div>
         <div className={selectedUserDiv}>
         <h1 className="adminSectionTitle">Update A User</h1>
@@ -416,9 +406,7 @@ class Users extends Component {
               </td>
             </tr>
           </table></p>
-          
         </div>
-
         <div className={userListDiv}>
         <h1 className="adminSectionTitle">Users</h1>
           <p className="adminSortText">
@@ -673,7 +661,6 @@ class Users extends Component {
                   <td>{users.businessName}</td>
                   <td>{users.businessPhone}</td>
                   <td>{users.businessPhoneExt}</td>
-                  {/* <td>{users.pricingStructure}</td> */}
                   <td>{users.pricingLabel}</td>
                   <td>
                     {users.salesTax === null
@@ -687,7 +674,6 @@ class Users extends Component {
             })}
           </table>
         </div>
-
         <div className={updateUserDiv}>
         <p>
         <table>
@@ -741,13 +727,6 @@ class Users extends Component {
             <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,0,0,-1)}>{'<'}</Link>
             <span>D</span>
             <Link to='' onClick={()=>this.getSelectableDate(selectedUser.birthDate,0,0,1)}>{'>'}</Link><br/>
-
-            {/* <input
-            type="text"
-            name="birthDate"
-            defaultValue={selectedUser.birthDate}
-            onBlur={this.updateSelectedUser('birthDate')}
-          /> */}
           </td>
           </tr>
           <tr className="adminRow">
@@ -849,23 +828,11 @@ class Users extends Component {
             onBlur={this.updateSelectedUser('businessPhoneExt')}
           /></td>
           </tr>
-
-          {/* <tr className="adminRow">
-            <td>Pricing</td>
-            <td><input
-            type="text"
-            name="pricingStructure"
-            defaultValue={selectedUser.pricingStructure}
-            onBlur={this.updateSelectedUser('pricingStructure')}
-          /></td>
-          </tr> */}
-
           <tr>
             <td>Pricing</td>
             <td><span id="updatePricing">{selectedUser.pricingLabel} <Link to="" onClick={()=>this.setState({ updatePricing: true})}>Update Pricing</Link></span></td>
             <td className={updatePricing}><select id="updatePricingSelect" onChange={this.updateSelectedUser('pricingStructure')}></select></td>
           </tr>
-
           <tr className="adminRow">
             <td>Taxable</td>
             <td><input
@@ -910,14 +877,14 @@ class Users extends Component {
             /></td>
             </tr>
           </table></p>
+          <p className={passwordsMatch}>
+            <Link to="" onClick={()=>this.savePassword()}>Save Password</Link><br/>
+          </p>
           <Link to="" onClick={()=>this.setState({
             updatePassword: false,
             password1: "",
             password2: ""
             })}>Close Password Modal</Link><br/>
-          <div className={passwordsMatch}>
-            <Link to="" onClick={()=>this.savePassword()}>Save Password</Link>
-          </div>
           </div>
         </div>
       </div>

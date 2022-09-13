@@ -1,17 +1,11 @@
 import React, { useEffect } from 'react'
-import { useParams, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 
 export default function PaymentSuccess() {
-    console.log('pms');
-    const { purchase } = useParams();
     const location = useLocation();
-    console.log(location.state);
     const order = JSON.parse(location.state.purchase);
-    // const order = JSON.parse(sessionStorage.getItem('paidPurchase'));
-    // const order = JSON.parse(purchase);
     const baseUrl = 'http://localhost:8080/';
-    // const [fetchCount, setFetchCount] = (0);
     const getDateTime = () => {
         let today = new Date();
         let dash1 = '-';
@@ -19,26 +13,13 @@ export default function PaymentSuccess() {
             let day = today.getDate();
             let month = today.getMonth() +1;
             let year = today.getFullYear();
-            // let hours = today.getHours();
-            // let minutes = today.getMinutes();
-            // let seconds = today.getSeconds();
         if (month < 10) {
             dash1 = '-0';
         }
         if (day < 10) {
             dash2 = '-0';
         }
-        // if (hours < 10) {
-        //     hours = '0' + hours;
-        // }
-        // if (minutes < 10) {
-        //     minutes = '0' + minutes;
-        // }
-        // if (seconds < 10) {
-        //     seconds = '0' + seconds;
-        // }
         return year + dash1 + month + dash2 + day;
-        
     }
     const updPurchase = {
         id: null,
@@ -70,35 +51,23 @@ export default function PaymentSuccess() {
     }
 
         const placeOrder = () => {
-            // setFetchCount(fetchCount +1);
-            // if (fetchCount <= 1) {
-            console.log('place order');
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-
             let raw = JSON.stringify(updPurchase);
-
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
                 body: raw,
                 redirect: 'follow'
             };
-
             fetch(baseUrl + 'purchases', requestOptions)
             .then(response => response.text())
-            // .then(result => window.location.href = '/orderSuccess/' + updPurchase.recordLocator)
             .then(result => {
-                // sessionStorage.removeItem('paidPurchase');
-                //window.location.replace('/orderSuccess/' + updPurchase.recordLocator);
                 sendMessageConfirmation();
             })
-            // .catch(error => console.log('error', error));
-        // }
     }
 
     const sendMessageConfirmation = () => {
-        // alert(JSON.stringify(updPurchase));
         const confMessage = {
             id: null,
             senderId: 6,
@@ -108,44 +77,28 @@ export default function PaymentSuccess() {
             read: false,
             archived: false
         }
-
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
         var raw = JSON.stringify(confMessage);
-
         var requestOptions = {
         method: 'POST',
         headers: myHeaders,
         body: raw,
         redirect: 'follow'
         };
-
         fetch("http://localhost:8080/messages", requestOptions)
         .then(response => response.text())
         .then(result => window.location.replace('/orderSuccess/' + updPurchase.recordLocator))
-        // .then(result => alert(result))
         // .then(result => console.log(result))
         // .catch(error => console.log('error', error));
     }
 
     useEffect(() => {
-        // if (updPurchase.userId) {
-            // console.log(order);
-            // alert(JSON.stringify(order));
             sessionStorage.removeItem('userOrder');
             if (updPurchase.recordLocator) {
-                console.log(updPurchase.recordLocator);
                 placeOrder();
-                // sessionStorage.removeItem('paidPurchase');
             }
-            // else{
-            //     alert('no order');
-            // }
-            
-            
-        // }
-        // eslint-disable-next-line
+            // eslint-disable-next-line
     }, [updPurchase])
 
   return (
@@ -154,12 +107,9 @@ export default function PaymentSuccess() {
             <NavBar/>
         </div>
         <div className='loader'>
-        <h2>Placing Order</h2>
-        {/* {JSON.stringify(updPurchase)} */}
-        <div className='spinner'/>
+            <h2>Placing Order</h2>
+            <div className='spinner'/>
         </div>
-        
     </div>
-    
   )
 }

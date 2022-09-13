@@ -6,16 +6,13 @@ function BulkUpdate() {
     const [openPurchases, setOpenPurchases] = useState([]);
     const [updateIdArray, setUpdateIdArray] = useState([]);
     const [purchasesToUpdate, setPurchasesToUpdate] = useState([]);
-    // const [selectedPurchases, setSelectedPurchases] = useState([]);
     const [allStatuses, setAllStatuses] = useState([]);
-    // const [existingStatus, setExistingStatus] = useState(null);
     const [newStatus, setNewStatus] = useState(null);
     const getOpenPurchases = () => {
         let requestOptions = {
             method: 'GET',
             redirect: 'follow'
         };
-          
         fetch("http://localhost:8080/purchases/openpurchases", requestOptions)
             .then(response => response.json())
             .then(response => sortPurchases(response, 'id'))
@@ -34,7 +31,6 @@ function BulkUpdate() {
             method: 'GET',
             redirect: 'follow'
         };
-          
         fetch("http://localhost:8080/purchasestatuses", requestOptions)
             .then(response => response.json())
             .then(result => setAllStatuses(result))
@@ -43,9 +39,7 @@ function BulkUpdate() {
     }
 
     const filterOpenPurchases = () => {
-        // if (!existingStatus) {
-            setPurchasesToUpdate(openPurchases);
-        // }
+        setPurchasesToUpdate(openPurchases);
     }
 
     const setUpdateArray = (id, sortBy) => {
@@ -88,10 +82,7 @@ function BulkUpdate() {
                 }
             });
         });
-        // setSelectedPurchases(ordersToUpdate);
-        console.log(ordersToUpdate);
         ordersToUpdate.forEach(order => {
-            
             order.orderNotes = [...order.orderNotes, {
                 date: getDateTime(true),
                 note: 'Bulk change ' + order.orderStatus + ' > ' + newStatus,
@@ -116,8 +107,6 @@ function BulkUpdate() {
             order.orderStatus = parseInt(newStatus);
             updatePurchase(order);
         });
-        // setSelectedPurchases(ordersToUpdate);
-        // console.log(ordersToUpdate);
     }
 
     const getDateTime = (includeTime) => {
@@ -155,19 +144,15 @@ function BulkUpdate() {
     }
 
     const updatePurchase= (order) => {
-        // alert(JSON.stringify(order));
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
         var raw = JSON.stringify(order);
-
         var requestOptions = {
         method: 'PUT',
         headers: myHeaders,
         body: raw,
         redirect: 'follow'
         };
-
         fetch('http://localhost:8080/purchases/' + order.id, requestOptions)
         .then(response => response.text())
         .then(result => window.location.reload())
@@ -196,12 +181,6 @@ function BulkUpdate() {
             <div className="adminNavDiv">
                 <AdminNav />
             </div>
-            {/* {JSON.stringify(openPurchases)} */}
-            {/* {JSON.stringify(purchasesToUpdate)} */}
-            {/* {updateIdArray.toString()} */}
-            {/* {JSON.stringify(updateIdArray)} */}
-            {/* {JSON.stringify(allStatuses)} */}
-            {/* {JSON.stringify(selectedPurchases)} */}
             <table>
                 <tr>
                     <td/>

@@ -11,7 +11,6 @@ function Contact() {
     const [contactMessage, setContactMessage] = useState(null);
     const [contactName, setContactName] = useState(null);
     const [contactEmail, setContactEmail] = useState(null);
-    // const [timeStamp, setTimeStamp] = useState(null);
     const [showValidationText, setShowValidationText] = useState(false);
     const validateType = showValidationText && (!contactType || contactType === '') ? 'validateType' : 'hidden';
     const validateSubject = showValidationText && (!contactSubject || contactSubject.replace(/\s/g, '') === '') ? 'validateSubject' : 'hidden';
@@ -39,25 +38,21 @@ function Contact() {
         setContactMessage(null);
         setContactEmail(null);
         setContactName(null);
-        // setTimeStamp(null);
     }
 
     const validateFormInputs = () => {
         setShowValidationText(true);
-        // setTimeStamp(getDateTime());
         if (
             contactType && contactType !== '' 
             && contactSubject && contactSubject.replace(/\s/g, '') !==  ''
             && contactMessage && contactMessage.replace(/\s/g, '') !==  ''
             && contactName && contactName.replace(/\s/g, '') !==  ''
             && contactEmail && /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(contactEmail)
-            // && timeStamp
         ) {
             submitForm();
         }
     }
     const submitForm = () => {
-        // contactObject.timestampSent = getDateTime();
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -77,43 +72,9 @@ function Contact() {
             // .catch(error => console.log('error', error));
     }
 
-    // const showSuccess = () => {
-    //     setShowDiv('submitSuccess');
-    // }
-
-    // const getDateTime = () => {
-    //     let today = new Date();
-    //     let dash1 = '-';
-    //     let dash2 = '-';
-    //         let day = today.getDate();
-    //         let month = today.getMonth() +1;
-    //         let year = today.getFullYear();
-    //         let hours = today.getHours();
-    //         let minutes = today.getMinutes();
-    //         let seconds = today.getSeconds();
-    //     if (month < 10) {
-    //         dash1 = '-0';
-    //     }
-    //     if (day < 10) {
-    //         dash2 = '-0';
-    //     }
-    //     if (hours < 10) {
-    //         hours = '0' + hours;
-    //     }
-    //     if (minutes < 10) {
-    //         minutes = '0' + minutes;
-    //     }
-    //     if (seconds < 10) {
-    //         seconds = '0' + seconds;
-    //     }
-    //     return year + dash1 + month + dash2 + day + 'T' + hours + ':' + minutes + ':' + seconds + '.000000';
-    // }
-
     useEffect(() => {
         if (showDiv === 'submitSuccess') {
             setTimeout(() => {
-                // setShowDiv('contactForm');
-                // alert('it happened');
                 window.location.reload();
             }, 1500);
         }
@@ -125,7 +86,6 @@ function Contact() {
                 <NavBar/>
             </div>
             <div className='pubContent'>
-            {/* <p>{JSON.stringify(contactObject)}</p> */}
                 <div className='centeredDiv'>
                     <div className={contactForm}>
                         <span>Please share your questions or comments with us</span>

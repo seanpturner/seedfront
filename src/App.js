@@ -30,8 +30,6 @@ import LoginFailure from './components/public/LoginFailure';
 import CreationSuccess from './components/public/CreationSuccess';
 import FAQ from './components/public/FAQ';
 import ShoppingCart from './components/public/ShoppingCart';
-import SendProps from './components/public/SendProps';
-import ReceiveProps from './components/public/ReceiveProps';
 import PaymentSuccess from './components/public/PaymentSuccess';
 import OrderSuccess from './components/public/OrderSuccess';
 import Messaging from './components/public/Messaging';
@@ -69,8 +67,6 @@ function App() {
         <Route path='/creationsuccess' element={<CreationSuccess/>}/>
         <Route path='/faq' element={<FAQ/>}/>
         <Route path='/shoppingcart' element={<ShoppingCart/>}/>
-        <Route path='/sendprops' element={<SendProps/>}/>
-        <Route path='/receiveprops/:id/:otherid' element={<ReceiveProps/>}/>
         <Route path='/paymentSuccess/' element={<PaymentSuccess/>}/>
         <Route path='/orderSuccess/:locator' element={<OrderSuccess/>}/>
         <Route path='/messaging/:firstFilter' element={<Messaging/>}/>

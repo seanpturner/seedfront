@@ -10,9 +10,6 @@ class Econ extends Component {
 
     componentDidMount = () => {
         this.checkAuth();
-        // setTimeout(() => {
-        //     this.getShipperInfo();
-        // }, 20);
     }
 
     checkAuth = () => {
@@ -23,12 +20,9 @@ class Econ extends Component {
         if (!un || un === '' || !token || token === '') {
             this.kickToLogin();
         }else{
-        // let myHeaders = new Headers();
-        // myHeaders.append("bearerToken", token);
 
         requestOptions = {
                 method: 'GET',
-                // headers: myHeaders,
                 redirect: 'follow'
             };
         }
@@ -39,7 +33,6 @@ class Econ extends Component {
             if (!result || result.id === '' || result.id === undefined) {
                 this.kickToLogin();
             }else{
-                // this.setState({ userId: result.id });
                 this.getShipperInfo(result.id);
                 if (result.accountType === 'admin') {
                     this.setState({ hasAccess: true });
@@ -119,13 +112,11 @@ class Econ extends Component {
                     </tr>
                     <tr>
                         <td>
-                            {/* {'Order # ' + selectedOrder.id} */}
                             {'Ref: ' + selectedOrder.recordLocator}
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            {/* {selectedOrder.fName + ' ' + selectedOrder.lName}<br/> */}
                             {selectedOrder.orderUser}<br/>
                             {selectedOrder.deliveryAddress1}<br/>
                             {selectedOrder.deliveryAddress2}{selectedOrder.deliveryAddress2 === null ? '' : <br/>}
@@ -177,13 +168,6 @@ class Econ extends Component {
                         <td className='topAlignTable rightCell'>Discount Amount:&nbsp;{this.showAsCurrency(selectedOrder.discountAmount)}</td>
                     </tr>
                     }
-
-                    {/* <tr className='topAlignTableRow'>
-                        <td className='topAlignTable'/>
-                        <td className='topAlignTable'/>
-                        <td className='topAlignTable rightCell'/>
-                        <td className='topAlignTable rightCell'>Pre-tax:&nbsp;{this.showAsCurrency(selectedOrder.preTax)}</td>
-                    </tr> */}
 
                     <tr className='topAlignTableRow'>
                         <td className='topAlignTable'/>

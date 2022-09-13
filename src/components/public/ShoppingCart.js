@@ -489,13 +489,9 @@ function ShoppingCart() {
     <div className='pubPage'>
         <div className='navBar'>
             <NavBar/>
-            {/* <br/>{JSON.stringify(order)}<br/> */}
-            {/* <br/>{selectedShipping}<br/> */}
-            {/* <br/>{validateFields.toString()}<br/> */}
         </div>
         <div className='topCenteredDiv'>
             <div className='pubContent'>
-                {/* <p> */}
                     <table className='adminTable'>
                         <tr className='adminRow'>
                             <td/>

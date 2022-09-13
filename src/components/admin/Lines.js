@@ -134,7 +134,6 @@ class Lines extends Component {
     this.setState({ searchString: noSpace });
     entityList.forEach(element => {
       let searchString = element.name.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      console.log(searchString);
       if (noSpace === searchString) {
         let item = {"id": element.id, "name": element.name};
         if (!returnArray.includes(item)) {

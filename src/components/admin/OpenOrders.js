@@ -26,8 +26,7 @@ class OpenOrders extends Component {
     sortDirection: 'descending',
     searchString: '',
     searchResults: [],
-    confirmSubmit: false,
-    
+    confirmSubmit: false
    } 
 
   componentDidMount = () => {
@@ -384,7 +383,6 @@ class OpenOrders extends Component {
         so[key] = event.target.value;
         if (key === 'orderStatus') {
           so.statusLabel = this.crossReference(this.state.allPurchaseStatuses, 'statusCode', event.target.value, 'label' );
-          // so.statusLabel = statusLabel;
         }
       }
       this.setState({ selectedOrder: so });
@@ -432,13 +430,11 @@ class OpenOrders extends Component {
           dateValue =  year + dash1 + month + dash2 + day;
         users.forEach(user => {
           if (user.id === this.state.currentUser) {
-            // currentUserName = '[' + user.fName + ' ' + user.lName + ']';
             currentUserName = localStorage.getItem('userName');
           }
         });
         newOrderNote.date = dateValue;
         newOrderNote.note = event.target.value;
-        // newOrderNote.userId = this.state.currentUser;
         newOrderNote.user = currentUserName;
         orderNotes.push(newOrderNote);
         so.orderNotes = orderNotes;
@@ -650,7 +646,6 @@ class OpenOrders extends Component {
       let searchString2 = element.fName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString3 = element.lName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString4 = element.recordLocator.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      // console.log(searchString1);
       if (noSpace === searchString1 || noSpace === searchString2 || noSpace === searchString3 || noSpace === searchString4) {
         let addOrder = {"id": element.id, "date": element.purchaseDate, "userName": element.userName, "fName": element.fName, "lName": element.lName, 'recordLocator': element.recordLocator};
         if (!returnArray.includes(addOrder)) {
@@ -737,14 +732,8 @@ class OpenOrders extends Component {
       <div className='adminPage'>
         <div className="adminNavDiv">
           <AdminNav />
-          {/* {JSON.stringify(masterJson)}<br/> */}
-          {/* {selectablePurchaseDate} */}
-          {/* {this.state.selectedOrder === 'none' ? '' : JSON.stringify(selectedOrder)} */}
-          {/* {JSON.stringify(this.state.addLineItems)} */}
         </div>
         <div className={allOrdersDiv}>
-        
-        
           <h1 className='adminSectionTitle'>Open Orders</h1><br/>
           <Link to='/allorders'>Go to all orders</Link><br/>
           <Link to='/createorder'>Create an order</Link><br/>
@@ -968,15 +957,6 @@ class OpenOrders extends Component {
                   <tr className='topAlignTableRow'>
                     <td className={updateOrderStatus}>
                       <select name='statuses' id='updateOrderStatus' onClick={this.updateOrder('orderStatus', 'updateOrderStatus')}>
-                        {/* <option value ='' >Select</option>
-                        <option value='100'>Ordered</option>
-                        <option value='101'>Paid</option>
-                        <option value='102'>Picked</option>
-                        <option value='103'>Shipped</option>
-                        <option value='190'>Partial payment</option>
-                        <option value='200'>Complete</option>
-                        <option value='201'>Complete - no tracking</option>
-                        <option value='300'>Cancelled</option> */}
                       </select>
                     </td>
                   </tr>
@@ -1061,12 +1041,6 @@ class OpenOrders extends Component {
                     <tr className='topAlignTableRow'>
                       <td className='topAlignTable'>
                       <input type='text' id='updateShippedVia' onKeyUp={this.updateOrder('shippedVia', 'updateShippedVia')}/>
-                      {/* <input list='ShippedVia' id='updateShippedVia'/>
-                      <datalist id='ShippedVia'>
-                        <option value='FedEx'/>
-                        <option value='UPS'/>
-                        <option value='USPS'/>
-                      </datalist> */}
                       </td>
                     </tr>
                   </td>

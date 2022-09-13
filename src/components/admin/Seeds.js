@@ -423,7 +423,6 @@ class Seeds extends Component {
     this.setState({ searchString: noSpace });
     as.forEach(element => {
       let searchString = element.name.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      console.log(searchString);
       if (noSpace === searchString) {
         returnArray.push({"id": element.id, "name": element.name})
       }
@@ -495,7 +494,6 @@ showAsCurrency = (amount) => {
                 <td>Available</td>
                 <td>Mother</td>
                 <td>Father</td>
-                {/* <td>Qty Available</td> */}
                 <td>Maternal line</td>
                 <td>Paternal line</td>
                 <td>Feminized</td>

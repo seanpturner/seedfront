@@ -1,10 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// export default function 
-
 function PayPal (props) {
-    // alert(props.purchase);
     const paypal = useRef();
     const navigate = useNavigate();
 
@@ -13,7 +10,6 @@ function PayPal (props) {
             let ppbd = document.getElementById('paypalButtonsDiv');
             let wrapper = ppbd.firstElementChild;
             wrapper.innerHTML = '';
-            console.log('from Paypal Page: ' + props.totalCost);
             window.paypal.Buttons({
                 createOrder: (data, actions, err) => {
                     return actions.order.create({
@@ -33,9 +29,7 @@ function PayPal (props) {
                     console.log('onApprove');
                     // eslint-disable-next-line
                     const order = await actions.order.capture();
-                    // console.log(order);
                     sessionStorage.setItem('paidPurchase', props.purchase);
-                    // window.location.href = './PaymentSuccess/' + props.purchase;
                     navigate('/paymentSuccess',{state:{purchase: props.purchase}});
                 },
                 onError: (err) => {

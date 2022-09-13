@@ -127,10 +127,8 @@ function Messaging(props) {
                 method: 'PUT',
                 redirect: 'follow'
               };
-              
               fetch('http://localhost:8080/messages/updateRead/' + parseInt(message.id), requestOptions)
                 .then(response => response.text())
-                // .then(result => alert(result))
                 // .then(result => updateNav())
                 // .then(result => console.log(result))
                 // .catch(error => console.log('error', error));
@@ -144,7 +142,6 @@ function Messaging(props) {
                 method: 'PUT',
                 redirect: 'follow'
               };
-              
               fetch('http://localhost:8080/messages/updateArchived/' + message.id, requestOptions)
                 .then(response => response.text())
                 // .then(result => console.log(result))
@@ -167,12 +164,9 @@ function Messaging(props) {
             read: false,
             archived: false
         }
-
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
         var raw = JSON.stringify(replyMessage);
-
         var requestOptions = {
         method: 'POST',
         headers: myHeaders,
@@ -183,18 +177,14 @@ function Messaging(props) {
         fetch("http://localhost:8080/messages", requestOptions)
         .then(response => response.text())
         .then(result => window.location.replace('/messaging/' + filter))
-        // .then(result => alert(result))
         // .then(result => console.log(result))
         // .catch(error => console.log('error', error));
     }
 
     const sendNewMessage = () => {
-
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
         var raw = JSON.stringify(newMessage);
-
         var requestOptions = {
         method: 'POST',
         headers: myHeaders,
@@ -205,7 +195,6 @@ function Messaging(props) {
         fetch("http://localhost:8080/messages", requestOptions)
         .then(response => response.text())
         .then(result => window.location.replace('/messaging/' + filter))
-        // .then(result => alert(result))
         // .then(result => console.log(result))
         // .catch(error => console.log('error', error));
     }
@@ -232,17 +221,14 @@ function Messaging(props) {
             dd.options.add(new Option('Boutique Seeds', 1));
             setNewMessageReceiverId(1);
         }
-        
     }
 
     const checkAuth = () => {
         let requestOptions;
         let un = localStorage.getItem('userName');
         let token = localStorage.getItem('bearerToken');
-
         let myHeaders = new Headers();
         myHeaders.append("bearerToken", token);
-
         requestOptions = {
             method: 'GET',
             headers: myHeaders,
@@ -301,9 +287,6 @@ function Messaging(props) {
             <div id='messageNav' className='navBar'>
                 <NavBar/>
             </div>
-            {/* <p>{JSON.stringify(allMessages)}</p> */}
-            {/* <p>{JSON.stringify(filteredMessages)}</p> */}
-            {/* <p>{JSON.stringify(newMessage)}</p> */}
             <div className='pubContent'>
                 <div className='topCenteredDiv'>
                     <div className={messageTable}>
@@ -330,7 +313,6 @@ function Messaging(props) {
                             {nameHash && filteredMessages?.map((message) => {
                                 return(
                                     <tr>
-                                        {/* <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>{message.id}</Link></td> */}
                                         <td className='messagePadding'><Link to='' onClick={()=>{setOpenMessage(message); setShowDiv('singleMessage'); updateRead(message)}}>Open</Link></td>
                                         <td className='messagePadding'>{message.timestampSent.substring(0,10)}</td>
                                             {filter === 'sent' ? <td className='messagePadding'>{maxLength(crossReference(nameHash, 'userId', message.receiverId, 'userName'),10)}</td> : <td className='messagePadding'>{!message.senderId ? '[user]' : maxLength(crossReference(nameHash, 'userId', message.senderId, 'userName'),10)}

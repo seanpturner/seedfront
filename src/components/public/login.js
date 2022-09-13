@@ -87,7 +87,6 @@ function Login() {
             nu.state = null;
             document.getElementById('newState').value = '';
             setStateAbbreviationError(true);
-            // setBirthYearErr('birthYearErr');
         }
     }
 
@@ -102,7 +101,6 @@ function Login() {
                     noDash += e.target.value[i];
                 }
             }
-            // e.target.value = noDash;
             for (let i=0; i< noDash.length; i++) {
                 newDash += noDash[i];
                 if (newDash.length === 3 && noDash.length > 3) {
@@ -114,8 +112,6 @@ function Login() {
             }
             nu.phone = newDash;
             document.getElementById('newPhone').value = newDash;
-            // e.target.value = newDash;
-            // updateNewUser(e);
         }
     }
 
@@ -130,11 +126,8 @@ function Login() {
         nu.dateCreated = todaysDate();
         nu[e.target.name] = e.target.value;
         if (e.target.name === 'newPassword1' || e.target.name === 'newPassword2') {
-            // let md5 = require('md5');
             if (nu.newPassword1 === nu.newPassword2) {
-                // nu.password = md5(nu.newPassword1);
                 nu.password = nu.newPassword1;
-
                 let i = inputs;
                 i.password = nu.password;
                 setInputs(i);
@@ -193,14 +186,12 @@ function Login() {
             document.getElementById('newState').value = e.target.value.toUpperCase();
         }
         if (e.target.name === 'state' && e.target.value.length > 1) {
-            // document.getElementById('newState').value = e.target.value.toUpperCase();
                 setStateAbbreviationError(false);
             if (!/^((A[LKSZR])|(C[AOT])|(D[EC])|(F[ML])|(G[AU])|(HI)|(I[DLNA])|(K[SY])|(LA)|(M[EHDAINSOT])|(N[EVHJMYCD])|(MP)|(O[HKR])|(P[WAR])|(RI)|(S[CD])|(T[NX])|(UT)|(V[TIA])|(W[AVIY]))$/.test(e.target.value.toUpperCase())) {
                 document.getElementById('newState').value = '';
                 setStateAbbreviationError(true);
             }
         }
-        // <td><input id='newZip' name='zip' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td>
         if (e.target.name === 'zip') {
             if (!/^[0-9]*$/.test(e.target.value)) {
                 document.getElementById('newZip').value = '';
@@ -229,10 +220,6 @@ function Login() {
                     nu.phone = nu.phone + '-';
                     document.getElementById('newPhone').value = nu.phone;
                 }
-                // if (i === 2 || i === 7) {
-                //     nu.phone = nu.phone + '-';
-                //     document.getElementById('newPhone').value = nu.phone;
-                // }
             }
         }
         if (e.target.value.replace(/\s/g, '') === '') {
@@ -245,10 +232,7 @@ function Login() {
         setDuplicateUserName(false);
         let nu = newUser;
         if (availability !== '') {
-            // nu.userName = null;
-            // setNewUser(nu);
             setDuplicateUserName(true);
-            // alert('this username is taken');
         }else{
             let i = inputs;
             i.userName = nu.userName;
@@ -344,7 +328,6 @@ function Login() {
                 unableToLogIn();
             }
             if (tokenCheck === '' || tokenCheck === null) {
-                console.log(n);
                 n--
                 setTimeout(() => {
                     timeOutLogIn(n);
@@ -444,10 +427,6 @@ function Login() {
         <div className='pubPage'>
             <div className='navBar'>
                 <NavBar/>
-                {/* <br/>{JSON.stringify(newUser)}<br/> */}
-                {/* <br/>{JSON.stringify(inputs)} */}
-                {/* <br/>{validateFields.toString()}<br/> */}
-                {/* <br/>{fNameErr.toString()}<br/> */}
             </div>
             <div className={loader}>
                 <div className='spinner'/>
@@ -495,10 +474,6 @@ function Login() {
                             User Name must be at least 5 characters with no spaces
                         </td>
                     </tr>
-                    {/* <tr>
-                        <td/>
-                        <td className='validationText'></td>
-                    </tr> */}
                     <tr>
                         <td>Password</td>
                         <td><input id='newPassword1' type='password' name='newPassword1' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/><br/></td>
@@ -639,7 +614,6 @@ function Login() {
                     </tr>
                     <tr>
                         <td>State</td>
-                        {/* <td><input id='newState' name='state' onBlur={(e)=>{updateValidateFields(e)}} onChange={(e)=>{updateNewUser(e)}}/></td> */}
                         <td>
                             <input list='stateList' id='newState' name='state' onBlur={()=>{revalidateState()}} onChange={(e)=>{updateNewUser(e)}}/>
                             <datalist id='stateList'>

@@ -140,7 +140,6 @@ class Plants extends Component {
             staticValue.innerHTML = element.maternalLine;
             staticValue.setAttribute("id", "addMaternalLine");
             mlInputAdd.parentNode.replaceChild(staticValue, mlInputAdd);
-            // let np = this.state.newPlant;
             np.maternalLine = element.maternalLine;
             this.setState({ newPlant: np });
           }
@@ -422,7 +421,6 @@ class Plants extends Component {
     this.setState({ searchString: noSpace });
     ap.forEach(element => {
       let searchString = element.name.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      console.log(searchString);
       if (noSpace === searchString) {
         returnArray.push({"id": element.id, "name": element.name})
       }

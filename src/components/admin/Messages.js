@@ -5,7 +5,6 @@ function Messages() {
   return (
     <div>
     <AdminNav /><br/>Messages</div>
-    
   )
 }
 

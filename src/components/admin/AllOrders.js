@@ -644,7 +644,6 @@ class AllOrders extends Component {
       let searchString2 = element.fName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString3 = element.lName.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
       let searchString4 = element.recordLocator.replace(/\s/g, '').slice(0, noSpace.length).toLowerCase();
-      // console.log(searchString1);
       if (noSpace === searchString1 || noSpace === searchString2 || noSpace === searchString3  || noSpace === searchString4) {
         let addOrder = {"id": element.id, "date": element.purchaseDate, "userName": element.userName, "fName": element.fName, "lName": element.lName, 'recordLocator': element.recordLocator};
         if (!returnArray.includes(addOrder)) {

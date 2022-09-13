@@ -92,7 +92,6 @@ textarea, .messageBody {
 
 .messageReply {
   display: block;
-  /* overflow: hidden; */
   overflow-y: scroll;
   width: 90vw;
   resize: none;
@@ -100,7 +99,6 @@ textarea, .messageBody {
 
 .messageSend {
   display: block;
-  /* overflow: hidden; */
   overflow-y: scroll;
   width: 80vw;
   resize: none;
@@ -143,17 +141,12 @@ textarea, .messageBody {
 }
 
 .publicSeedName {
-  /* color: rgb(95, 93, 93);
-  font-weight: 500; */
   font-size: large;
 }
-
 
 .bottomAlignTableRow {
   vertical-align: bottom;
 }
-
-
 
 .adminSubRow:nth-child(even) {
   color: darkgreen;
@@ -419,8 +412,6 @@ textarea, .messageBody {
 
 .itemRow, tr {
   border-collapse: collapse;
-  /* border-top: solid black 1px;
-  border-bottom: solid transparent 1px; */
 }
 .itemRow:nth-child(even) {
   background-color: rgb(208, 211, 211);
@@ -497,9 +488,6 @@ textarea, .messageBody {
   width: 92%;
 }
 .loginInputs {
-  /* position: relative;
-  top: 20vh;
-  left: calc(50vw - 120px); */
   position: absolute;
   left: 50%;
   top: 50%;
@@ -520,12 +508,7 @@ textarea, .messageBody {
 .messagesTable {
   position: relative;
   left: 50%;
-  /* top: 40%; */
   transform: translate(-50%, 0%);
-  /* border: solid green 1px;
-  border-radius: 20px;
-  padding: 1vh 1vw 1vh 1vw;
-  background-color: rgba(211, 211, 211, 0.404); */
 }
 
 .topCenteredDiv {
@@ -543,17 +526,12 @@ textarea, .messageBody {
   width: 90vw;
   position: relative;
   margin: auto;
-  /* transform: translate(-50%, 0%); */
 }
 
 .messageTable {
   width: 60vw;
   max-width: 80vw;
   position: relative;
-  /* margin: auto; */
-  /* background-color: pink; */
-  /* left: 50%;
-  transform: translate(-50%, 0%); */
 }
 
 .itemsDiv {
@@ -581,9 +559,6 @@ textarea, .messageBody {
 
 .createAccount {
   display: inline-block;
-  /* position: relative;
-  top: 20vh;
-  left: calc(50vw - 120px); */
   position: relative;
   left: 50%;
   top: 2vw;
@@ -653,8 +628,6 @@ textarea, .messageBody {
   font-size: small;
 }
 
-
-
 .seedCol {
   min-width: 150px;
 }
@@ -706,9 +679,6 @@ textarea, .messageBody {
 }
 
 .messagePadding {
-  /* margin-left: 3px;
-  margin-right: 3px;
-  border: solid black 3px; */
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -721,13 +691,6 @@ textarea, .messageBody {
 .contactTextArea {
   width: 20vw;
 }
-
-/* .contactFormItem {
-  display: inline-block;
-  width: 12vw;
-} */
-
-/* Media queries */
 
 @media (orientation: landscape) {
   .homeImageDiv {
@@ -780,8 +743,6 @@ textarea, .messageBody {
   .homeImagePortrait {
     display: none;
   }
-
-
 }
 
 @media (orientation: portrait) {
@@ -805,6 +766,7 @@ textarea, .messageBody {
     background-size: cover;
     z-index: 2;
   }
+
   .cheeseburger {
     display: flex;
     flex-direction: row-reverse;
@@ -813,6 +775,7 @@ textarea, .messageBody {
     top: 20px;
     width: 50vw;
   }
+
   .tb {
     background-color: black;
     width: 30px;
@@ -849,7 +812,6 @@ textarea, .messageBody {
   }
 
   .linkDivPortrait {
-    /* line-height: 70px; */
     font-size: calc(2.2vw);
     padding-right: 1.25vw;
     padding-left: 1.25vw;
@@ -864,14 +826,118 @@ textarea, .messageBody {
   }
 
   .homeImagePortrait {
-    /* display: none; */
     width: 100vw;
   }
-  @media screen and (max-width: 400px) {
+
+  .homePromo {
+    width: 90%;
+    max-height: 75%;
+    background-color: rgb(231, 229, 229);
+  }
+
+  @media screen and (max-width: 900px) {
+    .aboutImageDiv {
+      background-image: url('./components/photos/aboutImageLandscape.png');
+      position: relative;
+      height:95%;
+      background-size: cover;
+      z-index: 2;
+      border-top: solid black 1px;
+    }
+
+    
+    .itemImage {
+      max-width: 90px;
+    }
+
+    .singleModal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 90vw;
+      background-color: rgb(255, 255, 255, 1);
+      border-radius: 20px;
+      border: solid green 1px;
+      z-index: 2;
+      padding: 2vh 1vw 3vh 1vw;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .homePromo {
+      width: 90%;
+      max-height: 75%;
+      background-color: rgb(231, 229, 229);
+      font-size: small;
+    }
+
+    .contactTextArea {
+      width: 30vw;
+    }
+
+
+    
+  }
+
+  @media screen and (max-width: 500px) {
     .navLogoDiv {
       display: flex;
       padding-left: 1vw;
       padding-right: 1vw;;
+    }
+
+    .itemThumb {
+      max-width: 70px;
+      border: solid green 1px;
+      border-radius: 5px;
+      width: 35px;
+    }
+
+    .itemImage {
+      max-width: 35px;
+    }
+
+    .detailText {
+      font-size: x-small;
+    }
+    
+    .aboutImageDiv {
+      background-image: url('./components/photos/aboutImageLandscape.png');
+      position: relative;
+      height:95%;
+      background-size: cover;
+      z-index: 2;
+      border-top: solid black 1px;
+    }
+
+    .centeredDiv {
+      position: absolute;
+      left: 50%;
+      top: 40%;
+      transform: translate(-50%, -50%);
+      border: solid green 1px;
+      border-radius: 20px;
+      padding: 1vh 1vw 1vh 1vw;
+      background-color: rgba(211, 211, 211, 0.404);
+      font-size: small;
+    }
+    
+    .homePromo {
+      width: 90%;
+      max-height: 75%;
+      background-color: rgb(231, 229, 229);
+      font-size: x-small;
+    }
+
+    .publicPriceText {
+      color: rgb(95, 93, 93);
+      font-weight: 500;
+      font-size: larger;
+    }
+
+    .publicSeedName {
+      font-size: larger;
     }
   }
 }
@@ -884,7 +950,6 @@ textarea, .messageBody {
 }
 
 /* spinner */
-
 .spinner {
   border: 16px solid #f3f3f3;
   border-radius: 50%;

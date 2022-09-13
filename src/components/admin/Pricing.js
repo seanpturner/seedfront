@@ -16,7 +16,6 @@ class Pricing extends Component {
     newPricing: {},
     addPricing: false,
     lastCheck: false
-
   };
 
   componentDidMount = () => {
@@ -191,7 +190,6 @@ addRequirement = () => (event) => {
   let p = this.state.newPricing;
   let existingReqs = p.requirements;
   if (existingReqs === null || existingReqs === undefined) {
-    // existingReqs.push(req);
     p.requirements = [req];
     this.setState({ newPricing: p });
   }
@@ -275,7 +273,6 @@ removeRequirement = (req) => {
                   <tr>
                     <td>
                       <Link to="" onClick={()=>this.setSearchEntity(price.id)}>{price.label}</Link>
-                      {/* {price.label} */}
                     </td>
                   </tr>
                   )

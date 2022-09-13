@@ -78,7 +78,6 @@ function OrderConfirmation(props) {
   return (
     
     <div>
-    {/* <br/>{JSON.stringify(allSeeds)}<br/> */}
     <table className='printTable rightCell'>
         <tr>
             <td>

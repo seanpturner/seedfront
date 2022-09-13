@@ -18,13 +18,14 @@ function FindSeeds() {
     const singleModal = selectedSeed ? 'singleModal' : 'hidden';
     const [itemAdded, setItemAdded] = useState('hidden');
     const [toastInfo, setToastInfo] = useState({});
+    const [singleModalId, setSingleModalId] = useState(null);
+    const [singleModalQuantity, setSingleModalQuantity] = useState(1);
 
     const getAllSeeds = () => {
         let requestOptions = {
             method: 'GET',
             redirect: 'follow'
         };
-          
         fetch(baseUrl + 'seeds', requestOptions)
             .then(response => response.json())
             .then(result => {
@@ -39,7 +40,6 @@ function FindSeeds() {
             method: 'GET',
             redirect: 'follow'
         };
-          
           fetch(baseUrl + 'plants', requestOptions)
             .then(response => response.json())
             .then(result => {
@@ -75,13 +75,16 @@ function FindSeeds() {
         setQuantities(qtyArray);
     }
 
-    const updateQuantity = (id, iterator) => {
+    const updateQuantity = (id, iterator, updateSingleModal) => {
         let qtyArray = [];
+        let itemQuantity;
         quantities.forEach(item => {
             if (id === item.itemId) {
                 item.quantity = item.quantity + iterator;
+                itemQuantity = item.quantity;
                 if (item.quantity < 0) {
                     item.quantity = 0;
+                    itemQuantity = item.quantity;
                 }
             }
             qtyArray.push(item);
@@ -90,9 +93,12 @@ function FindSeeds() {
         qtyArray.forEach(element => {
             document.getElementById('qty' + element.itemId).value = element.quantity;
         });
+        if (updateSingleModal) {
+                document.getElementById('singleModalQ').value = itemQuantity;
+            }
     }
 
-    const updateByEntry = (id, quantity) => {
+    const updateByEntry = (id, quantity, updateSingleModal) => {
         let qtyArray = [];
         quantities.forEach(item => {
             if (id === item.itemId) {
@@ -106,6 +112,9 @@ function FindSeeds() {
         setQuantities(qtyArray);
         qtyArray.forEach(element => {
             document.getElementById('qty' + element.itemId).value = element.quantity;
+            if (updateSingleModal) {
+                document.getElementById('singleModalQ').value = element.quantity
+            }
         });
     }
 
@@ -157,14 +166,12 @@ function FindSeeds() {
                 }
                 currentOrder.push(newItem);
             }
-            
         }
         if (nonZero) {
             toastAdded(id);
             setOrderItems(currentOrder);
             sessionStorage.setItem('userOrder', JSON.stringify(currentOrder));
         }
-        
     }
 
     const toastAdded = (id) => {
@@ -194,20 +201,17 @@ function FindSeeds() {
         let requestOptions;
         let un = localStorage.getItem('userName');
         let token = localStorage.getItem('bearerToken');
-
         if (!un || un === '' || !token || token === '') {
             setNotifyLogIn(true);
         }else{
         let myHeaders = new Headers();
         myHeaders.append("bearerToken", token);
-
         requestOptions = {
                 method: 'GET',
                 headers: myHeaders,
                 redirect: 'follow'
             };
         }
-
         fetch("http://localhost:8080/users/checkUserLevel/" + un, requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -215,8 +219,8 @@ function FindSeeds() {
                 setNotifyLogIn(true);
             }
         })
-
     }
+
 
     useEffect(() => {
         getAllSeeds();
@@ -232,9 +236,6 @@ function FindSeeds() {
                 <NavBar/>
             </div>
             <div className='pubContent'>
-                {/* <p>{JSON.stringify(availableSeeds)}</p> */}
-                {/* <p>{JSON.stringify(quantities)}</p> */}
-                {/* <p>{listSeeds.toString()}</p> */}
                 <div className='itemsDiv'>
                     <p className={alertLogIn}><Link to='/login'>Log in or create an account (it's easy) to view your cart.</Link></p>
                     <p className={viewCart}><Link to='/shoppingcart'>View your cart</Link></p>
@@ -250,29 +251,36 @@ function FindSeeds() {
                                 <tr className='itemRow'>
                                     {/* seed */}
                                     <td className='itemPadding topAlignItemTableRow centerText'>
-                                        <Link to='' onClick={()=>{setSelectedSeed(seed)}}><p className='publicSeedName'>{seed ? seed.name : ''}</p></Link>
+                                        <Link to='' onClick={()=>{
+                                            setSelectedSeed(seed);
+                                            setSingleModalId(seed.id);
+                                            updateByEntry(seed.id, 1, false);
+                                            }}><p className='publicSeedName'>{seed ? seed.name : ''}</p></Link>
                                         <p className='publicPriceText'>{seed.price ? showAsCurrency(seed.price) : ''}</p>
-                                        <Link to='' onClick={()=>updateQuantity(seed.id, -1)}>- </Link>
+                                        <Link to='' onClick={()=>updateQuantity(seed.id, -1, false)}>- </Link>
                                         <input id={'qty' + seed.id} className='qtyInput' 
                                             defaultValue={crossReference(quantities, 'itemId', seed.id, 'quantity')}
-                                            onChange={(e)=>{updateByEntry(seed.id, e.target.value)}}/>
-                                        <Link to='' onClick={()=>updateQuantity(seed.id, 1)}> +</Link><br/>
+                                            onChange={(e)=>{updateByEntry(seed.id, e.target.value, false)}}/>
+                                        <Link to='' onClick={()=>updateQuantity(seed.id, 1, false)}> +</Link><br/>
                                         <Link className='addItem' to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link>
                                     </td>
                                     {/* mother */}
-                                    <td className='itemPadding leftAlignColumn topAlignItemTableRow'>
+                                    <td className='itemPadding leftAlignColumn'>
                                         <tr>
                                             <td className='leftAlignColumn centerText'>{crossReference(allPlants, 'id', seed.mother, 'name')}</td>
                                         </tr>
                                         <tr>
                                             <td className='leftAlignColumn'>
-                                                <Link to='' onClick={()=>{setSelectedSeed(seed)}}>
+                                            <Link to='' onClick={()=>{
+                                                setSelectedSeed(seed);
+                                                setSingleModalId(seed.id);
+                                                updateByEntry(seed.id, 1, false);
+                                                }}>
                                                     <img className='itemThumb' alt='Mother plant' src={(crossReference(allPlants, 'id', seed.mother, 'image'))}/>
                                                 </Link><br/>
                                             </td>
                                         </tr>
                                     </td>
-                                    {/* <td className='itemPadding'><span>Mother:</span><br/>{crossReference(allPlants, 'id', seed.mother, 'name')}</td> */}
                                     <td className='itemPadding col6vw'>{crossReference(allPlants, 'id', seed.mother, 'notes').toString().replaceAll(',', ', ')}</td>
                                     {/* father */}
                                     <td className='itemPadding leftAlignColumn'>
@@ -281,25 +289,17 @@ function FindSeeds() {
                                         </tr>
                                         <tr>
                                             <td className='leftAlignColumn'>
-                                                <Link to='' onClick={()=>{setSelectedSeed(seed)}}>
+                                            <Link to='' onClick={()=>{
+                                                setSelectedSeed(seed);
+                                                setSingleModalId(seed.id);
+                                                updateByEntry(seed.id, 1, false);
+                                                }}>
                                                     <img className='itemThumb' alt='Father plant' src={(crossReference(allPlants, 'id', seed.father, 'image'))}/>
                                                 </Link><br/>
                                             </td>
                                         </tr>
                                     </td>
                                     <td className='itemPadding col6vw'>{crossReference(allPlants, 'id', seed.father, 'notes').toString().replaceAll(',', ', ')}</td>
-                                    {/* <td className='itemPadding'>{crossReference(allPlants, 'id', seed.father, 'notes').toString()}</td> */}
-                                    {/* <td className='itemPadding'><Link to='' onClick={()=>{setSelectedSeed(seed)}}><h2>{seed ? seed.name : ''}</h2></Link></td> */}
-                                    {/* <td className='itemPadding'><h2 className='grayText'>{seed.price ? showAsCurrency(seed.price) : ''}</h2></td> */}
-                                    {/* <td className='itemPadding centerText'>
-                                        <h2 className='grayText'>{seed.price ? showAsCurrency(seed.price) : ''}</h2>
-                                        <Link to='' onClick={()=>updateQuantity(seed.id, -1)}>- </Link>
-                                        <input id={'qty' + seed.id} className='qtyInput' 
-                                            defaultValue={crossReference(quantities, 'itemId', seed.id, 'quantity')}
-                                            onChange={(e)=>{updateByEntry(seed.id, e.target.value)}}/>
-                                        <Link to='' onClick={()=>updateQuantity(seed.id, 1)}> +</Link><br/>
-                                        <Link to='' onClick={()=>{addItem(seed.id)}}>Add to Cart</Link>
-                                    </td> */}
                                 </tr>
                             )
                         }): ''}
@@ -331,13 +331,20 @@ function FindSeeds() {
                         </tr>
                     </table>)
                     }
-                    {/* <Link to='' onClick={()=>updateQuantity(selectedSeed.id, -1)}>- </Link>
-                                        <input id={'qty' + selectedSeed.id + 2} className='qtyInput' 
-                                            defaultValue={1}
-                                            onChange={(e)=>{updateByEntry(selectedSeed.id, e.target.value)}}/>
-                                        <Link to='' onClick={()=>updateQuantity(selectedSeed.id, 1)}> +</Link><br/>
-                                        <Link to='' onClick={()=>{addItem(selectedSeed.id)}}>Add to Cart</Link> */}
-                    <p><Link to='' onClick={()=>setSelectedSeed(null)}>Close</Link> </p>
+                    <div className='centerText'>
+                        <Link to='' onClick={()=>updateQuantity(singleModalId, -1, true)}>- </Link>
+                                <input id={'singleModalQ'} className='qtyInput' 
+                                    defaultValue='1'
+                                    onChange={(e)=>{updateByEntry(singleModalId, e.target.value)}}/>
+                        <Link to='' onClick={()=>updateQuantity(singleModalId, 1, true)}> +</Link><br/>
+                        <Link className='addItem' to='' onClick={()=>{addItem(singleModalId)}}>Add to Cart</Link>
+                        <p>
+                            <Link to='' onClick={()=>{
+                            setSelectedSeed(null);
+                            setSingleModalId(null);
+                            }}>Close</Link>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div className={itemAdded}>

@@ -65,13 +65,11 @@ class Shipper extends Component {
                     </tr>
                     <tr>
                         <td>
-                            {/* {'Order # ' + selectedOrder.id} */}
                             {'Ref: ' + selectedOrder.recordLocator}
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            {/* {selectedOrder.fName + ' ' + selectedOrder.lName}<br/> */}
                             {selectedOrder.orderUser}<br/>
                             {selectedOrder.deliveryAddress1}<br/>
                             {selectedOrder.deliveryAddress2}{selectedOrder.deliveryAddress2 === null ? '' : <br/>}
@@ -137,13 +135,6 @@ class Shipper extends Component {
                         <td className='topAlignTable rightCell'>Discount Amount:&nbsp;{this.showAsCurrency(selectedOrder.discountAmount)}</td>
                     </tr>
                     }
-
-                    {/* <tr className='topAlignTableRow'>
-                        <td className='topAlignTable'/>
-                        <td className='topAlignTable'/>
-                        <td className='topAlignTable rightCell'/>
-                        <td className='topAlignTable rightCell'>Pre-tax:&nbsp;{this.showAsCurrency(selectedOrder.preTax)}</td>
-                    </tr> */}
 
                     <tr className='topAlignTableRow'>
                         <td className='topAlignTable'/>
