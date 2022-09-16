@@ -13,6 +13,8 @@ function NavBar() {
     const [hasOpenCart, setHasOpenCart] = useState(false);
     const [messageCount, setMessageCount] = useState(null);
     const showMessageCount = messageCount ? 'showMessageCount' : 'hidden';
+    const [showSelfService, setShowSelfService] = useState(false);
+    const selfServiceLinks = showSelfService ? 'selfServiceLinks' : 'hidden';
     const checkLoggedIn = () => {
         let un = localStorage.getItem('userName');
         setUserName(un);
@@ -57,7 +59,19 @@ function NavBar() {
     return (
         <div className='nav'>
             <div className='greenBar'>
-                <span className='liu'>{userName ? userName.charAt(0).toUpperCase() + userName.slice(1) : ''}</span>
+                <div className='leftInfo'>
+                    <Link className='liu' to='' onClick={()=>{setShowSelfService(!showSelfService)}}>
+                        <span className='liu'>{userName ? userName.charAt(0).toUpperCase() + userName.slice(1) : ''}</span>
+                    </Link>
+                    {' '}
+                    <Link className='liu' to=''>
+                        <span className={selfServiceLinks}>My Orders</span>
+                    </Link>
+                    <Link className='liu' to='/profile'>
+                        <span  className={selfServiceLinks}>My Profile</span>
+                    </Link>
+                </div>
+                
                 <span className='questions'><Link to='/faq' className='whiteLink'>Have questions? - FAQ's</Link></span>
             </div>
             <div className='logoLinks'>

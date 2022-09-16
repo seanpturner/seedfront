@@ -469,7 +469,8 @@ textarea, .messageBody {
 
 .whiteLink:hover{
   color: white;
-  font-weight: 500;
+  font-weight: 400;
+  text-decoration: underline;
 }
 
 .pubPage {
@@ -596,9 +597,32 @@ textarea, .messageBody {
   padding-left: 1.25vw;
 }
 
-.liu {
+.leftInfo {
   position: absolute;
   left: 5px;
+}
+
+.liu:link {
+  color: white;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.liu:visited{
+  color: white;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.liu:hover{
+  color: white;
+  font-weight: 400;
+  text-decoration: underline;
+}
+
+.selfServiceLinks {
+  font-size:smaller;
+  padding-left: 8px;
 }
 
 .loginResult {

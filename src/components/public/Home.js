@@ -17,7 +17,7 @@ function Home() {
         checkLoggedIn();
     }, [])
     return (
-        <div className='pubPage noScroll'>
+        <div className='pubPage noHorizontalScroll'>
             <div className='navBar'>
                 <NavBar className='z3'/>
             </div>
