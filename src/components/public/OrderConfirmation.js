@@ -56,7 +56,7 @@ function OrderConfirmation(props) {
                 redirect: 'follow'
             };
               
-            fetch('http://localhost:8080/purchases/locator/' + locator, requestOptions)
+            fetch('http://www.boutiqueseedsnm.com/backend/purchases/locator/' + locator, requestOptions)
                 .then(response => response.json())
                 .then(response => setSelectedOrder(response))
             }
@@ -68,7 +68,7 @@ function OrderConfirmation(props) {
             redirect: 'follow'
         };
           
-        fetch("http://localhost:8080/seeds", requestOptions)
+        fetch("http://www.boutiqueseedsnm.com/backend/seeds", requestOptions)
             .then(response => response.json())
             .then(result => setAllSeeds(result))
             // .then(result => console.log(result))

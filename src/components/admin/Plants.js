@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 class Plants extends Component {
   state = { 
-    baseUrl: "http://localhost:8080/",
+    baseUrl: "http://www.boutiqueseedsnm.com/backend/",
     allLines: [],
     sortAlphaLines: [],
     allPlants: [],
@@ -68,7 +68,7 @@ class Plants extends Component {
 
   doPostPutFetch = (method, plant) => {
 
-    let fetchUrl = "http://localhost:8080/plants";
+    let fetchUrl = "http://www.boutiqueseedsnm.com/backend/plants";
     if (method === "PUT") {
       fetchUrl = fetchUrl + "/" + plant.id;
     }

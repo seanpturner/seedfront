@@ -65,7 +65,7 @@ function Contact() {
         redirect: 'follow'
         };
 
-        fetch("http://localhost:8080/messages", requestOptions)
+        fetch("http://www.boutiqueseedsnm.com/backend/messages", requestOptions)
             .then(response => response.text())
             .then(response => setShowDiv('submitSuccess'))
             // .then(result => console.log(result))

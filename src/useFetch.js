@@ -13,7 +13,7 @@ function useFetch(url) {
             redirect: 'follow'
           };
           
-          fetch("http://localhost:8080/users/active", requestOptions)
+          fetch("http://www.boutiqueseedsnm.com/backend/users/active", requestOptions)
             .then((response) => setData(response.data))
             .finally(() => setLoading(false));
 

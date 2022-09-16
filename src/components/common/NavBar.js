@@ -40,7 +40,7 @@ function NavBar() {
                 redirect: 'follow'
             };
               
-            fetch('http://localhost:8080/messages/count/' + userName, requestOptions)
+            fetch('http://www.boutiqueseedsnm.com/backend/messages/count/' + userName, requestOptions)
                 .then(response => response.text())
                 .then(result => setMessageCount(result))
                 // .then(result => console.log(result))

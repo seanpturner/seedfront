@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 class AllOrders extends Component {
   state = { 
-    baseUrl: 'http://localhost:8080/',
+    baseUrl: 'http://www.boutiqueseedsnm.com/backend/',
     allOrders: [],
     activeUsers: [],
     allPurchaseStatuses: [],

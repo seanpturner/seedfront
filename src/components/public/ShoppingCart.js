@@ -101,7 +101,7 @@ function ShoppingCart() {
             redirect: 'follow'
         };
 
-        fetch('http://localhost:8080/seeds', requestOptions)
+        fetch('http://www.boutiqueseedsnm.com/backend/seeds', requestOptions)
             .then(response => response.json())
             .then(result => {
                 setSeeds(result);
@@ -122,7 +122,7 @@ function ShoppingCart() {
                     headers: myHeaders,
                     redirect: 'follow'
                 };
-            fetch('http://localhost:8080/users/checkCredentials/' + un, requestOptions)
+            fetch('http://www.boutiqueseedsnm.com/backend/users/checkCredentials/' + un, requestOptions)
             .then(response => response.text())
             .then(result => {
                 if (result === true || result === 'true') {
@@ -139,7 +139,7 @@ function ShoppingCart() {
             redirect: 'follow'
         }
 
-        fetch('http://localhost:8080/users/user/' + un, requestOptions)
+        fetch('http://www.boutiqueseedsnm.com/backend/users/user/' + un, requestOptions)
         .then(response => response.json())
         .then(result => {
             setUserID(result.id);
@@ -275,7 +275,7 @@ function ShoppingCart() {
         setDiscountAmount(0);
         setBadCodeText('This code is not valid');
         setBadCode(true);
-        fetch('http://localhost:8080/discounts/code/' + code, requestOptions)
+        fetch('http://www.boutiqueseedsnm.com/backend/discounts/code/' + code, requestOptions)
         .then(response => response.json())
         .then(result => {
             setDiscountCodeObject(result);
@@ -300,7 +300,7 @@ function ShoppingCart() {
             redirect: 'follow'
           };
           
-          fetch('http://localhost:8080/pricing/' + pricingStructure, requestOptions)
+          fetch('http://www.boutiqueseedsnm.com/backend/pricing/' + pricingStructure, requestOptions)
             .then(response => response.json())
             .then(result => setUserPricing(result))
             .then(()=>setOkToAlertDiscount(true))
@@ -441,7 +441,7 @@ function ShoppingCart() {
             redirect: 'follow'
         };
           
-        fetch("http://localhost:8080/purchases/createLocator", requestOptions)
+        fetch("http://www.boutiqueseedsnm.com/backend/purchases/createLocator", requestOptions)
             .then(response => response.text())
             .then(result => setRecordLocator(result))
     }

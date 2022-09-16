@@ -24,7 +24,7 @@ class Lines extends Component {
       method: 'GET'
     };
     
-    fetch("http://localhost:8080/lines", requestOptions)
+    fetch("http://www.boutiqueseedsnm.com/backend/lines", requestOptions)
       .then(response => response.json())
       .then((response) => {
         this.setState({ lineList: response });
@@ -74,7 +74,7 @@ class Lines extends Component {
 
   saveLine = () => {
     let updateLine = this.state.updateSelectedLine;
-    let fetchUrl = "http://localhost:8080/lines/" + updateLine.id;
+    let fetchUrl = "http://www.boutiqueseedsnm.com/backend/lines/" + updateLine.id;
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -121,7 +121,7 @@ class Lines extends Component {
       redirect: 'follow'
     };
 
-    fetch("http://localhost:8080/lines", requestOptions)
+    fetch("http://www.boutiqueseedsnm.com/backend/lines", requestOptions)
       .then(response => response.text())
       .then(response => window.location.reload())
       // .catch(error => console.log('error', error));
