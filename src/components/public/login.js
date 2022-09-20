@@ -33,7 +33,7 @@ function Login() {
     });
 
     const okToSubmit = newUser.userName && newUser.password && newUser.fName && newUser.lName && newUser.email && newUser.birthDate && newUser.address1 && newUser.city && newUser.state && newUser.zip ? 'okToSubmit' : 'hidden';
-
+    const [loginSuccess, setLoginSuccess] = useState('hidden');
     const [validateFields, setValidateFields] = useState([]);
     const [duplicateUserName, setDuplicateUserName] = useState(false);
     const alertDuplicateUserName = duplicateUserName && newUser.userName ? 'alertDuplicateUserName' : 'hidden';
@@ -334,13 +334,21 @@ function Login() {
                 }, 100);
             }
             if (tokenCheck && tokenCheck !== 'invalid' && tokenCheck !== '') {
-                window.location.assign('./loginsuccess');
+                // window.location.assign('./loginsuccess');
+                loggedIn();
             } 
         }
         else{
             localStorage.clear();
             unableToLogIn();
         }    
+    }
+
+    const loggedIn = () => {
+        setLoginSuccess('loginSuccessModal');
+        setTimeout(() => {
+            window.location.replace('/home');
+        }, 1000);
     }
 
     const addNewUser = () => {
@@ -427,6 +435,12 @@ function Login() {
         <div className='pubPage'>
             <div className='navBar'>
                 <NavBar/>
+            </div>
+            <div className={loginSuccess}>
+                <div className='loginResult'>
+                    <h3>You've successfully logged in.</h3><br/>
+                    <h3>You will be redirected to the home page in a moment.</h3>
+                </div>
             </div>
             <div className={loader}>
                 <div className='spinner'/>
