@@ -5,7 +5,7 @@ import NavBar from '../common/NavBar';
 export default function PaymentSuccess() {
     const location = useLocation();
     const order = JSON.parse(location.state.purchase);
-    const baseUrl = 'http://www.boutiqueseedsnm.com/';
+    const baseUrl = 'https://www.boutiqueseedsnm.com/';
     const getDateTime = () => {
         let today = new Date();
         let dash1 = '-';
@@ -86,7 +86,7 @@ export default function PaymentSuccess() {
         body: raw,
         redirect: 'follow'
         };
-        fetch("http://www.boutiqueseedsnm.com/messages", requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/messages", requestOptions)
         .then(response => response.text())
         .then(result => window.location.replace('/orderSuccess/' + updPurchase.recordLocator))
         // .then(result => console.log(result))

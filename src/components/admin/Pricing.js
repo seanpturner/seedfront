@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 class Pricing extends Component {
   state = {
-    baseUrl: "http://www.boutiqueseedsnm.com/",
+    baseUrl: "https://www.boutiqueseedsnm.com/",
     allPricing: [],
     sortAlphaPricing: [],
     dataSet: "ID",
@@ -161,7 +161,7 @@ postPutFetch = (method) => {
 
 doPostPutFetch = (method, pricing) => {
 
-  let fetchUrl = "http://www.boutiqueseedsnm.com/pricing";
+  let fetchUrl = "https://www.boutiqueseedsnm.com/pricing";
   if (method === "PUT") {
     fetchUrl = fetchUrl + "/" + pricing.id;
   }

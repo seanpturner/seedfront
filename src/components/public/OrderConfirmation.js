@@ -56,7 +56,7 @@ function OrderConfirmation(props) {
                 redirect: 'follow'
             };
               
-            fetch('http://www.boutiqueseedsnm.com/purchases/locator/' + locator, requestOptions)
+            fetch('https://www.boutiqueseedsnm.com/purchases/locator/' + locator, requestOptions)
                 .then(response => response.json())
                 .then(response => setSelectedOrder(response))
             }
@@ -68,7 +68,7 @@ function OrderConfirmation(props) {
             redirect: 'follow'
         };
           
-        fetch("http://www.boutiqueseedsnm.com/seeds", requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/seeds", requestOptions)
             .then(response => response.json())
             .then(result => setAllSeeds(result))
             // .then(result => console.log(result))

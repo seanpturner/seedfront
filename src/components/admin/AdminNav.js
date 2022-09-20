@@ -21,7 +21,7 @@ function AdminNav() {
             };
         }
 
-        fetch("http://www.boutiqueseedsnm.com/users/checkUserLevel/" + un, requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/users/checkUserLevel/" + un, requestOptions)
         .then(response => response.json())
         .then(result => {
             if (result.grantAccess !== true || result.userAccountType !== 'admin') {

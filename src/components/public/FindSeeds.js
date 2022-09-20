@@ -3,7 +3,7 @@ import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 
 function FindSeeds() {
-    const baseUrl = 'http://www.boutiqueseedsnm.com/';
+    const baseUrl = 'https://www.boutiqueseedsnm.com/';
     const [availableSeeds, setAvailableSeeds] = useState([]);
     const listSeeds = availableSeeds && availableSeeds !== undefined && availableSeeds.length > 0 ? true : false;
     const [quantities, setQuantities] = useState([]);
@@ -212,7 +212,7 @@ function FindSeeds() {
                 redirect: 'follow'
             };
         }
-        fetch("http://www.boutiqueseedsnm.com/users/checkUserLevel/" + un, requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/users/checkUserLevel/" + un, requestOptions)
         .then(response => response.json())
         .then(result => {
             if (result.grantAccess !== true) {

@@ -27,7 +27,7 @@ class Econ extends Component {
             };
         }
 
-        fetch("http://www.boutiqueseedsnm.com/users/user/" + un, requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/users/user/" + un, requestOptions)
         .then(response => response.json())
         .then(result => {
             if (!result || result.id === '' || result.id === undefined) {

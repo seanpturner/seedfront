@@ -46,7 +46,7 @@ function Messaging(props) {
             redirect: 'follow'
         };
           
-        fetch("http://www.boutiqueseedsnm.com/users/nameHash", requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/users/nameHash", requestOptions)
             .then(response => response.json())
             .then(result => {
                 filterNameHash(result);
@@ -67,7 +67,7 @@ function Messaging(props) {
             redirect: 'follow'
         };
           
-        fetch('http://www.boutiqueseedsnm.com/messages/user/' + userName, requestOptions)
+        fetch('https://www.boutiqueseedsnm.com/messages/user/' + userName, requestOptions)
             .then(response => response.json())
             .then(result => sortMessages(result))
             // .then(result => setAllMessages(result))
@@ -127,7 +127,7 @@ function Messaging(props) {
                 method: 'PUT',
                 redirect: 'follow'
               };
-              fetch('http://www.boutiqueseedsnm.com/messages/updateRead/' + parseInt(message.id), requestOptions)
+              fetch('https://www.boutiqueseedsnm.com/messages/updateRead/' + parseInt(message.id), requestOptions)
                 .then(response => response.text())
                 // .then(result => updateNav())
                 // .then(result => console.log(result))
@@ -142,7 +142,7 @@ function Messaging(props) {
                 method: 'PUT',
                 redirect: 'follow'
               };
-              fetch('http://www.boutiqueseedsnm.com/messages/updateArchived/' + message.id, requestOptions)
+              fetch('https://www.boutiqueseedsnm.com/messages/updateArchived/' + message.id, requestOptions)
                 .then(response => response.text())
                 // .then(result => console.log(result))
                 // .catch(error => console.log('error', error));
@@ -174,7 +174,7 @@ function Messaging(props) {
         redirect: 'follow'
         };
 
-        fetch("http://www.boutiqueseedsnm.com/messages", requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/messages", requestOptions)
         .then(response => response.text())
         .then(result => window.location.replace('/messaging/' + filter))
         // .then(result => console.log(result))
@@ -192,7 +192,7 @@ function Messaging(props) {
         redirect: 'follow'
         };
 
-        fetch("http://www.boutiqueseedsnm.com/messages", requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/messages", requestOptions)
         .then(response => response.text())
         .then(result => window.location.replace('/messaging/' + filter))
         // .then(result => console.log(result))
@@ -235,7 +235,7 @@ function Messaging(props) {
             redirect: 'follow'
         };
 
-        fetch("http://www.boutiqueseedsnm.com/users/checkUserLevel/" + un, requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/users/checkUserLevel/" + un, requestOptions)
         .then(response => response.json())
         .then(result => {
             if (result.userAccountType === 'admin') {

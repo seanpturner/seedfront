@@ -44,7 +44,7 @@ class Users extends Component {
       }
     });
 
-    let rq = "http://www.boutiqueseedsnm.com" + dataRqPath;
+    let rq = "https://www.boutiqueseedsnm.com" + dataRqPath;
     let requestOptions = {
       method: fetchMethod.toUpperCase(),
     };
@@ -58,7 +58,7 @@ class Users extends Component {
   };
 
   getPricing = (userList) => {
-    fetch("http://www.boutiqueseedsnm.com/pricing", {method: 'GET'}) 
+    fetch("https://www.boutiqueseedsnm.com/pricing", {method: 'GET'}) 
       .then((response) => response.json())
       .then((response) => this.addPricingLabels(userList, response))
   }
@@ -103,7 +103,7 @@ class Users extends Component {
       body: JSON.stringify(this.state.updateSelectedUser)
     };
 
-    fetch("http://www.boutiqueseedsnm.com/users/updateUser/" + this.state.updateSelectedUser.id, requestOptions)
+    fetch("https://www.boutiqueseedsnm.com/users/updateUser/" + this.state.updateSelectedUser.id, requestOptions)
   .then(response => response.text())
   .then(response => {
     this.setState({ selectedUser: "none" });
@@ -166,7 +166,7 @@ class Users extends Component {
 
   savePassword = () => {
 
-    let fetchUrl = "http://www.boutiqueseedsnm.com/users/updatepasswordonly/"+ this.state.updateSelectedUser.id + "/" + this.state.password1;
+    let fetchUrl = "https://www.boutiqueseedsnm.com/users/updatepasswordonly/"+ this.state.updateSelectedUser.id + "/" + this.state.password1;
       let requestOptions = {
         method: 'PUT',
         body: ""

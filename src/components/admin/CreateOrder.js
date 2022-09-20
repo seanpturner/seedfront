@@ -6,7 +6,7 @@ class CreateOrder extends Component {
     state = { 
         dataLoaded: false,
         secondsRemaining: '',
-        baseUrl: "http://www.boutiqueseedsnm.com/",
+        baseUrl: "https://www.boutiqueseedsnm.com/",
         sessionUser: 1,
         activeUsers: [],
         allPurchaseStatuses: [],
@@ -726,7 +726,7 @@ class CreateOrder extends Component {
             redirect: 'follow'
         };
           
-        fetch("http://www.boutiqueseedsnm.com/purchases/createLocator", requestOptions)
+        fetch("https://www.boutiqueseedsnm.com/purchases/createLocator", requestOptions)
             .then(response => response.text())
             .then(result => this.setState({ recordLocator: result }))
             // .then(result => setRecordLocator(result))
