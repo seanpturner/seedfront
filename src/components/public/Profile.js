@@ -11,6 +11,7 @@ function Profile() {
     const [userName, setUserName] = useState(null);
     const [enteredPassword, setEnteredPassword] = useState(null);
     const userReceived = user.userName && user.userName !== undefined ? true : false;
+    const [updatedInfo, setUpdatedInfo] = useState(false);
     const checkLoggedIn = () => {
         let un = localStorage.getItem('userName');
         setUserName(un);
@@ -18,7 +19,27 @@ function Profile() {
             // setLoggedIn(true);
             // getUser(un);
         }
+    }
 
+    const compareUser = () => {
+        if (verified) {
+           if (
+            updatedUser.userName === user.userName
+            && updatedUser.userName === user.userName
+            && updatedUser.fName === user.fName
+            && updatedUser.lName === user.lName
+            && updatedUser.email === user.email
+            && updatedUser.address1 === user.address1
+            && updatedUser.address2 === user.address2
+            && updatedUser.city === user.city
+            && updatedUser.state === user.state
+            && updatedUser.zip === user.zip
+            ) {
+                setUpdatedInfo(false);
+            }else{
+                setUpdatedInfo(true);
+            } 
+        }
     }
 
     const getUser = () => {
@@ -62,24 +83,30 @@ function Profile() {
     }
 
     const updateUser = (e) => {
-        let updated = updateUser;
-        updated[e.id] = e.target.value;
+        let updated = updatedUser;
+        updated[e.target.id] = e.target.value;
         setUpdatedUser(updated);
+        // alert(JSON.stringify(updatedUser))
     }
 
-    useEffect(() => {
+    useEffect(()=> {
         checkLoggedIn();
     }, [])
+
+    useEffect(()=> {
+        compareUser();
+    },[updatedUser])
   return (
     <div className='pubPage noHorizontalScroll'>
         <div className='navBar'>
             <NavBar/>
         </div>
         <div className='pubContent'>
-            <p>{JSON.stringify(updatedUser)}</p>
+            {/* <p>{JSON.stringify(updatedUser)}</p> */}
             {/* <p>{'user Received: ' + userReceived.toString()}</p> */}
             {/* <p>{'User Name: ' + userName}</p> */}
             {/* <p>{enteredPassword}</p> */}
+            <p>{updatedInfo.toString()}</p>
             {verified ? 
                 <div className='topCenteredDiv'>
                     {userReceived ? 
