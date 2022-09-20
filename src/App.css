@@ -494,6 +494,18 @@ textarea, .messageBody {
   transform: translate(-50%, -50%);
 }
 
+.loginSuccessModal {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, 0%);
+  border: solid green 1px;
+  border-radius: 20px;
+  padding: 0vh 1vw 1vh 1vw;
+  background-color: rgba(211, 211, 211);
+  z-index: 4;
+}
+
 .centeredDiv {
   position: absolute;
   left: 50%;
