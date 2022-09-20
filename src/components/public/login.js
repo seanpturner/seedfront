@@ -247,7 +247,7 @@ function Login() {
                 redirect: 'follow'
             };
 
-            fetch("http://www.boutiqueseedsnm.com/backend/users/user/" + name, requestOptions)
+            fetch("http://www.boutiqueseedsnm.com/users/user/" + name, requestOptions)
             .then(response => response.text())
             .then(result => {updateUserName(result)})
     }
@@ -274,7 +274,7 @@ function Login() {
     const createAccount = viewDiv === 'createAccount' ? 'createAccount' : 'hidden';
     const loader = viewDiv === 'loader' ? 'loader' : 'hidden';
 
-    const baseUrl = 'http://www.boutiqueseedsnm.com/backend/users/getToken/';
+    const baseUrl = 'http://www.boutiqueseedsnm.com/users/getToken/';
 
     const handleChange = (e) => {
         let i = {...inputs};
@@ -362,7 +362,7 @@ function Login() {
             redirect: 'follow'
         };
 
-        fetch("http://www.boutiqueseedsnm.com/backend/users", requestOptions)
+        fetch("http://www.boutiqueseedsnm.com/users", requestOptions)
         .then(response => response.text())
         .then(result => {window.location.assign('./creationsuccess');})
     }

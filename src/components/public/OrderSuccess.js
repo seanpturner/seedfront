@@ -6,7 +6,7 @@ import OrderConfirmation from './OrderConfirmation';
 export default function OrderSuccess() {
     const { locator } = useParams();
     // const order = JSON.parse(purchase);
-    // const baseUrl = 'http://www.boutiqueseedsnm.com/backend/';
+    // const baseUrl = 'http://www.boutiqueseedsnm.com/';
 
 
   return (

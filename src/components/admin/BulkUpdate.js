@@ -13,7 +13,7 @@ function BulkUpdate() {
             method: 'GET',
             redirect: 'follow'
         };
-        fetch("http://www.boutiqueseedsnm.com/backend/purchases/openpurchases", requestOptions)
+        fetch("http://www.boutiqueseedsnm.com/purchases/openpurchases", requestOptions)
             .then(response => response.json())
             .then(response => sortPurchases(response, 'id'))
             .then(result => setOpenPurchases(result))
@@ -31,7 +31,7 @@ function BulkUpdate() {
             method: 'GET',
             redirect: 'follow'
         };
-        fetch("http://www.boutiqueseedsnm.com/backend/purchasestatuses", requestOptions)
+        fetch("http://www.boutiqueseedsnm.com/purchasestatuses", requestOptions)
             .then(response => response.json())
             .then(result => setAllStatuses(result))
             // .then(result => console.log(result))
@@ -153,7 +153,7 @@ function BulkUpdate() {
         body: raw,
         redirect: 'follow'
         };
-        fetch('http://www.boutiqueseedsnm.com/backend/purchases/' + order.id, requestOptions)
+        fetch('http://www.boutiqueseedsnm.com/purchases/' + order.id, requestOptions)
         .then(response => response.text())
         .then(result => window.location.reload())
         // .catch(error => console.log('error', error));

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 class OpenOrders extends Component {
   state = { 
-    baseUrl: 'http://www.boutiqueseedsnm.com/backend/',
+    baseUrl: 'http://www.boutiqueseedsnm.com/',
     allOrders: [],
     activeUsers: [],
     allPurchaseStatuses: [],
