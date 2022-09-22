@@ -27,7 +27,8 @@ class Users extends Component {
     searchString: "",
     searchResults: [],
     updatePricing: false,
-    pricingList: []
+    pricingList: [],
+    updateSelectedUser: ""
   };
 
   componentDidMount = () => {
