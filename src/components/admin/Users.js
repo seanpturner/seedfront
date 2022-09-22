@@ -110,7 +110,7 @@ class Users extends Component {
     this.setState({ selectedUser: "none" });
     this.getUsers(this.state.dataSet, "get");
   })
-  .then(response => window.location.replace('./openorders'))
+  .then(response => window.location.replace('./users'))
   }
 
   sortList = (users, by) => {
@@ -175,7 +175,7 @@ class Users extends Component {
       
       fetch(fetchUrl, requestOptions)
         .then(response => response.json())
-        .window.location.replace('./openorders')
+        .window.location.replace('./users')
   }
 
   searchFor = () => (event) => {
