@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import NavBar from '../common/NavBar';
 import { Link } from "react-router-dom";
 import PayPal from './PayPal';
+import axios from 'axios';
 
 function ShoppingCart() {
     const taxRate = .0784;
@@ -68,6 +69,45 @@ function ShoppingCart() {
     const showPricingDiscountRow = alertDiscountedPrice !== '' ? 'showPricingDiscountRow' : 'hidden';
     const showBadCode = badCode ? 'alertRedText' : 'hidden';
     const [recordLocator, setRecordLocator] = useState(null);
+    const [userName, setUserName] = useState('');
+    const [IP, setIP] = useState('');
+    const [IPstate, setIPState] = useState('');
+    const page = 'ShoppingCart';
+    const [trackerSent, setTrackerSent] = useState(false);
+    const dataTracker = {
+        ip: IP,
+        state: IPstate,
+        page: page,
+        userName: userName
+    }
+
+    const getData = async () => {
+        const res = await axios.get('https://geolocation-db.com/json/');
+        setIP(res.data.IPv4);
+        setIPState(res.data.IPstate);
+    }
+
+    useEffect(()=> {
+        if (dataTracker.ip && dataTracker.state && !trackerSent) {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            
+            let raw = JSON.stringify(dataTracker);
+            
+            let requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            
+            fetch("http://localhost:8080/tracking", requestOptions)
+                .then(response => response.text())
+                .then(setTrackerSent(true))
+                // .then(result => console.log(result))
+                // .catch(error => console.log('error', error));
+        }
+    }, [dataTracker])
 
     const order = {
         id: null,
@@ -450,6 +490,7 @@ function ShoppingCart() {
         fetchSeeds();
         getOrder();
         setPurchaseDate(getDateTime(true));
+        getData();
         // eslint-disable-next-line
     }, [])
 
@@ -481,6 +522,7 @@ function ShoppingCart() {
     },[preTax, discountAmount, shippingFee])
 
     useEffect(() => {
+        setUserName(localStorage.getItem('userName'));
         getLocator();
         //eslint-disable-next-line
     },[])

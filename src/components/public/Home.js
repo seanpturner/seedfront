@@ -2,9 +2,49 @@ import React, { useEffect, useState } from 'react'
 import NavBar from '../common/NavBar';
 import Footer from '../common/Footer';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 function Home() {
+    const [userName, setUserName] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
+    const [IP, setIP] = useState('');
+    const [state, setState] = useState('');
+    const page = 'Home';
+    const [trackerSent, setTrackerSent] = useState(false);
+    const dataTracker = {
+        ip: IP,
+        state: state,
+        page: page,
+        userName: userName
+    }
+
+    const getData = async () => {
+        const res = await axios.get('https://geolocation-db.com/json/');
+        setIP(res.data.IPv4);
+        setState(res.data.state);
+    }
+
+    useEffect(()=> {
+        if (dataTracker.ip && dataTracker.state && !trackerSent) {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            
+            let raw = JSON.stringify(dataTracker);
+            
+            let requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            
+            fetch("http://localhost:8080/tracking", requestOptions)
+                .then(response => response.text())
+                .then(setTrackerSent(true))
+                // .then(result => console.log(result))
+                // .catch(error => console.log('error', error));
+        }
+    }, [dataTracker])
 
     const checkLoggedIn = () => {
         let un = localStorage.getItem('userName');
@@ -14,7 +54,9 @@ function Home() {
     }
 
     useEffect(() => {
+        setUserName(localStorage.getItem('userName'));
         checkLoggedIn();
+        getData();
     }, [])
     return (
         <div className='pubPage noHorizontalScroll'>
