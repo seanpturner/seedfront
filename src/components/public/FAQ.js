@@ -75,7 +75,7 @@ function FAQ() {
                     <td className='question'>Are seeds legal to buy and possess?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>I don't know about every state, but here in New Mexico they are.</td>
+                    <td className='answer'><a href='https://www.marijuanamoment.net/dea-says-marijuana-seeds-are-considered-legal-hemp-as-long-as-they-dont-exceed-thc-limit/#:~:text=Marijuana%20might%20be%20federally%20prohibited,if%20those%20seeds%20were%20cultivated.' target='_blank'>According to the DEA</a> they are.</td>
                 </tr>
                 <tr>
                     <td className='question'>Do you guarantee your seeds will grow?</td>
@@ -95,7 +95,7 @@ function FAQ() {
                     <td className='question'>Why aren't there more varieties of seeds in stock?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>I look at breeding almost as a form of art, and I'm not always happy with my breeds for various reasons. Perhaps they don't have a good smell, taste, or effect. Perhaps they aren't hearty enough. For whatever the reason, if I'm not happy with what I've curated, I stop that line and focus on others. So, what you might see as a limited selection, is what I see as only offering the best of what I've created.</td>
+                    <td className='answer'>I look at breeding almost as a form of art, and I'm not always happy with what I breed for various reasons. Perhaps they don't have a good smell, taste, or effect. Perhaps they aren't hearty enough. For whatever the reason, if I'm not happy with what I've curated, I stop that line and focus on others. So, what you might see as a limited selection, is what I see as only offering the best of what I've created.</td>
                 </tr>
                 <tr>
                     <td className='question'>I don't see any feminized seeds. Why not?</td>
@@ -107,7 +107,7 @@ function FAQ() {
                     <td className='question'>How long have you been growing cannabis?</td>
                 </tr>
                 <tr>
-                    <td className='answer'>I honestly don't remember when I first started growing, but I can tell you it's been a long time. I've been growing cannabis for seeds for about 20 years. In some circles, I'm just known as the seed guy.</td>
+                    <td className='answer'>20+ years.</td>
                 </tr>
                 <tr>
                     <td className='question'>What is Boutique Seeds about?</td>
